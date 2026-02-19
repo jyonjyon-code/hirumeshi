@@ -113,8 +113,8 @@
             document.getElementById('desc').innerText = res.desc;
             document.getElementById('add-on').innerText = res.add;
             
-            const searchKeyword = currentMode === 'conveni' ? "コンビニ" : "近くの" + res.keyword;
-            const mapUrl = `https://www.google.com/maps/search/${encodeURIComponent(searchKeyword)}`;
+            const searchKeyword = currentMode === 'conveni' ? "コンビニエンスストア" : "近くの" + res.keyword;
+            const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(searchKeyword)}`;
             
             const linkElem = document.getElementById('map-link');
             linkElem.href = mapUrl;
@@ -137,5 +137,6 @@
 
 </body>
 </html>
+
 
 
