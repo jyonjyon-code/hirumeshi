@@ -6,9 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <title>ひるめしえらんで</title>
-    <link rel="apple-touch-icon" href="icon.png">
     <style>
-        /* 和風モダンで親しみやすいデザイン */
         body { font-family: 'Hiragino Kaku Gothic ProN', sans-serif; text-align: center; background: #f9f1e6; padding: 20px; color: #333; margin: 0; }
         .card { background: white; padding: 30px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); display: inline-block; width: 90%; max-width: 380px; border: 4px solid #d9534f; margin-top: 20px; box-sizing: border-box; }
         h2 { color: #d9534f; margin-bottom: 20px; font-size: 26px; letter-spacing: 2px; }
@@ -20,36 +18,21 @@
             100% { transform: rotate(0deg); }
         }
         .mode-selector { margin-bottom: 25px; display: flex; justify-content: center; }
-        .mode-btn { border: 2px solid #d9534f; padding: 10px 15px; cursor: pointer; background: white; border-radius: 25px; font-size: 14px; margin: 0 5px; color: #d9534f; font-weight: bold; transition: 0.3s; flex: 1; }
+        .mode-btn { border: 2px solid #d9534f; padding: 10px 15px; cursor: pointer; background: white; border-radius: 25px; font-size: 14px; margin: 0 5px; color: #d9534f; font-weight: bold; flex: 1; }
         .active-mode { background: #d9534f; color: white; }
         #result-area { display: none; background: #fffcf0; border: 2px dashed #f0ad4e; padding: 20px; border-radius: 15px; margin-top: 20px; animation: fadeIn 0.5s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .btn { background: #4285F4; color: white; border: none; padding: 15px 25px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; margin-top: 15px; font-size: 16px; width: 100%; box-sizing: border-box; }
         .lucky-item { color: #e67e22; font-weight: bold; font-size: 0.95em; margin-top: 15px; background: #fff; border-radius: 10px; padding: 5px; }
         #hint { font-size: 14px; color: #888; margin-top: 10px; }
-
-        /* 広告エリア用スタイル（一番下で綺麗に見えるように調整） */
-        .ad-container {
-            margin-top: 30px; /* 上のボタンとの距離を広げた */
-            padding: 15px;
-            background: #f0f0f0;
-            border-radius: 15px;
-            border: 1px solid #ddd;
-        }
-        .ad-label {
-            font-size: 10px;
-            color: #999;
-            margin-bottom: 8px;
-            text-align: left;
-        }
-        #ad-content table { margin: 0 auto; } /* 広告を中央に寄せる */
+        .ad-container { margin-top: 30px; padding: 15px; background: #f0f0f0; border-radius: 15px; border: 1px solid #ddd; }
+        .ad-label { font-size: 10px; color: #999; margin-bottom: 8px; text-align: left; }
     </style>
 </head>
 <body>
     
 <div class="card">
     <h2>ひるめしえらんで</h2>
-
     <div class="mode-selector">
         <button id="normal-btn" class="mode-btn active-mode" onclick="setMode('normal')">みせをえらぶ</button>
         <button id="conveni-btn" class="mode-btn" onclick="setMode('conveni')">コンビニ</button>
@@ -68,9 +51,9 @@
         <button class="btn" style="background:#888; margin-top:15px; font-size: 14px; padding: 10px;" onclick="reset()">もういちど ひく</button>
 
         <div class="ad-container">
-            <div class="ad-label">スポンサーリンク / 本日の買い足しにおすすめ</div>
+            <div class="ad-label">スポンサーリンク</div>
             <div id="ad-content">
-                <a href="https://hb.afl.rakuten.co.jp/ichiba/5126d67f.820ff823.5126d680.2ad8273d/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Flifedrinkcompany%2Fzaosoda-500-48%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjY0eDY0IiwibmFtIjoxLCJuYW1wIjoicmlnaHQiLCJjb20iOjEsImcomcomaiOiJkb3duIiwicHJpY2UiOjEsImJvciI6MSwiY29sIjoxLCJiYnRuIjoxLCJwcm9kIjowLCJhbXAiOmZhbHNlfQ%3D%3D" target="_blank" rel="nofollow sponsored noopener"><img src="https://hbb.afl.rakuten.co.jp/hgb/5126d67f.820ff823.5126d680.2ad8273d/?me_id=1379776&item_id=10000022&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Flifedrinkcompany%2Fcabinet%2Fitem-soda%2Fozasoda%2Fproper%2Foza48_lychee.jpg%3F_ex%3D64x64&s=64x64&t=pict" border="0" style="margin:2px" alt="" title=""></a>
+                <a href="https://hb.afl.rakuten.co.jp/ichiba/5126d67f.820ff823.5126d680.2ad8273d/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Flifedrinkcompany%2Fzaosoda-500-48%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjY0eDY0IiwibmFtIjoxLCJuYW1wIjoicmlnaHQiLCJjb20iOjEsImcomcomaiOiJkb3duIiwicHJpY2UiOjEsImJvciI6MSwiY29sIjoxLCJiYnRuIjoxLCJwcm9kIjowLCJhbXAiOmZhbHNlfQ%3D%3D" target="_blank" rel="nofollow sponsored noopener"><img src="https://hbb.afl.rakuten.co.jp/hgb/5126d67f.820ff823.5126d680.2ad8273d/?me_id=1379776&item_id=10000022&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Flifedrinkcompany%2Fcabinet%2Fitem-soda%2Fozasoda%2Fproper%2Foza48_lychee.jpg%3F_ex%3D64x64&s=64x64&t=pict" border="0" style="margin:2px" alt=""></a>
             </div>
         </div>
     </div>
@@ -78,11 +61,52 @@
 
 <script>
     let currentMode = 'normal';
-
     const normalMenus = [
         { luck: "大大吉", food: "特選！厚切りステーキ", keyword: "ステーキ", desc: "自分へのご褒美！午後も無敵のパワーです。", add: "ガーリックライス" },
-        { luck: "大大吉", food: "回らないお寿司", keyword: "寿司", desc: "旬のネタで贅沢に。至福のひとときを。", add: "あおさの味噌汁" },
         { luck: "大吉", food: "肉汁あふれるハンバーグ", keyword: "ハンバーグ", desc: "鉄板の熱々を楽しんで！", add: "目玉焼きトッピング" },
-        { luck: "大吉", food: "揚げたてサクサク天丼", keyword: "天丼", desc: "大きなエビが運気を上げます。", add: "冷やし小うどん" },
         { luck: "大吉", food: "本格スパイスカレー", keyword: "カレー", desc: "五感を刺激して午後もシャキッと！", add: "焼きたてナン" },
-        { luck: "大吉", food: "豪華！海鮮ひつまぶし", keyword: "海鮮丼", desc: "最後はお出汁
+        { luck: "中吉", food: "濃厚こってりラーメン", keyword: "ラーメン", desc: "スープが体に染み渡る一杯。", add: "味付け玉子" },
+        { luck: "吉", food: "ジューシーな唐揚げ定食", keyword: "唐揚げ", desc: "揚げたてにレモンを搾って！", add: "ポテトサラダ" }
+    ];
+    const conveniMenus = [
+        { luck: "大吉", food: "カツカレー", keyword: "コンビニ", desc: "勝負の日はカツで決まり！", add: "飲むヨーグルト" },
+        { luck: "吉", food: "親子丼", keyword: "コンビニ", desc: "出汁の旨味でホッとする時間を。", add: "お漬物" }
+    ];
+
+    function setMode(mode) {
+        currentMode = mode;
+        document.getElementById('normal-btn').classList.toggle('active-mode', mode === 'normal');
+        document.getElementById('conveni-btn').classList.toggle('active-mode', mode === 'conveni');
+        reset();
+    }
+
+    function draw() {
+        const box = document.getElementById('omikuji-box');
+        box.classList.add('shake');
+        setTimeout(() => {
+            box.classList.remove('shake');
+            const list = currentMode === 'normal' ? normalMenus : conveniMenus;
+            const res = list[Math.floor(Math.random() * list.length)];
+            document.getElementById('luck').innerText = `【${res.luck}】`;
+            document.getElementById('food').innerText = res.food;
+            document.getElementById('desc').innerText = res.desc;
+            document.getElementById('add-on').innerText = res.add;
+            
+            // 地図検索URLの修正
+            const searchKeyword = currentMode === 'conveni' ? "コンビニ" : "近くの" + res.keyword;
+            document.getElementById('map-link').href = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(searchKeyword);
+            
+            document.getElementById('result-area').style.display = 'block';
+            box.style.display = 'none';
+            document.getElementById('hint').style.display = 'none';
+        }, 800);
+    }
+
+    function reset() {
+        document.getElementById('result-area').style.display = 'none';
+        document.getElementById('omikuji-box').style.display = 'block';
+        document.getElementById('hint').style.display = 'block';
+    }
+</script>
+</body>
+</html>
