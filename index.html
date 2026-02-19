@@ -3,137 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ひるめしえらんで - 今日のランチ、おみくじで決めよう</title>
-    <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700&family=Shippori+Mincho&display=swap" rel="stylesheet">
+    <title>ひるめしえらんで | 毎日のランチを楽しく決める</title>
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&family=Shippori+Mincho:wght@700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-red: #d9534f;
-            --bg-cream: #f9f1e6;
-            --text-black: #333;
-            --gold: #e67e22;
+            --primary-red: #e63946;    /* 鮮やかな赤 */
+            --sub-blue: #457b9d;       /* 爽やかな青 */
+            --accent-yellow: #ffb703;  /* 楽しげな黄色 */
+            --bg-cream: #fffaf0;       /* 柔らかな生成り */
+            --text-dark: #2b2d42;
         }
         body {
             font-family: 'Zen Maru Gothic', sans-serif;
             margin: 0;
             background-color: var(--bg-cream);
-            color: var(--text-black);
-            line-height: 1.8;
+            color: var(--text-dark);
+            line-height: 1.7;
         }
-        /* 1. ヒーローセクション */
+
+        /* 1. ヒーローセクション：インパクト重視 */
         .hero {
-            padding: 80px 20px;
-            background: white;
-            border-bottom: 8px solid var(--primary-red);
-            position: relative;
+            padding: 100px 20px;
+            background: linear-gradient(135deg, #fff 0%, var(--bg-cream) 100%);
+            border-bottom: 10px solid var(--primary-red);
+            text-align: center;
         }
         .hero h1 {
             font-family: 'Shippori Mincho', serif;
-            font-size: 3rem;
+            font-size: 3.5rem;
             color: var(--primary-red);
             margin: 0;
-            letter-spacing: 0.2em;
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.05);
         }
         .hero p {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--sub-blue);
             margin: 20px 0;
         }
         .play-btn {
             display: inline-block;
             background: var(--primary-red);
             color: white;
-            padding: 20px 50px;
-            border-radius: 50px;
+            padding: 22px 60px;
+            border-radius: 100px;
             text-decoration: none;
-            font-weight: bold;
-            font-size: 1.3rem;
-            box-shadow: 0 5px 15px rgba(217, 83, 79, 0.4);
-            transition: 0.3s;
+            font-weight: 900;
+            font-size: 1.5rem;
+            box-shadow: 0 8px 0px #b91d1d; /* 立体的なボタン */
+            transition: 0.2s;
+            margin-top: 20px;
         }
-        .play-btn:hover { transform: scale(1.05); }
+        .play-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 4px 0px #b91d1d;
+        }
 
-        /* 2. 3つの特徴 */
+        /* 2. 特徴セクション：カラフルなカード */
         .features {
-            padding: 60px 20px;
+            padding: 80px 20px;
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 20px;
+            gap: 25px;
         }
         .feature-card {
             background: white;
-            padding: 30px;
-            border-radius: 20px;
-            width: 280px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            border-top: 4px solid var(--gold);
-        }
-        .feature-card h3 { color: var(--gold); }
-
-        /* 3. スクリーンショット風エリア */
-        .screenshot-area {
-            background: #fff;
-            padding: 40px 0;
-            margin: 40px 0;
-        }
-        .mock-app {
-            width: 250px;
-            height: 450px;
-            border: 8px solid #333;
+            padding: 35px;
             border-radius: 30px;
-            margin: 0 auto;
-            background: var(--bg-cream);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 5rem;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            width: 280px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+            transition: 0.3s;
         }
+        .feature-card:hover { transform: translateY(-10px); }
+        .feature-card h3 { 
+            font-size: 1.4rem; 
+            margin-bottom: 15px;
+        }
+        /* カードごとに色を変える */
+        .f1 { border-top: 8px solid var(--primary-red); color: var(--primary-red); }
+        .f2 { border-top: 8px solid var(--sub-blue); color: var(--sub-blue); }
+        .f3 { border-top: 8px solid var(--accent-yellow); color: var(--accent-yellow); }
 
-        /* 4. 使い方 */
+        /* 4. 使い方：ステップ形式 */
         .how-to {
-            padding: 60px 20px;
-            background: var(--primary-red);
+            padding: 80px 20px;
+            background: var(--text-dark);
             color: white;
+            clip-path: polygon(0 5%, 100% 0, 100% 95%, 0 100%); /* 斜めの背景 */
         }
         .steps {
-            list-style: none;
-            padding: 0;
             max-width: 600px;
             margin: 0 auto;
             text-align: left;
         }
-        .steps li {
-            margin-bottom: 20px;
-            font-size: 1.1rem;
+        .step-item {
             display: flex;
             align-items: center;
+            margin-bottom: 30px;
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 20px;
         }
-        .steps span {
-            background: white;
-            color: var(--primary-red);
-            width: 30px;
-            height: 30px;
+        .step-num {
+            background: var(--accent-yellow);
+            color: var(--text-dark);
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            display: inline-flex;
+            display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: 15px;
-            font-weight: bold;
+            font-weight: 900;
+            margin-right: 20px;
+            flex-shrink: 0;
         }
 
         /* 5. 開発者メッセージ */
         .footer {
-            padding: 60px 20px;
-            font-size: 0.9rem;
+            padding: 100px 20px 40px;
+            background: var(--bg-cream);
         }
-        .dev-msg {
-            max-width: 500px;
-            margin: 0 auto 40px;
-            font-style: italic;
+        .dev-card {
+            background: white;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 40px;
+            border-radius: 40px;
+            border: 2px dashed var(--sub-blue);
         }
 
         @media (max-width: 600px) {
-            .hero h1 { font-size: 2rem; }
+            .hero h1 { font-size: 2.2rem; }
+            .play-btn { width: 80%; padding: 20px; }
         }
     </style>
 </head>
@@ -141,45 +143,50 @@
 
     <section class="hero">
         <h1>ひるめしえらんで</h1>
-        <p>「何食べよう？」の迷いを、<br>一振りの運命に変える。</p>
-        <a href="app.html" class="play-btn">今すぐおみくじを振る</a>
+        <p>「何食べよう？」の悩みを、一振りの運命に変える。</p>
+        <a href="app.html" class="play-btn">おみくじを振る！</a>
     </section>
 
-    <section class="features">
-        <div class="feature-card">
-            <h3>迷う時間をゼロに</h3>
-            <p>ランチ選びの時間を短縮し、お昼休みをもっと長く、有意義に。</p>
+    <div class="features">
+        <div class="feature-card f1">
+            <h3>迷う時間をゼロに！</h3>
+            <p style="color: #555;">ランチ選びの時間を短縮。お昼休みをもっと長く、ゆっくり楽しめます。</p>
         </div>
-        <div class="feature-card">
-            <h3>新しい味との出会い</h3>
-            <p>普段選ばないメニューを引くことで、あなたの食生活に刺激を。</p>
+        <div class="feature-card f2">
+            <h3>新しい味と出会う！</h3>
+            <p style="color: #555;">普段選ばないメニューに挑戦。マンネリ化した食生活に刺激をプラス！</p>
         </div>
-        <div class="feature-card">
-            <h3>便利な地図連携</h3>
-            <p>引いた瞬間に近くの店を検索。スムーズに目的地へ向かえます。</p>
+        <div class="feature-card f3">
+            <h3>地図で直行！</h3>
+            <p style="color: #555;">おみくじを引いたらボタンひとつで近所のお店を検索。迷わずお店へGo！</p>
         </div>
-    </section>
-
-    <section class="screenshot-area">
-        <h2>遊んでいる画面</h2>
-        <div class="mock-app">🍱</div>
-        <p style="margin-top:20px; color:#888;">シンプルで使いやすい、和風のデザイン</p>
-    </section>
+    </div>
 
     <section class="how-to">
-        <h2>使いかたは３ステップ！</h2>
-        <ul class="steps">
-            <li><span>1</span> モード（お店 or コンビニ）を選ぶ</li>
-            <li><span>2</span> 弁当箱をタップしてシャカシャカ振る</li>
-            <li><span>3</span> 出てきた店にそのまま出発！</li>
-        </ul>
+        <h2 style="font-size: 2rem; margin-bottom: 40px;">使いかたは、超かんたん！</h2>
+        <div class="steps">
+            <div class="step-item">
+                <div class="step-num">1</div>
+                <div>モード（お店 または コンビニ）を選ぶ</div>
+            </div>
+            <div class="step-item">
+                <div class="step-num">2</div>
+                <div>お弁当箱をタップしてシャカシャカ振る！</div>
+            </div>
+            <div class="step-item">
+                <div class="step-num">3</div>
+                <div>表示されたお店へ出発！</div>
+            </div>
+        </div>
     </section>
 
     <footer class="footer">
-        <div class="dev-msg">
-            「毎日のお昼ごはんが、少しでも楽しく、ワクワクするものになれば」という思いから開発しました。ぜひあなたの相棒にしてください。
+        <div class="dev-card">
+            <h3 style="color: var(--sub-blue);">開発者からのメッセージ</h3>
+            <p>「毎日のお昼ごはんが、少しでも楽しく、ワクワクするものになれば」という思いで開発しました。あなたのランチタイムが最高のものになりますように！</p>
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 30px 0;">
+            <p style="font-size: 0.8rem; color: #aaa;">&copy; 2026 ひるめしえらんで 製作委員会</p>
         </div>
-        <p>&copy; 2026 ひるめしえらんで 製作委員会</p>
     </footer>
 
 </body>
