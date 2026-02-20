@@ -3,191 +3,166 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ひるめしえらんで | 毎日のランチを楽しく決める</title>
-    <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&family=Shippori+Mincho:wght@700&display=swap" rel="stylesheet">
+    <title>アプリ御品書き | My Collection</title>
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-red: #e63946;    /* 鮮やかな赤 */
-            --sub-blue: #457b9d;       /* 爽やかな青 */
-            --accent-yellow: #ffb703;  /* 楽しげな黄色 */
-            --bg-cream: #fffaf0;       /* 柔らかな生成り */
-            --text-dark: #2b2d42;
+            --main-red: #d9534f;
+            --bg-cream: #f9f1e6;
+            --card-white: #ffffff;
         }
         body {
             font-family: 'Zen Maru Gothic', sans-serif;
             margin: 0;
             background-color: var(--bg-cream);
-            color: var(--text-dark);
-            line-height: 1.7;
-        }
-
-        /* 1. ヒーローセクション：インパクト重視 */
-        .hero {
-            padding: 100px 20px;
-            background: linear-gradient(135deg, #fff 0%, var(--bg-cream) 100%);
-            border-bottom: 10px solid var(--primary-red);
+            color: #333;
             text-align: center;
         }
-        .hero h1 {
-            font-family: 'Shippori Mincho', serif;
-            font-size: 3.5rem;
-            color: var(--primary-red);
-            margin: 0;
-            text-shadow: 2px 2px 0px rgba(0,0,0,0.05);
+        header {
+            padding: 50px 20px;
+            background: white;
+            border-bottom: 5px solid var(--main-red);
         }
-        .hero p {
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: var(--sub-blue);
-            margin: 20px 0;
-        }
-        .play-btn {
-            display: inline-block;
-            background: var(--primary-red);
-            color: white;
-            padding: 22px 60px;
-            border-radius: 100px;
-            text-decoration: none;
-            font-weight: 900;
-            font-size: 1.5rem;
-            box-shadow: 0 8px 0px #b91d1d; /* 立体的なボタン */
-            transition: 0.2s;
-            margin-top: 20px;
-        }
-        .play-btn:active {
-            transform: translateY(4px);
-            box-shadow: 0 4px 0px #b91d1d;
-        }
-
-        /* 2. 特徴セクション：カラフルなカード */
-        .features {
-            padding: 80px 20px;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
+        header h1 { font-size: 2.2rem; color: var(--main-red); margin: 0; }
+        
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 25px;
+            padding: 0 20px;
         }
-        .feature-card {
-            background: white;
-            padding: 35px;
-            border-radius: 30px;
-            width: 280px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+
+        .app-card {
+            background: var(--card-white);
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
             transition: 0.3s;
-        }
-        .feature-card:hover { transform: translateY(-10px); }
-        .feature-card h3 { 
-            font-size: 1.4rem; 
-            margin-bottom: 15px;
-        }
-        /* カードごとに色を変える */
-        .f1 { border-top: 8px solid var(--primary-red); color: var(--primary-red); }
-        .f2 { border-top: 8px solid var(--sub-blue); color: var(--sub-blue); }
-        .f3 { border-top: 8px solid var(--accent-yellow); color: var(--accent-yellow); }
-
-        /* 4. 使い方：ステップ形式 */
-        .how-to {
-            padding: 80px 20px;
-            background: var(--text-dark);
-            color: white;
-            clip-path: polygon(0 5%, 100% 0, 100% 95%, 0 100%); /* 斜めの背景 */
-        }
-        .steps {
-            max-width: 600px;
-            margin: 0 auto;
-            text-align: left;
-        }
-        .step-item {
             display: flex;
-            align-items: center;
-            margin-bottom: 30px;
-            background: rgba(255,255,255,0.1);
-            padding: 20px;
-            border-radius: 20px;
+            flex-direction: column;
         }
-        .step-num {
-            background: var(--accent-yellow);
-            color: var(--text-dark);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
+        .app-card:hover { transform: translateY(-8px); }
+        
+        /* アイコン画像を表示するエリア */
+        .app-icon-wrap {
+            padding: 30px 0;
+            background: #fffcf0;
             display: flex;
-            align-items: center;
             justify-content: center;
-            font-weight: 900;
-            margin-right: 20px;
-            flex-shrink: 0;
+            align-items: center;
         }
+        .app-icon-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 22px; /* スマホアプリのような角丸 */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            object-fit: cover;
+        }
+        
+        .app-info { padding: 20px; flex-grow: 1; }
+        .app-info h2 { margin: 0 0 10px; color: var(--main-red); font-size: 1.4rem; }
+        .app-info p { font-size: 0.9rem; color: #666; line-height: 1.5; }
 
-        /* 5. 開発者メッセージ */
-        .footer {
-            padding: 100px 20px 40px;
-            background: var(--bg-cream);
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            padding: 15px 20px 20px;
         }
-        .dev-card {
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: 0.2s;
+        }
+        .btn-detail { background: #f0f0f0; color: #555; }
+        .btn-play { background: var(--main-red); color: white; }
+        
+        /* 詳細モーダル */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            align-items: center; justify-content: center;
+            z-index: 100;
+        }
+        .modal-content {
             background: white;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 40px;
-            border-radius: 40px;
-            border: 2px dashed var(--sub-blue);
-        }
-
-        @media (max-width: 600px) {
-            .hero h1 { font-size: 2.2rem; }
-            .play-btn { width: 80%; padding: 20px; }
+            padding: 30px;
+            border-radius: 25px;
+            max-width: 450px;
+            width: 85%;
+            text-align: left;
         }
     </style>
 </head>
 <body>
 
-    <section class="hero">
-        <h1>ひるめしえらんで</h1>
-        <p>「何食べよう？」の悩みを、一振りの運命に変える。</p>
-        <a href="app.html" class="play-btn">おみくじを振る！</a>
-    </section>
+<header>
+    <h1>アプリの御品書き</h1>
+    <p>手作りアプリを並べてみました</p>
+</header>
 
-    <div class="features">
-        <div class="feature-card f1">
-            <h3>迷う時間をゼロに！</h3>
-            <p style="color: #555;">ランチ選びの時間を短縮。お昼休みをもっと長く、ゆっくり楽しめます。</p>
+<div class="container">
+    <div class="app-card">
+        <div class="app-icon-wrap">
+            <img src="icon.png" alt="ひるめしえらんで" class="app-icon-img">
         </div>
-        <div class="feature-card f2">
-            <h3>新しい味と出会う！</h3>
-            <p style="color: #555;">普段選ばないメニューに挑戦。マンネリ化した食生活に刺激をプラス！</p>
+        <div class="app-info">
+            <h2>ひるめしえらんで</h2>
+            <p>今日のランチを「おみくじ」で楽しく決定！近くのお店もすぐ探せます。</p>
         </div>
-        <div class="feature-card f3">
-            <h3>地図で直行！</h3>
-            <p style="color: #555;">おみくじを引いたらボタンひとつで近所のお店を検索。迷わずお店へGo！</p>
+        <div class="btn-group">
+            <a href="#" class="btn btn-detail" onclick="showDetail('lunch')">説明を見る</a>
+            <a href="app.html" class="btn btn-play">あそぶ</a>
         </div>
     </div>
 
-    <section class="how-to">
-        <h2 style="font-size: 2rem; margin-bottom: 40px;">使いかたは、超かんたん！</h2>
-        <div class="steps">
-            <div class="step-item">
-                <div class="step-num">1</div>
-                <div>モード（お店 または コンビニ）を選ぶ</div>
-            </div>
-            <div class="step-item">
-                <div class="step-num">2</div>
-                <div>お弁当箱をタップしてシャカシャカ振る！</div>
-            </div>
-            <div class="step-item">
-                <div class="step-num">3</div>
-                <div>表示されたお店へ出発！</div>
-            </div>
+    <div class="app-card" style="opacity: 0.6;">
+        <div class="app-icon-wrap">
+            <div style="font-size: 50px; color: #ccc;">⏳</div>
         </div>
-    </section>
+        <div class="app-info">
+            <h2>制作中...</h2>
+            <p>次回の新作アプリをお楽しみに！</p>
+        </div>
+        <div class="btn-group">
+            <a href="#" class="btn btn-detail" style="pointer-events: none;">???</a>
+        </div>
+    </div>
+</div>
 
-    <footer class="footer">
-        <div class="dev-card">
-            <h3 style="color: var(--sub-blue);">開発者からのメッセージ</h3>
-            <p>「毎日のお昼ごはんが、少しでも楽しく、ワクワクするものになれば」という思いで開発しました。あなたのランチタイムが最高のものになりますように！</p>
-            <hr style="border: 0; border-top: 1px solid #eee; margin: 30px 0;">
-            <p style="font-size: 0.8rem; color: #aaa;">&copy; 2026 ひるめしえらんで 製作委員会</p>
-        </div>
-    </footer>
+<div id="detailModal" class="modal" onclick="closeDetail()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <h2 id="modalTitle" style="color: var(--main-red); margin-top:0;"></h2>
+        <p id="modalDesc" style="white-space: pre-wrap;"></p>
+        <button class="btn btn-detail" style="width: 100%; margin-top: 15px;" onclick="closeDetail()">閉じる</button>
+    </div>
+</div>
+
+<script>
+    const details = {
+        lunch: {
+            title: "ひるめしえらんで",
+            desc: "ランチ選びに迷う時間を「ワクワク」に変えるアプリです。\n\n【おすすめの使い方】\n・出社時や移動中にシャカシャカ振る\n・コンビニで何を買うか迷ったときに振る\n・決まったらそのまま「ちかくのお店をさがす」ボタンでGo！"
+        }
+    };
+
+    function showDetail(id) {
+        document.getElementById('modalTitle').innerText = details[id].title;
+        document.getElementById('modalDesc').innerText = details[id].desc;
+        document.getElementById('detailModal').style.display = 'flex';
+    }
+
+    function closeDetail() {
+        document.getElementById('detailModal').style.display = 'none';
+    }
+</script>
 
 </body>
 </html>
