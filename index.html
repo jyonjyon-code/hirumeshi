@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="apple-touch-icon" href="nekota.png">
+    <meta name="apple-mobile-web-app-title" content="ねこたスタジオ">
+    
     <title>アプリ御品書き | ねこた公式</title>
     <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -27,8 +31,10 @@
         }
         header h1 { font-size: 2.2rem; color: var(--main-red); margin: 0; }
         
+        /* 流れる文字（マーキー） */
         .news-bar { background: #333; color: #fff; padding: 5px 0; font-size: 14px; }
 
+        /* アクセスカウンター風 */
         .counter-section { margin: 20px 0; font-family: 'Courier New', monospace; }
         .counter-img { background: #000; color: #0f0; padding: 5px 15px; border-radius: 5px; font-size: 20px; display: inline-block; border: 2px solid #555; letter-spacing: 2px; }
 
@@ -41,6 +47,7 @@
             padding: 0 20px;
         }
 
+        /* アプリカード */
         .app-card {
             background: var(--card-white);
             border-radius: 25px;
@@ -51,7 +58,6 @@
         }
         .app-card:hover { transform: translateY(-8px); }
         .app-icon-wrap { padding: 30px 0; background: #fffcf0; }
-        /* アプリロゴは icon.png */
         .app-icon-img { width: 100px; height: 100px; border-radius: 22px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); object-fit: cover; }
         
         .app-info { padding: 20px; }
@@ -59,6 +65,9 @@
         .btn { flex: 1; padding: 12px; border-radius: 12px; text-decoration: none; font-weight: bold; font-size: 0.9rem; text-align: center; }
         .btn-detail { background: #f0f0f0; color: #555; }
         .btn-play { background: var(--main-red); color: white; }
+
+        /* キリ番ボックス */
+        .kiriban-box { background: #fffbe6; border: 2px double #f0ad4e; padding: 15px; margin: 20px auto; max-width: 500px; width: 85%; font-size: 13px; line-height: 1.6; }
 
         /* 開発者紹介（ねこた） */
         .profile-section {
@@ -73,12 +82,9 @@
             text-align: left;
             border-left: 8px solid var(--main-red);
         }
-        /* 自分のアイコンは nekota.png */
         .profile-icon { width: 80px; height: 80px; border-radius: 50%; margin-right: 20px; border: 2px solid #eee; object-fit: cover; }
         .profile-text h3 { margin: 0; color: var(--main-red); }
         .profile-text p { font-size: 14px; margin: 5px 0 0; color: #666; line-height: 1.6; }
-
-        .kiriban-box { background: #fffbe6; border: 2px double #f0ad4e; padding: 15px; margin: 20px auto; max-width: 500px; width: 85%; font-size: 13px; }
 
         footer { background: white; padding: 30px 20px; border-top: 1px solid #eee; }
         .sns-links { margin-bottom: 15px; }
@@ -86,6 +92,7 @@
         .sns-links a:hover { color: #1DA1F2; }
         .copyright { font-size: 12px; color: #aaa; }
 
+        /* 詳細モーダル */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); align-items: center; justify-content: center; z-index: 100; }
         .modal-content { background: white; padding: 30px; border-radius: 25px; max-width: 450px; width: 85%; text-align: left; }
     </style>
@@ -98,7 +105,7 @@
 </header>
 
 <div class="news-bar">
-    <marquee scrollamount="5">【NEWS】ねこたスタジオOPEN！新作「ひるめしえらんで」公開中！ キリ番報告はXまで！</marquee>
+    <marquee scrollamount="5">【NEWS】ねこたスタジオ始動！新作「ひるめしえらんで」公開中！ キリ番踏んだらXまで！</marquee>
 </div>
 
 <div class="counter-section">
@@ -117,7 +124,7 @@
             <p>今日のランチを楽しく決めるおみくじアプリ。地図検索もバッチリ！</p>
         </div>
         <div class="btn-group">
-            <a href="#" class="btn btn-detail" onclick="showDetail('lunch')">説明</a>
+            <a href="#" class="btn btn-detail" onclick="showDetail('lunch')">説明を見る</a>
             <a href="app.html" class="btn btn-play">あそぶ</a>
         </div>
     </div>
@@ -125,7 +132,8 @@
 
 <div class="kiriban-box">
     <strong>✨ キリ番報告のお願い ✨</strong><br>
-    キリ番を踏んだ方は、下のXリンクからご報告ください！
+    100, 500, 1000などキリのいい番号を踏んだ方は、<br>
+    下のXリンクからご報告ください！踏み逃げ禁止🐾
 </div>
 
 <div class="profile-section">
@@ -133,15 +141,15 @@
     <div class="profile-text">
         <h3>開発者：ねこた</h3>
         <p>
-            ゆるいアプリを作っています。<br>
-            最新情報はX（Twitter）で発信中！
+            ゆるくてちょっと便利なアプリを制作中。<br>
+            最新情報や制作裏話はXで発信しています🐾
         </p>
     </div>
 </div>
 
 <footer>
     <div class="sns-links">
-        <a href="https://x.com/necotatu2" target="_blank" title="X (Twitter)"><i class="fa-brands fa-x-twitter"></i></a>
+        <a href="https://x.com/あなたの新ID" target="_blank" title="X (Twitter)"><i class="fa-brands fa-x-twitter"></i></a>
     </div>
     <div class="copyright">&copy; 2026 ねこたスタジオ</div>
 </footer>
@@ -158,7 +166,7 @@
     const details = {
         lunch: {
             title: "ひるめしえらんで",
-            desc: "ランチ選びを楽しくするおみくじアプリです。\n\n・「みせ」か「コンビニ」か選べます。\n・出た結果からそのまま地図で近くの店を探せます。"
+            desc: "【遊び方】\n1.「あそぶ」ボタンを押す\n2.お弁当箱をタップして引く\n3.出たメニューからそのまま地図検索！\n\nスマホの「ホーム画面に追加」しておくと毎日便利に使えます🐾"
         }
     };
     function showDetail(id) {
