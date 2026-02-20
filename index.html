@@ -3,13 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>アプリ御品書き | My Collection</title>
+    <title>アプリ御品書き | ねこたつ公式</title>
     <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
             --main-red: #d9534f;
             --bg-cream: #f9f1e6;
             --card-white: #ffffff;
+            --sns-color: #555;
         }
         body {
             font-family: 'Zen Maru Gothic', sans-serif;
@@ -19,15 +21,22 @@
             text-align: center;
         }
         header {
-            padding: 50px 20px;
+            padding: 40px 20px;
             background: white;
             border-bottom: 5px solid var(--main-red);
         }
         header h1 { font-size: 2.2rem; color: var(--main-red); margin: 0; }
         
+        /* マーキー */
+        .news-bar { background: #333; color: #fff; padding: 5px 0; font-size: 14px; }
+
+        /* カウンター */
+        .counter-section { margin: 20px 0; font-family: 'Courier New', monospace; }
+        .counter-img { background: #000; color: #0f0; padding: 5px 15px; border-radius: 5px; font-size: 20px; display: inline-block; border: 2px solid #555; letter-spacing: 2px; }
+
         .container {
             max-width: 1000px;
-            margin: 40px auto;
+            margin: 20px auto;
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 25px;
@@ -40,102 +49,103 @@
             overflow: hidden;
             box-shadow: 0 8px 20px rgba(0,0,0,0.06);
             transition: 0.3s;
-            display: flex;
-            flex-direction: column;
+            border: 1px solid #eee;
         }
         .app-card:hover { transform: translateY(-8px); }
-        
-        /* アイコン画像を表示するエリア */
-        .app-icon-wrap {
-            padding: 30px 0;
-            background: #fffcf0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .app-icon-img {
-            width: 100px;
-            height: 100px;
-            border-radius: 22px; /* スマホアプリのような角丸 */
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            object-fit: cover;
-        }
-        
-        .app-info { padding: 20px; flex-grow: 1; }
-        .app-info h2 { margin: 0 0 10px; color: var(--main-red); font-size: 1.4rem; }
-        .app-info p { font-size: 0.9rem; color: #666; line-height: 1.5; }
-
-        .btn-group {
-            display: flex;
-            gap: 10px;
-            padding: 15px 20px 20px;
-        }
-        .btn {
-            flex: 1;
-            padding: 12px;
-            border-radius: 12px;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 0.9rem;
-            transition: 0.2s;
-        }
+        .app-icon-wrap { padding: 30px 0; background: #fffcf0; }
+        .app-icon-img { width: 120px; height: 120px; border-radius: 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); object-fit: cover; }
+        .app-info { padding: 20px; }
+        .btn-group { display: flex; gap: 10px; padding: 0 20px 20px; }
+        .btn { flex: 1; padding: 12px; border-radius: 12px; text-decoration: none; font-weight: bold; font-size: 0.9rem; }
         .btn-detail { background: #f0f0f0; color: #555; }
         .btn-play { background: var(--main-red); color: white; }
-        
-        /* 詳細モーダル */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7);
-            align-items: center; justify-content: center;
-            z-index: 100;
-        }
-        .modal-content {
-            background: white;
+
+        /* 開発者紹介エリア（ねこたつ） */
+        .profile-section {
+            background: #fff;
+            max-width: 600px;
+            margin: 40px auto;
             padding: 30px;
-            border-radius: 25px;
-            max-width: 450px;
-            width: 85%;
+            border-radius: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
             text-align: left;
+            border-left: 8px solid var(--main-red);
         }
+        .profile-icon { width: 80px; height: 80px; border-radius: 50%; margin-right: 20px; border: 2px solid #eee; }
+        .profile-text h3 { margin: 0; color: var(--main-red); }
+        .profile-text p { font-size: 14px; margin: 5px 0 0; color: #666; line-height: 1.6; }
+
+        .kiriban-box { background: #fffbe6; border: 2px double #f0ad4e; padding: 15px; margin: 20px auto; max-width: 500px; width: 85%; font-size: 13px; }
+
+        footer { background: white; padding: 30px 20px; border-top: 1px solid #eee; }
+        .sns-links { margin-bottom: 15px; }
+        .sns-links a { color: var(--sns-color); font-size: 26px; margin: 0 15px; text-decoration: none; transition: 0.3s; }
+        .sns-links a:hover { color: var(--main-red); }
+        .copyright { font-size: 12px; color: #aaa; }
+
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); align-items: center; justify-content: center; z-index: 100; }
+        .modal-content { background: white; padding: 30px; border-radius: 25px; max-width: 450px; width: 85%; text-align: left; }
     </style>
 </head>
 <body>
 
 <header>
     <h1>アプリの御品書き</h1>
-    <p>手作りアプリを並べてみました</p>
+    <p>～ ねこたつスタジオへようこそ ～</p>
 </header>
+
+<div class="news-bar">
+    <marquee scrollamount="5">【NEWS】新作アプリ「ひるめしえらんで」公開中！ 相互リンク募集中！ キリ番報告待ってます！</marquee>
+</div>
+
+<div class="counter-section">
+    <p style="font-size: 12px; color: #888; margin-bottom: 5px;">あなたは...</p>
+    <div class="counter-img">00004649</div>
+    <p style="font-size: 12px; color: #888; margin-top: 5px;">人目の訪問者です</p>
+</div>
 
 <div class="container">
     <div class="app-card">
         <div class="app-icon-wrap">
-            <img src="icon.png" alt="ひるめしえらんで" class="app-icon-img">
+            <img src="nekotatsu.png" alt="ひるめしえらんで" class="app-icon-img">
         </div>
         <div class="app-info">
             <h2>ひるめしえらんで</h2>
-            <p>今日のランチを「おみくじ」で楽しく決定！近くのお店もすぐ探せます。</p>
+            <p>ランチ選びをワクワクさせるおみくじアプリ。地図連動で便利！</p>
         </div>
         <div class="btn-group">
             <a href="#" class="btn btn-detail" onclick="showDetail('lunch')">説明を見る</a>
             <a href="app.html" class="btn btn-play">あそぶ</a>
         </div>
     </div>
+</div>
 
-    <div class="app-card" style="opacity: 0.6;">
-        <div class="app-icon-wrap">
-            <div style="font-size: 50px; color: #ccc;">⏳</div>
-        </div>
-        <div class="app-info">
-            <h2>制作中...</h2>
-            <p>次回の新作アプリをお楽しみに！</p>
-        </div>
-        <div class="btn-group">
-            <a href="#" class="btn btn-detail" style="pointer-events: none;">???</a>
-        </div>
+<div class="kiriban-box">
+    <strong>✨ キリ番報告のお願い ✨</strong><br>
+    キリ番（100, 500, 1000...）を踏んだら、SNSで報告してください！
+</div>
+
+<div class="profile-section">
+    <img src="nekotatsu.png" alt="ねこたつ" class="profile-icon">
+    <div class="profile-text">
+        <h3>開発者：ねこたつ</h3>
+        <p>
+            「日常に少しの遊び心を」をテーマにアプリ制作中。<br>
+            このおみくじアプリが、あなたのランチタイムを少しでも楽しくできれば嬉しいです。
+        </p>
     </div>
 </div>
+
+<footer>
+    <div class="sns-links">
+        <a href="#" target="_blank"><i class="fa-brands fa-x-twitter"></i></a>
+        <a href="#" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+        <a href="#" target="_blank"><i class="fa-brands fa-github"></i></a>
+    </div>
+    <div class="copyright">&copy; 2026 ねこたつスタジオ / My App Studio</div>
+</footer>
 
 <div id="detailModal" class="modal" onclick="closeDetail()">
     <div class="modal-content" onclick="event.stopPropagation()">
@@ -149,19 +159,15 @@
     const details = {
         lunch: {
             title: "ひるめしえらんで",
-            desc: "ランチ選びに迷う時間を「ワクワク」に変えるアプリです。\n\n【おすすめの使い方】\n・出社時や移動中にシャカシャカ振る\n・コンビニで何を買うか迷ったときに振る\n・決まったらそのまま「ちかくのお店をさがす」ボタンでGo！"
+            desc: "【特徴】\n・和風おみくじ形式でメニューを提案\n・「みせをえらぶ」と「コンビニ」の2モード搭載\n・決定後はワンタップで近くの店を地図検索！"
         }
     };
-
     function showDetail(id) {
         document.getElementById('modalTitle').innerText = details[id].title;
         document.getElementById('modalDesc').innerText = details[id].desc;
         document.getElementById('detailModal').style.display = 'flex';
     }
-
-    function closeDetail() {
-        document.getElementById('detailModal').style.display = 'none';
-    }
+    function closeDetail() { document.getElementById('detailModal').style.display = 'none'; }
 </script>
 
 </body>
