@@ -14,6 +14,7 @@
     <style>
         :root {
             --main-red: #d9534f;
+            --main-blue: #5f27cd; /* 夜モード用 */
             --bg-cream: #f9f1e6;
             --card-white: #ffffff;
             --sns-color: #333;
@@ -72,20 +73,23 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.06);
             transition: 0.3s;
             border: 1px solid #eee;
+            display: flex;
+            flex-direction: column;
         }
         .app-card:hover { transform: translateY(-8px); }
         .app-icon-wrap { padding: 30px 0; background: #fffcf0; }
         .app-icon-img { width: 100px; height: 100px; border-radius: 22px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); object-fit: cover; }
         
-        .app-info { padding: 20px; }
+        .app-info { padding: 20px; flex-grow: 1; }
         .btn-group { display: flex; gap: 10px; padding: 0 20px 20px; }
         .btn { flex: 1; padding: 12px; border-radius: 12px; text-decoration: none; font-weight: bold; font-size: 0.9rem; text-align: center; }
         .btn-detail { background: #f0f0f0; color: #555; }
         .btn-play { background: var(--main-red); color: white; }
+        .btn-play.dinner { background: var(--main-blue); }
 
         .btn-share {
-            background: #000; color: #fff; margin: 0 auto 20px;
-            display: block; width: 80%; font-size: 0.8rem; border-radius: 12px; padding: 10px; text-decoration: none;
+            background: #000; color: #fff; margin: 0 20px 20px;
+            display: block; font-size: 0.8rem; border-radius: 12px; padding: 10px; text-decoration: none;
         }
 
         .kiriban-box { background: #fffbe6; border: 2px double #f0ad4e; padding: 15px; margin: 20px auto; max-width: 500px; width: 85%; font-size: 13px; line-height: 1.6; }
@@ -113,7 +117,7 @@
 </header>
 
 <div class="news-bar">
-    <marquee scrollamount="5">【NEWS】ねこたスタジオ始動！新作「ひるめしえらんで」公開中！ キリ番報告はXまで！</marquee>
+    <marquee scrollamount="5">【NEWS】ねこたスタジオ始動！新作「ゆうはんなにしよ」公開！ キリ番報告はXまで！</marquee>
 </div>
 
 <div class="counter-section">
@@ -145,8 +149,25 @@
             <a href="#" class="btn btn-detail" onclick="showDetail('lunch')">説明</a>
             <a href="app.html" class="btn btn-play">あそぶ</a>
         </div>
-        <a href="https://twitter.com/share?url=https://jyonjyon-code.github.io/hirumeshi/&text=今日のランチを占うアプリ「ひるめしえらんで」で遊んだよ！🐱 @necotatu2&hashtags=ねこたスタジオ,ランチ" target="_blank" class="btn btn-share">
-            <i class="fa-brands fa-x-twitter"></i> 気になったら共有してね
+        <a href="https://twitter.com/share?url=https://jyonjyon-code.github.io/hirumeshi/app.html&text=今日のランチを占うアプリ「ひるめしえらんで」で遊んだよ！🐱 @necotatu2&hashtags=ねこたスタジオ,ランチ" target="_blank" class="btn btn-share">
+            <i class="fa-brands fa-x-twitter"></i> 共有する
+        </a>
+    </div>
+
+    <div class="app-card">
+        <div class="app-icon-wrap" style="background: #f0f0ff;">
+            <div style="font-size: 60px; line-height: 100px;">🌙</div>
+        </div>
+        <div class="app-info">
+            <h2>ゆうはんなにしよ</h2>
+            <p>自炊・お惣菜・外食の3モードから今夜のメニューを決定！</p>
+        </div>
+        <div class="btn-group">
+            <a href="#" class="btn btn-detail" onclick="showDetail('dinner')">説明</a>
+            <a href="yuhan.html" class="btn btn-play dinner">あそぶ</a>
+        </div>
+        <a href="https://twitter.com/share?url=https://jyonjyon-code.github.io/hirumeshi/yuhan.html&text=夕飯に迷ったらこれ！「ゆうはんなにしよ」でメニューを決めたよ！🌙 @necotatu2&hashtags=ねこたスタジオ,夕飯" target="_blank" class="btn btn-share">
+            <i class="fa-brands fa-x-twitter"></i> 共有する
         </a>
     </div>
 </div>
@@ -181,21 +202,18 @@
 </div>
 
 <script>
-    // カウンター機能（CountAPI）
+    // カウンター機能
     async function initCounter() {
         const namespace = "necotatu2-studio";
         const key = "visit-count";
 
         try {
-            // アクセス数を1増やす
             const response = await fetch(`https://api.countapi.xyz/hit/${namespace}/${key}`);
             const data = await response.json();
             const current = data.value;
 
-            // カウンター表示更新
             document.getElementById('current-count').innerText = String(current).padStart(8, '0');
 
-            // キリ番メーター計算（100人ごと）
             const interval = 100;
             const nextKiriban = Math.ceil((current + 1) / interval) * interval;
             const remain = nextKiriban - current;
@@ -206,7 +224,7 @@
             document.getElementById('meter-bar').style.width = progress + "%";
 
         } catch (e) {
-            document.getElementById('current-count').innerText = "00001234"; // 失敗時のダミー
+            document.getElementById('current-count').innerText = "00001234";
             console.error("Counter Error:", e);
         }
     }
@@ -215,8 +233,13 @@
         lunch: {
             title: "ひるめしえらんで",
             desc: "【遊び方】\n1.「あそぶ」ボタンを押す\n2.お弁当箱をタップしておみくじを引く\n3.そのまま地図で店を探せます。🐱"
+        },
+        dinner: {
+            title: "ゆうはんなにしよ",
+            desc: "【遊び方】\n1.自炊・お惣菜・外食のどれかを選択！\n2.やる気や気分に合わせてメニューを提案します。\n3.スーパーやお店の場所もすぐ調べられます。🌙"
         }
     };
+
     function showDetail(id) {
         document.getElementById('modalTitle').innerText = details[id].title;
         document.getElementById('modalDesc').innerText = details[id].desc;
