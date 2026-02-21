@@ -22,15 +22,15 @@
         .active-mode { background: #d9534f; color: white; }
         #result-area { display: none; background: #fffcf0; border: 2px dashed #f0ad4e; padding: 20px; border-radius: 15px; margin-top: 20px; animation: fadeIn 0.5s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .btn { background: #4285F4; color: white; border: none; padding: 15px 25px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; margin-top: 15px; font-size: 16px; width: 100%; box-sizing: border-box; }
+        
+        .btn { color: white; border: none; padding: 15px 25px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; margin-top: 15px; font-size: 16px; width: 100%; box-sizing: border-box; }
+        .btn-map { background: #4285F4; }
+        .btn-rakuten { background: #bf0000; }
+        .btn-retry { background: #f0ad4e; font-size: 14px; padding: 10px; }
+        
         .lucky-item { color: #e67e22; font-weight: bold; font-size: 0.95em; margin-top: 15px; background: #fff; border-radius: 10px; padding: 5px; }
         #hint { font-size: 14px; color: #888; margin-top: 10px; }
-        .ad-container { margin-top: 30px; padding: 15px; background: #f0f0f0; border-radius: 15px; border: 1px solid #ddd; }
-        .ad-label { font-size: 10px; color: #999; margin-bottom: 8px; text-align: left; }
-        
-        /* 戻るボタンのスタイル */
         .btn-back { background: #888; color: white; border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; margin-top: 25px; font-size: 14px; }
-        .btn-back:hover { background: #666; }
     </style>
 </head>
 <body>
@@ -51,23 +51,21 @@
         <p id="desc" style="font-size: 15px; color: #555; line-height: 1.6;"></p>
         <div class="lucky-item">✨ラッキー買い足し: <span id="add-on"></span></div>
         
-        <a id="map-link" class="btn" target="_blank" rel="noopener noreferrer">ちかくの店をさがす</a><br>
-        <button class="btn" style="background:#f0ad4e; margin-top:15px; font-size: 14px; padding: 10px;" onclick="reset()">もういちど ひく</button>
+        <a id="map-link" class="btn btn-map" target="_blank" rel="noopener noreferrer">ちかくの店をさがす</a>
+        
+        <a id="rakuten-link" class="btn btn-rakuten" target="_blank" rel="nofollow sponsored noopener">楽天でお取り寄せする</a>
 
-        <div class="ad-container">
-            <div class="ad-label">スポンサーリンク / 本日のおすすめ</div>
-            <div id="ad-content">
-                <a href="https://hb.afl.rakuten.co.jp/ichiba/5126d67f.820ff823.5126d680.2ad8273d/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Flifedrinkcompany%2Fzaosoda-500-48%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjY0eDY0IiwibmFtIjoxLCJuYW1wIjoicmlnaHQiLCJjb20iOjEsImcomcomaiOiJkb3duIiwicHJpY2UiOjEsImJvciI6MSwiY29sIjoxLCJiYnRuIjoxLCJwcm9kIjowLCJhbXAiOmZhbHNlfQ%3D%3D" target="_blank" rel="nofollow sponsored noopener"><img src="https://hbb.afl.rakuten.co.jp/hgb/5126d67f.820ff823.5126d680.2ad8273d/?me_id=1379776&item_id=10000022&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Flifedrinkcompany%2Fcabinet%2Fitem-soda%2Fozasoda%2Fproper%2Foza48_lychee.jpg%3F_ex%3D64x64&s=64x64&t=pict" border="0" style="margin:2px" alt="おすすめアイテム"></a>
-            </div>
-        </div>
+        <button class="btn btn-retry" onclick="reset()">もういちど ひく</button>
     </div>
 
-    <a href="index.html" class="btn-back">
-        <i class="fa-solid fa-house"></i> ねこたスタジオへ戻る
-    </a>
+    <br>
+    <a href="index.html" class="btn-back">ねこたスタジオへ戻る</a>
 </div>
 
 <script>
+    // 楽天アフィリエイトIDをセット
+    const RAKUTEN_AFID = "51366796.8818598a.51366797.ddbb51d0"; 
+
     let currentMode = 'normal';
 
     const normalMenus = [
@@ -78,20 +76,20 @@
         { luck: "大吉", food: "揚げたて天丼", keyword: "天丼", desc: "大きなエビが運気を上げます。", add: "小うどん" },
         { luck: "中吉", food: "濃厚こってりラーメン", keyword: "ラーメン", desc: "スープが体に染み渡る一杯。", add: "味付け玉子" },
         { luck: "中吉", food: "とろとろ親子丼", keyword: "親子丼", desc: "出汁の旨味でホッとする時間を。", add: "お漬物" },
-        { luck: "中吉", food: "パラパラ黄金チャーハン", keyword: "中華", desc: "強火で炒めたプロの味を。", add: "焼き餃子" },
-        { luck: "中吉", food: "本格ガパオライス", keyword: "タイ料理", desc: "バジルの香りが食欲をそそります。", add: "目玉焼き追加" },
+        { luck: "中吉", food: "パラパラ黄金チャーハン", keyword: "チャーハン", desc: "強火で炒めたプロの味を。", add: "焼き餃子" },
+        { luck: "中吉", food: "本格ガパオライス", keyword: "ガパオライス", desc: "バジルの香りが食欲をそそります。", add: "目玉焼き追加" },
         { luck: "吉", food: "ジューシー唐揚げ定食", keyword: "唐揚げ", desc: "揚げたてにレモンを搾って！", add: "ポテトサラダ" },
-        { luck: "吉", food: "生パスタのボロネーゼ", keyword: "イタリアン", desc: "モチモチ食感がクセになります。", add: "バゲット" },
+        { luck: "吉", food: "生パスタのボロネーゼ", keyword: "ボロネーゼ", desc: "モチモチ食感がクセになります。", add: "バゲット" },
         { luck: "末吉", food: "サッパリ冷やしうどん", keyword: "うどん", desc: "コシのある麺で軽やかに。", add: "ちくわ天" },
-        { luck: "末吉", food: "具だくさんサンドイッチ", keyword: "カフェ", desc: "片手で食べられる、午後への味方。", add: "野菜スープ" }
+        { luck: "末吉", food: "具だくさんサンドイッチ", keyword: "サンドイッチ", desc: "片手で食べられる、午後への味方。", add: "野菜スープ" }
     ];
 
     const conveniMenus = [
-        { luck: "大大吉", food: "高級幕の内 ＆ デザート", keyword: "コンビニ", desc: "コンビニ界の王族のようなセット。", add: "挽きたてコーヒー" },
-        { luck: "大吉", food: "カツカレー", keyword: "コンビニ", desc: "勝負の日はカツで決まり！", add: "飲むヨーグルト" },
-        { luck: "中吉", food: "明太クリームパスタ", keyword: "コンビニ", desc: "濃厚さと満足感を両立！", add: "サラダチキン" },
-        { luck: "吉", food: "おにぎりとカップ味噌汁", keyword: "コンビニ", desc: "シンプルイズベスト！", add: "半熟ゆで卵" },
-        { luck: "末吉", food: "新作カップヌードル", keyword: "コンビニ", desc: "新商品はとりあえず試すのが吉！", add: "食後のアイス" }
+        { luck: "大大吉", food: "高級幕の内 ＆ デザート", keyword: "お取り寄せ スイーツ", desc: "コンビニ界の王族のようなセット。", add: "挽きたてコーヒー" },
+        { luck: "大吉", food: "カツカレー", keyword: "レトルト カツカレー", desc: "勝負の日はカツで決まり！", add: "飲むヨーグルト" },
+        { luck: "中吉", food: "明太クリームパスタ", keyword: "明太パスタソース", desc: "濃厚さと満足感を両立！", add: "サラダチキン" },
+        { luck: "吉", food: "おにぎりとカップ味噌汁", keyword: "高級 味噌汁 セット", desc: "シンプルイズベスト！", add: "半熟ゆで卵" },
+        { luck: "末吉", food: "新作カップヌードル", keyword: "カップラーメン 詰め合わせ", desc: "新商品はとりあえず試すのが吉！", add: "食後のアイス" }
     ];
 
     function setMode(mode) {
@@ -116,8 +114,16 @@
             document.getElementById('desc').innerText = res.desc;
             document.getElementById('add-on').innerText = res.add;
             
-            const searchKeyword = currentMode === 'conveni' ? "近くのコンビニ" : "近くの" + res.keyword;
-            document.getElementById('map-link').href = "https://www.google.com/maps/search/" + encodeURIComponent(searchKeyword);
+            // Googleマップ
+            const mapKeyword = currentMode === 'conveni' ? "近くのコンビニ" : "近くの" + res.keyword;
+            document.getElementById('map-link').href = "https://www.google.com/maps/search/" + encodeURIComponent(mapKeyword);
+            
+            // 楽天アフィリエイト
+            const rakutenKeyword = res.keyword + (currentMode === 'normal' ? " お取り寄せ" : "");
+            const rakutenBase = "https://hb.afl.rakuten.co.jp/hgc/" + RAKUTEN_AFID + "/?pc=https%3A%2F%2Fsearch.rakuten.co.jp%2Fsearch%2Fmall%2F" + encodeURIComponent(rakutenKeyword) + "%2F";
+            
+            document.getElementById('rakuten-link').href = rakutenBase;
+            document.getElementById('rakuten-link').innerText = res.food + " を楽天で探す";
             
             document.getElementById('result-area').style.display = 'block';
             box.style.display = 'none';
