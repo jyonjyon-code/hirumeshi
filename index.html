@@ -1,45 +1,119 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6LK2VK60B1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-6LK2VK60B1');
+    </script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
     <link rel="apple-touch-icon" href="nekota.png">
     <meta name="apple-mobile-web-app-title" content="ねこたスタジオ">
+    
     <title>アプリ御品書き | ねこた公式</title>
     <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
     <style>
-        :root { --main-red: #d9534f; --bg-cream: #f9f1e6; --card-white: #ffffff; --sns-color: #333; }
-        body { font-family: 'Zen Maru Gothic', sans-serif; margin: 0; background-color: var(--bg-cream); color: #333; text-align: center; }
-        header { padding: 40px 20px; background: white; border-bottom: 5px solid var(--main-red); }
+        :root {
+            --main-red: #d9534f;
+            --bg-cream: #f9f1e6;
+            --card-white: #ffffff;
+            --sns-color: #333;
+        }
+        body {
+            font-family: 'Zen Maru Gothic', sans-serif;
+            margin: 0;
+            background-color: var(--bg-cream);
+            color: #333;
+            text-align: center;
+        }
+        header {
+            padding: 40px 20px;
+            background: white;
+            border-bottom: 5px solid var(--main-red);
+        }
         header h1 { font-size: 2.2rem; color: var(--main-red); margin: 0; }
+        
         .news-bar { background: #333; color: #fff; padding: 5px 0; font-size: 14px; }
+
+        /* カウンター表示 */
         .counter-section { margin: 20px 0; font-family: 'Courier New', monospace; }
         .counter-img { background: #000; color: #0f0; padding: 5px 15px; border-radius: 5px; font-size: 20px; display: inline-block; border: 2px solid #555; letter-spacing: 2px; min-width: 150px; }
-        .meter-container { max-width: 350px; margin: 10px auto 30px; background: #fff; border-radius: 15px; padding: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid #eee; }
+
+        /* キリ番メーター */
+        .meter-container {
+            max-width: 350px;
+            margin: 10px auto 30px;
+            background: #fff;
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            border: 1px solid #eee;
+        }
         .meter-label { font-size: 12px; margin-bottom: 8px; display: flex; justify-content: space-between; }
         .progress-bg { background: #eee; border-radius: 20px; height: 10px; width: 100%; overflow: hidden; }
-        .progress-bar { background: linear-gradient(90deg, #ff9a9e 0%, #d9534f 100%); height: 100%; width: 0%; transition: width 1.5s ease-out; }
+        .progress-bar { 
+            background: linear-gradient(90deg, #ff9a9e 0%, #d9534f 100%); 
+            height: 100%; width: 0%; transition: width 1.5s ease-out; 
+        }
         .next-kiriban { color: var(--main-red); font-weight: bold; }
-        .container { max-width: 1000px; margin: 20px auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; padding: 0 20px; }
-        .app-card { background: var(--card-white); border-radius: 25px; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.06); transition: 0.3s; border: 1px solid #eee; display: flex; flex-direction: column; }
+
+        .container {
+            max-width: 1000px;
+            margin: 20px auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            padding: 0 20px;
+        }
+
+        .app-card {
+            background: var(--card-white);
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+            transition: 0.3s;
+            border: 1px solid #eee;
+            display: flex;
+            flex-direction: column;
+        }
         .app-card:hover { transform: translateY(-8px); }
         .app-icon-wrap { padding: 30px 0; background: #fffcf0; }
         .app-icon-img { width: 100px; height: 100px; border-radius: 22px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); object-fit: cover; }
+        
         .app-info { padding: 20px; flex-grow: 1; }
         .app-info h2 { margin: 0 0 10px; font-size: 1.4rem; color: #333; }
         .app-info p { font-size: 0.9rem; color: #666; line-height: 1.5; }
+
         .btn-group { display: flex; gap: 10px; padding: 0 20px 15px; }
         .btn { flex: 1; padding: 12px; border-radius: 12px; text-decoration: none; font-weight: bold; font-size: 0.9rem; text-align: center; }
         .btn-detail { background: #f0f0f0; color: #555; }
         .btn-play { background: var(--main-red); color: white; }
-        .btn-share { background: #000; color: #fff; margin: 0 auto 20px; display: block; width: 85%; font-size: 0.8rem; border-radius: 12px; padding: 10px; text-decoration: none; }
+
+        .btn-share {
+            background: #000; color: #fff; margin: 0 auto 20px;
+            display: block; width: 85%; font-size: 0.8rem; border-radius: 12px; padding: 10px; text-decoration: none;
+        }
+
         .kiriban-box { background: #fffbe6; border: 2px double #f0ad4e; padding: 15px; margin: 20px auto; max-width: 500px; width: 85%; font-size: 13px; line-height: 1.6; }
-        .profile-section { background: #fff; max-width: 600px; margin: 40px auto; padding: 25px; border-radius: 30px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); display: flex; align-items: center; text-align: left; border-left: 8px solid var(--main-red); }
+
+        .profile-section {
+            background: #fff; max-width: 600px; margin: 40px auto; padding: 25px;
+            border-radius: 30px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            display: flex; align-items: center; text-align: left; border-left: 8px solid var(--main-red);
+        }
         .profile-icon { width: 80px; height: 80px; border-radius: 50%; margin-right: 20px; border: 2px solid #eee; object-fit: cover; }
         .profile-text h3 { margin: 0; color: var(--main-red); }
+
         footer { background: white; padding: 30px 20px; border-top: 1px solid #eee; }
         .sns-links a { color: var(--sns-color); font-size: 32px; margin: 0 15px; text-decoration: none; }
+
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); align-items: center; justify-content: center; z-index: 100; }
         .modal-content { background: white; padding: 30px; border-radius: 25px; max-width: 450px; width: 85%; text-align: left; }
     </style>
@@ -52,7 +126,7 @@
 </header>
 
 <div class="news-bar">
-    <marquee scrollamount="5">【NEWS】ねこたスタジオ始動！新作「ゆうはんなにしよ」公開中！🐱 キリ番報告はXまで！</marquee>
+    <marquee scrollamount="5">【NEWS】ねこたスタジオ始動！新作「ゆうはんなにしよ」公開中！🐱 GA4導入完了！</marquee>
 </div>
 
 <div class="counter-section">
@@ -82,11 +156,15 @@
             <a href="#" class="btn btn-detail" onclick="showDetail('lunch')">説明</a>
             <a href="app.html" class="btn btn-play">あそぶ</a>
         </div>
-        <a href="https://twitter.com/share?url=https://jyonjyon-code.github.io/hirumeshi/&text=今日のランチを占うアプリ「ひるめしえらんで」で遊んだよ！🐱 @necotatu2&hashtags=ねこたスタジオ,ランチ" target="_blank" class="btn btn-share"><i class="fa-brands fa-x-twitter"></i> 気になったら共有してね</a>
+        <a href="https://twitter.com/share?url=https://jyonjyon-code.github.io/hirumeshi/&text=今日のランチを占うアプリ「ひるめしえらんで」で遊んだよ！🐱 @necotatu2&hashtags=ねこたスタジオ,ランチ" target="_blank" class="btn btn-share">
+            <i class="fa-brands fa-x-twitter"></i> 気になったら共有してね
+        </a>
     </div>
 
     <div class="app-card">
-        <div class="app-icon-wrap" style="background: #1a1a2e;"><img src="myicon.png" alt="ゆうはんなにしよ" class="app-icon-img"></div>
+        <div class="app-icon-wrap" style="background: #1a1a2e;">
+            <img src="myicon.png" alt="ゆうはんなにしよ" class="app-icon-img">
+        </div>
         <div class="app-info">
             <h2>ゆうはんなにしよ</h2>
             <p>自炊・お惣菜・外食の3モードから、今夜のメニューを提案します！🐱</p>
@@ -95,7 +173,9 @@
             <a href="#" class="btn btn-detail" onclick="showDetail('dinner')">説明</a>
             <a href="yuhan.html" class="btn btn-play" style="background: #e94560;">あそぶ</a>
         </div>
-        <a href="https://twitter.com/share?url=https://jyonjyon-code.github.io/hirumeshi/&text=新作アプリ「ゆうはんなにしよ」で遊んだよ！🐱 今夜の献立決まった！ @necotatu2&hashtags=ねこたスタジオ,夜ごはん" target="_blank" class="btn btn-share"><i class="fa-brands fa-x-twitter"></i> 新作を共有する！</a>
+        <a href="https://twitter.com/share?url=https://jyonjyon-code.github.io/hirumeshi/&text=新作アプリ「ゆうはんなにしよ」で遊んだよ！🐱 今夜の献立決まった！ @necotatu2&hashtags=ねこたスタジオ,夜ごはん" target="_blank" class="btn btn-share">
+            <i class="fa-brands fa-x-twitter"></i> 新作を共有する！
+        </a>
     </div>
 </div>
 
@@ -127,22 +207,18 @@
 </div>
 
 <script>
-    // 安定して動作する「ローカルカウンター」
     function initCounter() {
         const counterEl = document.getElementById('current-count');
         const remainEl = document.getElementById('remain-count');
         const targetEl = document.getElementById('target-kiriban');
         const barEl = document.getElementById('meter-bar');
 
-        // 保存されたカウントを取得（なければ0から。初期値を350とかにしてもOK）
         let count = parseInt(localStorage.getItem('studio-visit-count')) || 0;
         count++; 
         localStorage.setItem('studio-visit-count', count);
 
-        // 表示を更新（8桁）
         counterEl.innerText = String(count).padStart(8, '0');
 
-        // キリ番計算
         const interval = 100;
         const nextKiriban = Math.ceil(count / interval) * interval || interval;
         const remain = nextKiriban - count;
