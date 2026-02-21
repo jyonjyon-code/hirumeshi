@@ -48,11 +48,14 @@
         .btn-super { background: linear-gradient(45deg, var(--accent-blue), #d39d38); color: white; }
         .btn-out { background: linear-gradient(45deg, var(--accent-green), #27ae60); color: white; }
         
-        .btn-map {
+        .btn-map, .btn-recipe {
             background: transparent; color: var(--accent-yellow);
             border: 2px solid var(--accent-yellow); margin-top: 15px;
-            display: none; font-size: 0.9rem;
+            display: none; font-size: 0.9rem; text-decoration: none;
+            padding: 12px; border-radius: 50px; font-weight: bold;
+            justify-content: center; align-items: center;
         }
+        .btn-recipe { color: #ff9f43; border-color: #ff9f43; }
 
         #result {
             margin-top: 25px; padding: 25px; border: 2px dashed var(--accent-yellow);
@@ -69,8 +72,16 @@
         #dish-name { font-size: 1.6rem; margin: 10px 0; color: #fff; }
         #dish-desc { font-size: 1rem; color: #ccc; line-height: 1.5; }
         
+        /* アフィリエイトエリア */
+        .ad-container {
+            margin-top: 40px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+        }
+        .ad-label { font-size: 10px; color: #666; margin-bottom: 8px; display: block; }
+        
         .back-link { margin-top: 30px; display: block; color: #a2a2d0; text-decoration: none; font-size: 0.8rem; }
-        .back-link:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -89,7 +100,17 @@
         <div id="mode-label" class="mode-tag"></div>
         <h2 id="dish-name"></h2>
         <p id="dish-desc"></p>
+        
+        <a id="recipe-button" class="btn-recipe" href="#" target="_blank">📖 レシピを検索する</a>
+        
         <button id="map-button" class="btn-map" onclick="findPlace()">📍 近くのお店を探す</button>
+    </div>
+
+    <div class="ad-container">
+        <span class="ad-label">SPONSORED</span>
+        <a href="https://amzn.to/YOUR_ID" target="_blank" style="color: var(--accent-blue); text-decoration: none; font-size: 14px;">
+            🛒 買い忘れはない？Amazonフレッシュで食材をチェック
+        </a>
     </div>
 
     <a href="index.html" class="back-link">← ねこたスタジオに戻る</a>
@@ -128,7 +149,7 @@
             { name: "牛丼屋", desc: "早くて旨くて安い。紅ショウガをたっぷり乗せて。" },
             { name: "イタリアン・パスタ屋", desc: "オシャレな気分でディナー。ピザもシェアしちゃう？" },
             { name: "定食屋さん", desc: "おふくろの味が恋しい時に。焼き魚定食がおすすめ。" },
-            { name: "うどん・そば屋", desc: "サクッと、でもしっかり食べたい時にぴったり。" },
+            { name: "うどん・そば屋", desc: "サクッと、 butts しっかり食べたい時にぴったり。" },
             { name: "焼肉屋", desc: "元気を出したい夜はこれ！お肉を焼いてスタミナ補給。" }
         ]
     };
@@ -140,24 +161,32 @@
         const resultDiv = document.getElementById('result');
         const modeLabel = document.getElementById('mode-label');
         const mapButton = document.getElementById('map-button');
+        const recipeButton = document.getElementById('recipe-button');
         
         const list = data[mode];
         const result = list[Math.floor(Math.random() * list.length)];
 
+        // 表示の切り替え
         if (mode === 'cook') {
             modeLabel.innerText = "🍳 自炊モード";
             modeLabel.style.background = "#e94560";
             mapButton.style.display = "none";
+            
+            // レシピリンクの設定（クラシルで検索する例）
+            recipeButton.style.display = "flex";
+            recipeButton.href = `https://www.kurashiru.com/search?query=${encodeURIComponent(result.name)}`;
         } else if (mode === 'super') {
             modeLabel.innerText = "🛒 お惣菜モード";
             modeLabel.style.background = "#4da0b0";
             mapButton.style.display = "flex";
             mapButton.innerText = "📍 近くのスーパーを探す";
+            recipeButton.style.display = "none";
         } else {
             modeLabel.innerText = "🍴 外食モード";
             modeLabel.style.background = "#2ecc71";
             mapButton.style.display = "flex";
             mapButton.innerText = `📍 近くの${result.name}を探す`;
+            recipeButton.style.display = "none";
         }
 
         document.getElementById('dish-name').innerText = result.name;
@@ -171,7 +200,7 @@
             const dishName = document.getElementById('dish-name').innerText;
             query = dishName;
         }
-        window.open(`https://www.google.com/maps/search/${query}`, '_blank');
+        window.open(`https://www.google.com/maps/search/${encodeURIComponent(query)}`, '_blank');
     }
 </script>
 
