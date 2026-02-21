@@ -3,242 +3,147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ゆうはんなにしよ | ねこたスタジオ</title>
-    
-    <link rel="icon" href="myicon.jpg">
-    <link rel="apple-touch-icon" href="myicon.jpg">
-
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>ゆうはんなにしよ</title>
     <style>
-        :root {
-            --bg-color: #1a1a2e;
-            --card-bg: #16213e;
-            --accent-yellow: #f1c40f;
-            --accent-pink: #e94560;
-            --accent-blue: #4da0b0;
-            --accent-green: #2ecc71;
-            --text-color: #e9e9e9;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: 'Helvetica Neue', Arial, 'Hiragino Sans', sans-serif;
-            text-align: center;
-            padding: 20px;
-            margin: 0;
-            overflow-x: hidden;
-        }
-
-        .container {
-            max-width: 500px;
-            margin: 20px auto;
-            background: var(--card-bg);
-            padding: 25px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-
-        .title-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .app-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 12px;
-            object-fit: cover;
-            border: 2px solid var(--accent-yellow);
-        }
-
-        h1 { color: var(--accent-yellow); font-size: 1.6rem; margin: 0; }
-        p.intro { font-size: 0.9rem; color: #a2a2d0; margin-bottom: 20px; }
-
-        .btn-group { display: flex; flex-direction: column; gap: 12px; }
-
-        button {
-            border: none; padding: 18px; font-size: 1.1rem; border-radius: 50px;
-            cursor: pointer; transition: 0.2s; width: 100%; font-weight: bold;
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-            outline: none;
-        }
-
-        .btn-cook { background: linear-gradient(45deg, var(--accent-pink), #ff6b6b); color: white; }
-        .btn-super { background: linear-gradient(45deg, var(--accent-blue), #2980b9); color: white; }
-        .btn-out { background: linear-gradient(45deg, var(--accent-green), #27ae60); color: white; }
+        body { font-family: 'Hiragino Kaku Gothic ProN', sans-serif; text-align: center; background: #1a1a2e; padding: 20px; color: #fff; margin: 0; }
+        .card { background: #16213e; padding: 30px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: inline-block; width: 90%; max-width: 380px; border: 4px solid #e94560; margin-top: 20px; box-sizing: border-box; }
+        h2 { color: #e94560; margin-bottom: 20px; font-size: 26px; letter-spacing: 2px; }
         
-        button:active { transform: scale(0.95); }
-
-        #result {
-            margin-top: 25px; padding: 25px; border: 2px dashed var(--accent-yellow);
-            border-radius: 15px; display: none; background: rgba(255, 255, 255, 0.05);
-        }
-
-        .mode-tag { display: inline-block; padding: 4px 15px; border-radius: 20px; font-size: 0.8rem; margin-bottom: 10px; color: white; }
-        #dish-name { font-size: 1.8rem; margin: 10px 0; color: #fff; transition: transform 0.2s; }
-        .spinning { opacity: 0.7; filter: blur(1px); }
-        #dish-desc { font-size: 1rem; color: #ccc; line-height: 1.5; min-height: 3em; }
+        #slot-display { font-size: 80px; margin: 20px 0; min-height: 120px; display: flex; align-items: center; justify-content: center; background: #0f3460; border-radius: 15px; border: 2px solid #533483; }
         
-        .btn-action {
-            display: none; text-decoration: none; padding: 12px; border-radius: 50px; 
-            font-weight: bold; margin-top: 15px; font-size: 0.9rem;
-            justify-content: center; align-items: center;
-        }
-        .btn-recipe { color: var(--accent-yellow); border: 2px solid var(--accent-yellow); }
-        .btn-map { color: #fff; border: 2px solid #fff; background: rgba(255,255,255,0.1); width: 100%; }
+        .mode-selector { margin-bottom: 25px; display: flex; justify-content: center; gap: 5px; }
+        .mode-btn { border: 2px solid #e94560; padding: 10px 5px; cursor: pointer; background: transparent; border-radius: 15px; font-size: 12px; color: #e94560; font-weight: bold; flex: 1; transition: 0.3s; }
+        .active-mode { background: #e94560; color: white; }
+        
+        #result-area { display: none; background: #0f3460; border: 2px dashed #e94560; padding: 20px; border-radius: 15px; margin-top: 20px; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        .btn { color: white; border: none; padding: 15px 25px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; margin-top: 15px; font-size: 16px; width: 100%; box-sizing: border-box; }
+        .btn-action { background: #e94560; }
+        .btn-rakuten { background: #bf0000; } /* 楽天レッド */
+        .btn-search { background: #4285F4; }
+        .btn-retry { background: #533483; font-size: 14px; padding: 10px; }
+        .btn-back { background: #555; color: white; border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; margin-top: 25px; font-size: 14px; }
 
-        .ad-container { margin-top: 40px; padding: 15px; background: #fff; border-radius: 10px; color: #333; }
-        .ad-label { font-size: 10px; color: #999; display: block; margin-bottom: 8px; font-weight: bold; }
-
-        /* 戻るリンクのスタイル */
-        .back-link { 
-            margin-top: 30px; 
-            display: block; 
-            color: #a2a2d0; 
-            text-decoration: none; 
-            font-size: 0.9rem; 
-            font-weight: bold;
-        }
-        .back-link:hover { color: var(--accent-yellow); text-decoration: underline; }
+        #hint { font-size: 14px; color: #999; margin-top: 10px; }
     </style>
 </head>
 <body>
-
-<div class="container">
-    <div class="title-container">
-        <img src="myicon.jpg" alt="Icon" class="app-icon" onerror="this.style.display='none'">
-        <h1>ゆうはんなにしよ</h1>
-    </div>
     
-    <p class="intro">今日の夜ごはんはどうする？</p>
-
-    <div class="btn-group">
-        <button class="btn-cook" onclick="decideDinner('cook')">🍳 家で作る</button>
-        <button class="btn-super" onclick="decideDinner('super')">🛒 お惣菜を買う</button>
-        <button class="btn-out" onclick="decideDinner('out')">🍴 外食にする！</button>
+<div class="card">
+    <h2>ゆうはんなにしよ</h2>
+    <div class="mode-selector">
+        <button id="cook-btn" class="mode-btn active-mode" onclick="setMode('cook')">自炊する</button>
+        <button id="buy-btn" class="mode-btn" onclick="setMode('buy')">買ってくる</button>
+        <button id="out-btn" class="mode-btn" onclick="setMode('out')">外食する</button>
     </div>
 
-    <div id="result">
-        <div id="mode-label" class="mode-tag"></div>
-        <h2 id="dish-name">？？？</h2>
-        <p id="dish-desc"></p>
-        <a id="recipe-button" class="btn-action btn-recipe" href="#" target="_blank">📖 レシピを検索する</a>
-        <button id="map-button" class="btn-action btn-map" onclick="findPlace()">📍 近くのお店を探す</button>
+    <div id="slot-display">🍳</div>
+    <button id="start-btn" class="btn btn-action" onclick="startSlot()">メニューを決める！</button>
+    <p id="hint">今夜の気分を選んでスタート！</p>
+
+    <div id="result-area">
+        <h2 id="food-result" style="margin: 0 0 10px; font-size: 28px; color: #fff;"></h2>
+        <p id="food-desc" style="font-size: 14px; color: #ccc; margin-bottom: 20px;"></p>
+        
+        <a id="action-link" class="btn btn-search" target="_blank">レシピを検索</a>
+        <a id="rakuten-link" class="btn btn-rakuten" target="_blank" rel="nofollow sponsored noopener">楽天で探す</a>
+        
+        <button class="btn btn-retry" onclick="reset()">もういちど決める</button>
     </div>
 
-    <div class="ad-container">
-        <span class="ad-label">今夜のおすすめ食材</span>
-        <a href="https://hb.afl.rakuten.co.jp/ichiba/5133cb26.1a0e6e3e.5133cb27.3cc98bd7/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fkouragumi%2F201175%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjY0eDY0IiwibmFtIjoxLCJuYW1wIjoicmlnaHQiLCJjb20iOjEsImNvbXAiOiJkb3duIiwicHJpY2UiOjAsImJvciI6MSwiY29sIjoxLCJiYnRuIjoxLCJwcm9kIjowLCJhbXAiOmZhbHNlfQ%3D%3D" target="_blank" rel="nofollow sponsored noopener"><img src="https://hbb.afl.rakuten.co.jp/hgb/5133cb26.1a0e6e3e.5133cb27.3cc98bd7/?me_id=1269065&item_id=10001520&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fkouragumi%2Fcabinet%2F10531638%2Fimgrc0114997850.jpg%3F_ex%3D64x64&s=64x64&t=pict" border="0" style="margin:2px" alt=""></a>
-        <p style="font-size: 0.75rem; margin: 5px 0 0; color: #666;">楽天でお得な食材をチェック！</p>
-    </div>
-
-    <a href="https://jyonjyon-code.github.io/hirumeshi/" class="back-link">🏠 ねこたスタジオへ戻る</a>
+    <br>
+    <a href="index.html" class="btn-back">ねこたスタジオへ戻る</a>
 </div>
 
 <script>
-    const data = {
+    const RAKUTEN_AFID = "51366796.8818598a.51366797.ddbb51d0"; 
+
+    let currentMode = 'cook';
+    const emojis = ["🍳", "🍱", "🍕", "🍜", "🍛", "🥘", "🍖", "🥗"];
+    
+    const menuData = {
         cook: [
-            { name: "たまごかけご飯", desc: "最強の時短。お豆腐と納豆もつければ立派な定食！" },
-            { name: "豚バラのレンジ蒸し", desc: "もやしやキャベツと一緒にチン。ポン酢でさっぱり。" },
-            { name: "具だくさんカレー", desc: "お肉と野菜を煮込んで。明日の朝も食べられる！" },
-            { name: "和風パスタ", desc: "めんつゆとバターで簡単味付け。きのことベーコンが合う。" },
-            { name: "親子丼", desc: "鶏肉と卵があればすぐできる。優しい甘辛味。" },
-            { name: "オムライス", desc: "ケチャップで好きな絵を描こう。気分も上がる！" },
-            { name: "鶏の照り焼き", desc: "甘辛ダレでご飯が進む！片栗粉をまぶすとジューシーに。" },
-            { name: "麻婆豆腐", desc: "市販の素を使えば失敗なし。ネギをたっぷり入れるのがコツ。" }
+            { name: "ハンバーグ", keyword: "ハンバーグ", desc: "ふっくらジューシーに焼いちゃおう！" },
+            { name: "生姜焼き", keyword: "生姜焼き", desc: "ご飯がすすむ定番メニュー！" },
+            { name: "麻婆豆腐", keyword: "麻婆豆腐", desc: "ピリ辛でスタミナアップ！" },
+            { name: "パスタ", keyword: "パスタ", desc: "冷蔵庫の余り物でおしゃれに。" }
         ],
-        super: [
-            { name: "特製ロースカツ", desc: "トースターで温め直せばサクサク復活。ソースをたっぷりと。" },
-            { name: "お寿司盛り合わせ", desc: "今日は贅沢に！お刺身コーナーもチェック。" },
-            { name: "若鶏の唐揚げ", desc: "お惣菜の定番。ビールや炭酸水との相性バツグン。" },
-            { name: "焼き鳥アソート", desc: "タレと塩、両方楽しもう。ビールのお供に最高。" },
-            { name: "天ぷら盛り合わせ", desc: "うどんを茹でて、天ぷらうどんにするのもアリ！" }
+        buy: [
+            { name: "お惣菜盛り合わせ", keyword: "お惣菜", desc: "スーパーの特売品を狙え！" },
+            { name: "デリバリーピザ", keyword: "ピザ", desc: "たまには楽して贅沢気分。" },
+            { name: "お寿司パック", keyword: "寿司", desc: "今日もお疲れ様。ご褒美寿司！" },
+            { name: "冷凍餃子", keyword: "冷凍餃子", desc: "今の冷凍食品はプロの味！" }
         ],
         out: [
-            { name: "ラーメン屋", desc: "こってり家系？それとも、さっぱり塩ラーメン？" },
-            { name: "回転寿司", desc: "好きなネタを好きなだけ。サイドメニューも充実。" },
-            { name: "焼肉屋", desc: "元気を出したい夜はこれ！お肉を焼いてスタミナ補給。" },
-            { name: "定食屋さん", desc: "おふくろの味が恋しい時に。焼き魚定食がおすすめ。" },
-            { name: "牛丼屋", desc: "早くて旨くて安い。紅ショウガをたっぷり乗せて。" }
+            { name: "焼肉", keyword: "焼肉", desc: "元気が出る魔法の食べ物！" },
+            { name: "ラーメン", keyword: "ラーメン", desc: "こだわりの一杯を探しに行こう。" },
+            { name: "ファミレス", keyword: "ファミレス", desc: "好きなものを自由に選ぼう！" },
+            { name: "イタリアン", keyword: "イタリアン", desc: "ワインと一緒にゆっくりと。" }
         ]
     };
 
-    let isSpinning = false;
-    let currentMode = '';
-
-    function decideDinner(mode) {
-        if (isSpinning) return;
-        isSpinning = true;
+    function setMode(mode) {
         currentMode = mode;
+        document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active-mode'));
+        document.getElementById(mode + '-btn').classList.add('active-mode');
+        reset();
+    }
 
-        const resultDiv = document.getElementById('result');
-        const dishName = document.getElementById('dish-name');
-        const dishDesc = document.getElementById('dish-desc');
-        const recipeBtn = document.getElementById('recipe-button');
-        const mapBtn = document.getElementById('map-button');
+    function startSlot() {
+        const display = document.getElementById('slot-display');
+        const startBtn = document.getElementById('start-btn');
+        startBtn.style.display = 'none';
         
-        resultDiv.style.display = 'block';
-        dishDesc.innerText = "選んでいます...";
-        recipeBtn.style.display = "none";
-        mapBtn.style.display = "none";
-        dishName.classList.add('spinning');
-
-        const list = data[mode];
-        let shuffleCount = 0; 
-        
-        const interval = setInterval(() => {
-            const temp = list[Math.floor(Math.random() * list.length)];
-            dishName.innerText = temp.name;
-            shuffleCount++;
-
-            if (shuffleCount > 15) { 
-                clearInterval(interval);
-                finishSelection(mode, list);
+        let count = 0;
+        const timer = setInterval(() => {
+            display.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+            count++;
+            if (count > 15) {
+                clearInterval(timer);
+                showResult();
             }
-        }, 80);
+        }, 100);
     }
 
-    function finishSelection(mode, list) {
-        const dishName = document.getElementById('dish-name');
-        const dishDesc = document.getElementById('dish-desc');
-        const modeLabel = document.getElementById('mode-label');
-        const recipeBtn = document.getElementById('recipe-button');
-        const mapBtn = document.getElementById('map-button');
-
-        const result = list[Math.floor(Math.random() * list.length)];
+    function showResult() {
+        const list = menuData[currentMode];
+        const res = list[Math.floor(Math.random() * list.length)];
         
-        dishName.classList.remove('spinning');
-        dishName.innerText = result.name;
-        dishName.style.transform = "scale(1.2)";
-        setTimeout(() => { dishName.style.transform = "scale(1)"; }, 200);
+        document.getElementById('slot-display').style.display = 'none';
+        document.getElementById('hint').style.display = 'none';
+        document.getElementById('result-area').style.display = 'block';
+        
+        document.getElementById('food-result').innerText = res.name;
+        document.getElementById('food-desc').innerText = res.desc;
 
-        dishDesc.innerText = result.desc;
-
-        if (mode === 'cook') {
-            modeLabel.innerText = "🍳 自炊モード";
-            modeLabel.style.background = "var(--accent-pink)";
-            recipeBtn.style.display = "flex";
-            recipeBtn.href = `https://www.kurashiru.com/search?query=${encodeURIComponent(result.name)}`;
-        } else if (mode === 'super') {
-            modeLabel.innerText = "🛒 お惣菜モード";
-            modeLabel.style.background = "var(--accent-blue)";
-            mapBtn.style.display = "flex";
-            mapBtn.innerText = "📍 近くのスーパーを探す";
+        // ボタンの切り替え
+        const actionLink = document.getElementById('action-link');
+        if (currentMode === 'out') {
+            actionLink.innerText = "近くのお店を探す";
+            actionLink.href = "https://www.google.com/maps/search/" + encodeURIComponent("近くの" + res.keyword);
         } else {
-            modeLabel.innerText = "🍴 外食モード";
-            modeLabel.style.background = "var(--accent-green)";
-            mapBtn.style.display = "flex";
-            mapBtn.innerText = `📍 近くの${result.name}を探す`;
+            actionLink.innerText = "レシピを検索";
+            actionLink.href = "https://www.google.com/search?q=" + encodeURIComponent(res.keyword + " レシピ");
         }
-        isSpinning = false;
+
+        // 楽天リンクの生成
+        const rakutenKeyword = res.keyword + (currentMode === 'cook' ? " 材料" : " お取り寄せ");
+        const rakutenBase = "https://hb.afl.rakuten.co.jp/hgc/" + RAKUTEN_AFID + "/?pc=https%3A%2F%2Fsearch.rakuten.co.jp%2Fsearch%2Fmall%2F" + encodeURIComponent(rakutenKeyword) + "%2F";
+        
+        const rakutenBtn = document.getElementById('rakuten-link');
+        rakutenBtn.href = rakutenBase;
+        rakutenBtn.innerText = res.name + " を楽天で探す";
     }
 
-    function findPlace() {
-        let query = (currentMode === 'super') ? "スーパーマーケット" : document.getElementById('dish-name').innerText;
-        window.open(`https://www.google.com/maps/search/${encodeURIComponent(query)}`, '_blank');
+    function reset() {
+        document.getElementById('result-area').style.display = 'none';
+        document.getElementById('slot-display').style.display = 'flex';
+        document.getElementById('slot-display').innerText = "🍳";
+        document.getElementById('start-btn').style.display = 'inline-block';
+        document.getElementById('hint').style.display = 'block';
     }
 </script>
 
