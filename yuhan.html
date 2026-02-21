@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ゆうはんなにしよ</title>
+    <style>
+        :root {
+            --bg-color: #1a1a2e;
+            --card-bg: #16213e;
+            --accent-yellow: #f1c40f;
+            --accent-pink: #e94560;
+            --accent-blue: #4da0b0;
+            --accent-green: #2ecc71;
+            --text-color: #e9e9e9;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Helvetica Neue', Arial, 'Hiragino Sans', sans-serif;
+            text-align: center;
+            padding: 20px;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 20px auto;
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        h1 { color: var(--accent-yellow); font-size: 1.8rem; margin-bottom: 20px; }
+        p.intro { font-size: 0.9rem; color: #a2a2d0; margin-bottom: 20px; }
+
+        .btn-group { display: flex; flex-direction: column; gap: 12px; }
+
+        button {
+            border: none; padding: 18px; font-size: 1.1rem; border-radius: 50px;
+            cursor: pointer; transition: 0.2s; width: 100%; font-weight: bold;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+
+        .btn-cook { background: linear-gradient(45deg, var(--accent-pink), #ff6b6b); color: white; }
+        .btn-super { background: linear-gradient(45deg, var(--accent-blue), #d39d38); color: white; }
+        .btn-out { background: linear-gradient(45deg, var(--accent-green), #27ae60); color: white; }
+        
+        .btn-map {
+            background: transparent; color: var(--accent-yellow);
+            border: 2px solid var(--accent-yellow); margin-top: 15px;
+            display: none; font-size: 0.9rem;
+        }
+
+        #result {
+            margin-top: 25px; padding: 25px; border: 2px dashed var(--accent-yellow);
+            border-radius: 15px; display: none; background: rgba(255, 255, 255, 0.05);
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .mode-tag { display: inline-block; padding: 4px 15px; border-radius: 20px; font-size: 0.8rem; margin-bottom: 10px; }
+        #dish-name { font-size: 1.6rem; margin: 10px 0; color: #fff; }
+        #dish-desc { font-size: 1rem; color: #ccc; line-height: 1.5; }
+        
+        .back-link { margin-top: 30px; display: block; color: #a2a2d0; text-decoration: none; font-size: 0.8rem; }
+        .back-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🌙 ゆうはんなにしよ</h1>
+    <p class="intro">今日の夜ごはんはどうする？</p>
+
+    <div class="btn-group">
+        <button class="btn-cook" onclick="decideDinner('cook')">🍳 家で作る（自炊）</button>
+        <button class="btn-super" onclick="decideDinner('super')">🛒 スーパーのお惣菜</button>
+        <button class="btn-out" onclick="decideDinner('out')">🍴 外に食べに行く！</button>
+    </div>
+
+    <div id="result">
+        <div id="mode-label" class="mode-tag"></div>
+        <h2 id="dish-name"></h2>
+        <p id="dish-desc"></p>
+        <button id="map-button" class="btn-map" onclick="findPlace()">📍 近くのお店を探す</button>
+    </div>
+
+    <a href="index.html" class="back-link">← ねこたスタジオに戻る</a>
+</div>
+
+<script>
+    const data = {
+        cook: [
+            { name: "たまごかけご飯", desc: "最強の時短。お豆腐と納豆もつければ立派な定食！" },
+            { name: "豚バラのレンジ蒸し", desc: "もやしやキャベツと一緒にチン。ポン酢でさっぱり。" },
+            { name: "具だくさんカレー", desc: "お肉と野菜を煮込んで。明日の朝も食べられる！" },
+            { name: "和風パスタ", desc: "めんつゆとバターで簡単味付け。きのことベーコンが合う。" },
+            { name: "野菜炒め", desc: "冷蔵庫の残り物を全部投入！ガッツリ食べよう。" },
+            { name: "親子丼", desc: "鶏肉と卵があればすぐできる。優しい甘辛味。" },
+            { name: "焼きうどん", desc: "ソースでも醤油でも。かつお節をたっぷりかけて。" },
+            { name: "サバの味噌煮（缶詰）", desc: "缶詰を開けるだけ！副菜にサラダを添えて。" },
+            { name: "キムチ鍋", desc: "市販の素を使って。体の中から温まろう。" },
+            { name: "オムライス", desc: "ケチャップで好きな絵を描こう。気分も上がる！" }
+        ],
+        super: [
+            { name: "特製ロースカツ", desc: "トースターで温め直せばサクサク復活。ソースをたっぷりと。" },
+            { name: "お寿司盛り合わせ", desc: "今日は贅沢に！お刺身コーナーもチェック。" },
+            { name: "若鶏の唐揚げ", desc: "お惣菜の定番。ビールや炭酸水との相性バツグン。" },
+            { name: "焼き鳥アソート", desc: "タレと塩、両方楽しもう。ご飯の上に乗せて焼き鳥丼に。" },
+            { name: "中華バイキングセット", desc: "エビチリ、麻婆豆腐、焼売。少しずつ色々食べたい時に。" },
+            { name: "ポテトサラダ & コロッケ", desc: "懐かしい味。パンに挟んでコロッケサンドにしてもOK。" },
+            { name: "天ぷら盛り合わせ", desc: "うどんやそばを茹でて、天ぷらそばにするのもアリ！" },
+            { name: "ハンバーグ弁当", desc: "迷ったらこれ。ボリューム満点で満足度高め。" },
+            { name: "おにぎり & お惣菜セット", desc: "シンプルに済ませたい時に。味噌汁をつけると完璧。" }
+        ],
+        out: [
+            { name: "ラーメン屋", desc: "こってり家系？それとも、さっぱり塩ラーメン？" },
+            { name: "ファミリーレストラン", desc: "メニューが豊富。ドリンクバーでゆっくりするのも良し。" },
+            { name: "回転寿司", desc: "好きなネタを好きなだけ。サイドメニューも充実。" },
+            { name: "カレー屋", desc: "スパイスの香りで食欲アップ！ナンかライスか選ぼう。" },
+            { name: "牛丼屋", desc: "早くて旨くて安い。紅ショウガをたっぷり乗せて。" },
+            { name: "イタリアン・パスタ屋", desc: "オシャレな気分でディナー。ピザもシェアしちゃう？" },
+            { name: "定食屋さん", desc: "おふくろの味が恋しい時に。焼き魚定食がおすすめ。" },
+            { name: "うどん・そば屋", desc: "サクッと、でもしっかり食べたい時にぴったり。" },
+            { name: "焼肉屋", desc: "元気を出したい夜はこれ！お肉を焼いてスタミナ補給。" }
+        ]
+    };
+
+    let currentMode = '';
+
+    function decideDinner(mode) {
+        currentMode = mode;
+        const resultDiv = document.getElementById('result');
+        const modeLabel = document.getElementById('mode-label');
+        const mapButton = document.getElementById('map-button');
+        
+        const list = data[mode];
+        const result = list[Math.floor(Math.random() * list.length)];
+
+        if (mode === 'cook') {
+            modeLabel.innerText = "🍳 自炊モード";
+            modeLabel.style.background = "#e94560";
+            mapButton.style.display = "none";
+        } else if (mode === 'super') {
+            modeLabel.innerText = "🛒 お惣菜モード";
+            modeLabel.style.background = "#4da0b0";
+            mapButton.style.display = "flex";
+            mapButton.innerText = "📍 近くのスーパーを探す";
+        } else {
+            modeLabel.innerText = "🍴 外食モード";
+            modeLabel.style.background = "#2ecc71";
+            mapButton.style.display = "flex";
+            mapButton.innerText = `📍 近くの${result.name}を探す`;
+        }
+
+        document.getElementById('dish-name').innerText = result.name;
+        document.getElementById('dish-desc').innerText = result.desc;
+        resultDiv.style.display = 'block';
+    }
+
+    function findPlace() {
+        let query = "スーパーマーケット";
+        if (currentMode === 'out') {
+            const dishName = document.getElementById('dish-name').innerText;
+            query = dishName;
+        }
+        window.open(`https://www.google.com/maps/search/${query}`, '_blank');
+    }
+</script>
+
+</body>
+</html>
