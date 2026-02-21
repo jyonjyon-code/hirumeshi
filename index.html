@@ -3,218 +3,228 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ゆうはんなにしよ</title>
     
-    <link rel="icon" href="myicon.jpg">
-    <link rel="apple-touch-icon" href="myicon.jpg">
-
+    <link rel="apple-touch-icon" href="nekota.png">
+    <meta name="apple-mobile-web-app-title" content="ねこたスタジオ">
+    
+    <title>アプリ御品書き | ねこた公式</title>
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
     <style>
         :root {
-            --bg-color: #1a1a2e;
-            --card-bg: #16213e;
-            --accent-yellow: #f1c40f;
-            --accent-pink: #e94560;
-            --accent-blue: #4da0b0;
-            --accent-green: #2ecc71;
-            --text-color: #e9e9e9;
+            --main-red: #d9534f;
+            --bg-cream: #f9f1e6;
+            --card-white: #ffffff;
+            --sns-color: #333;
         }
-
         body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: 'Helvetica Neue', Arial, 'Hiragino Sans', sans-serif;
-            text-align: center;
-            padding: 20px;
+            font-family: 'Zen Maru Gothic', sans-serif;
             margin: 0;
+            background-color: var(--bg-cream);
+            color: #333;
+            text-align: center;
         }
+        header {
+            padding: 40px 20px;
+            background: white;
+            border-bottom: 5px solid var(--main-red);
+        }
+        header h1 { font-size: 2.2rem; color: var(--main-red); margin: 0; }
+        
+        .news-bar { background: #333; color: #fff; padding: 5px 0; font-size: 14px; }
+
+        /* カウンター表示 */
+        .counter-section { margin: 20px 0; font-family: 'Courier New', monospace; }
+        .counter-img { background: #000; color: #0f0; padding: 5px 15px; border-radius: 5px; font-size: 20px; display: inline-block; border: 2px solid #555; letter-spacing: 2px; min-width: 150px; }
+
+        /* キリ番メーターのスタイル */
+        .meter-container {
+            max-width: 350px;
+            margin: 10px auto 30px;
+            background: #fff;
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            border: 1px solid #eee;
+        }
+        .meter-label { font-size: 12px; margin-bottom: 8px; display: flex; justify-content: space-between; }
+        .progress-bg { background: #eee; border-radius: 20px; height: 10px; width: 100%; overflow: hidden; }
+        .progress-bar { 
+            background: linear-gradient(90deg, #ff9a9e 0%, #d9534f 100%); 
+            height: 100%; width: 0%; transition: width 1.5s ease-out; 
+        }
+        .next-kiriban { color: var(--main-red); font-weight: bold; }
 
         .container {
-            max-width: 500px;
+            max-width: 1000px;
             margin: 20px auto;
-            background: var(--card-bg);
-            padding: 25px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            padding: 0 20px;
         }
 
-        .title-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            margin-bottom: 20px;
+        .app-card {
+            background: var(--card-white);
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+            transition: 0.3s;
+            border: 1px solid #eee;
         }
-
-        .app-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 12px;
-            object-fit: cover;
-        }
-
-        h1 { color: var(--accent-yellow); font-size: 1.6rem; margin: 0; }
-
-        .btn-group { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
-
-        button {
-            border: none; padding: 18px; font-size: 1.1rem; border-radius: 50px;
-            cursor: pointer; transition: 0.2s; width: 100%; font-weight: bold;
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-        }
-
-        .btn-cook { background: linear-gradient(45deg, var(--accent-pink), #ff6b6b); color: white; }
-        .btn-super { background: linear-gradient(45deg, var(--accent-blue), #2980b9); color: white; }
-        .btn-out { background: linear-gradient(45deg, var(--accent-green), #27ae60); color: white; }
+        .app-card:hover { transform: translateY(-8px); }
+        .app-icon-wrap { padding: 30px 0; background: #fffcf0; }
+        .app-icon-img { width: 100px; height: 100px; border-radius: 22px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); object-fit: cover; }
         
-        button:active { transform: scale(0.95); }
+        .app-info { padding: 20px; }
+        .btn-group { display: flex; gap: 10px; padding: 0 20px 20px; }
+        .btn { flex: 1; padding: 12px; border-radius: 12px; text-decoration: none; font-weight: bold; font-size: 0.9rem; text-align: center; }
+        .btn-detail { background: #f0f0f0; color: #555; }
+        .btn-play { background: var(--main-red); color: white; }
 
-        #result {
-            margin-top: 25px; padding: 25px; border: 2px dashed var(--accent-yellow);
-            border-radius: 15px; display: none; background: rgba(255, 255, 255, 0.05);
+        .btn-share {
+            background: #000; color: #fff; margin: 0 auto 20px;
+            display: block; width: 80%; font-size: 0.8rem; border-radius: 12px; padding: 10px; text-decoration: none;
         }
 
-        #dish-name { font-size: 1.8rem; margin: 10px 0; color: #fff; }
-        .spinning { opacity: 0.7; filter: blur(1px); transform: scale(0.95); }
+        .kiriban-box { background: #fffbe6; border: 2px double #f0ad4e; padding: 15px; margin: 20px auto; max-width: 500px; width: 85%; font-size: 13px; line-height: 1.6; }
 
-        .btn-action {
-            display: none; text-decoration: none; padding: 12px; border-radius: 50px; 
-            font-weight: bold; margin-top: 15px; font-size: 0.9rem;
-            justify-content: center; align-items: center;
+        .profile-section {
+            background: #fff; max-width: 600px; margin: 40px auto; padding: 25px;
+            border-radius: 30px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            display: flex; align-items: center; text-align: left; border-left: 8px solid var(--main-red);
         }
-        .btn-recipe { color: var(--accent-yellow); border: 2px solid var(--accent-yellow); }
-        .btn-map { color: #fff; border: 2px solid #fff; background: rgba(255,255,255,0.1); width: 100%; }
+        .profile-icon { width: 80px; height: 80px; border-radius: 50%; margin-right: 20px; border: 2px solid #eee; object-fit: cover; }
+        .profile-text h3 { margin: 0; color: var(--main-red); }
 
-        .ad-container { margin-top: 40px; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 10px; }
-        .ad-label { font-size: 10px; color: #666; display: block; margin-bottom: 5px; }
+        footer { background: white; padding: 30px 20px; border-top: 1px solid #eee; }
+        .sns-links a { color: var(--sns-color); font-size: 32px; margin: 0 15px; text-decoration: none; }
 
-        .back-link { margin-top: 30px; display: block; color: #a2a2d0; text-decoration: none; font-size: 0.8rem; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); align-items: center; justify-content: center; z-index: 100; }
+        .modal-content { background: white; padding: 30px; border-radius: 25px; max-width: 450px; width: 85%; text-align: left; }
     </style>
 </head>
 <body>
 
+<header>
+    <h1>アプリの御品書き</h1>
+    <p>～ ねこたスタジオ ～</p>
+</header>
+
+<div class="news-bar">
+    <marquee scrollamount="5">【NEWS】ねこたスタジオ始動！新作「ひるめしえらんで」公開中！ キリ番報告はXまで！</marquee>
+</div>
+
+<div class="counter-section">
+    <p style="font-size: 12px; color: #888; margin-bottom: 5px;">あなたは...</p>
+    <div class="counter-img" id="current-count">LOADING</div>
+    <p style="font-size: 12px; color: #888; margin-top: 5px;">人目の訪問者です🐱</p>
+</div>
+
+<div class="meter-container">
+    <div class="meter-label">
+        <span>次のキリ番まであと <span id="remain-count" class="next-kiriban">--</span> 人</span>
+        <span id="target-kiriban" style="color:#aaa;">Target: --</span>
+    </div>
+    <div class="progress-bg">
+        <div class="progress-bar" id="meter-bar"></div>
+    </div>
+</div>
+
 <div class="container">
-    <div class="title-container">
-        <img src="myicon.jpg" alt="Icon" class="app-icon" onerror="this.style.display='none'">
-        <h1>ゆうはんなにしよ</h1>
-    </div>
-    
-    <div class="btn-group">
-        <button class="btn-cook" onclick="decideDinner('cook')">🍳 家で作る</button>
-        <button class="btn-super" onclick="decideDinner('super')">🛒 お惣菜を買う</button>
-        <button class="btn-out" onclick="decideDinner('out')">🍴 外食にする！</button>
-    </div>
-
-    <div id="result">
-        <div id="mode-label" class="mode-tag" style="padding: 4px 15px; border-radius: 20px; font-size: 0.8rem;"></div>
-        <h2 id="dish-name">？？？</h2>
-        <p id="dish-desc" style="color: #ccc; font-size: 0.9rem;"></p>
-        
-        <a id="recipe-button" class="btn-action btn-recipe" href="#" target="_blank">📖 レシピを検索する</a>
-        <button id="map-button" class="btn-action btn-map" onclick="findPlace()">📍 近くのお店を探す</button>
-    </div>
-
-    <div class="ad-container">
-        <span class="ad-label">ADVERTISEMENT</span>
-        <a href="https://amzn.to/3XpYyourID" target="_blank" style="color: var(--accent-blue); text-decoration: none; font-size: 0.8rem;">
-            🛒 買い忘れはない？Amazonでお得な食材をチェック
+    <div class="app-card">
+        <div class="app-icon-wrap">
+            <img src="icon.png" alt="ひるめしえらんで" class="app-icon-img">
+        </div>
+        <div class="app-info">
+            <h2>ひるめしえらんで</h2>
+            <p>今日のランチを楽しく決めるおみくじアプリ。地図検索もバッチリ！</p>
+        </div>
+        <div class="btn-group">
+            <a href="#" class="btn btn-detail" onclick="showDetail('lunch')">説明</a>
+            <a href="app.html" class="btn btn-play">あそぶ</a>
+        </div>
+        <a href="https://twitter.com/share?url=https://jyonjyon-code.github.io/hirumeshi/&text=今日のランチを占うアプリ「ひるめしえらんで」で遊んだよ！🐱 @necotatu2&hashtags=ねこたスタジオ,ランチ" target="_blank" class="btn btn-share">
+            <i class="fa-brands fa-x-twitter"></i> 気になったら共有してね
         </a>
     </div>
+</div>
 
-    <a href="https://jyonjyon-code.github.io/hirumeshi/" class="back-link">← ひるめしえらんでに戻る</a>
+<div class="kiriban-box">
+    <strong>✨ キリ番報告のお願い ✨</strong><br>
+    キリ番を踏んだ方は、下のXリンクからご報告ください！<br>
+    アカウント：@necotatu2 🐱
+</div>
+
+<div class="profile-section">
+    <img src="nekota.png" alt="ねこた" class="profile-icon">
+    <div class="profile-text">
+        <h3>開発者：ねこた</h3>
+        <p>ゆるいアプリを制作中。@necotatu2🐱</p>
+    </div>
+</div>
+
+<footer>
+    <div class="sns-links">
+        <a href="https://x.com/necotatu2" target="_blank"><i class="fa-brands fa-x-twitter"></i></a>
+    </div>
+    <div class="copyright">&copy; 2026 ねこたスタジオ</div>
+</footer>
+
+<div id="detailModal" class="modal" onclick="closeDetail()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <h2 id="modalTitle" style="color: var(--main-red); margin-top:0;"></h2>
+        <p id="modalDesc" style="white-space: pre-wrap;"></p>
+        <button class="btn btn-detail" style="width: 100%; margin-top: 15px;" onclick="closeDetail()">閉じる</button>
+    </div>
 </div>
 
 <script>
-    const data = {
-        cook: [
-            { name: "たまごかけご飯", desc: "最強の時短。お豆腐と納豆もつければ立派な定食！" },
-            { name: "豚バラのレンジ蒸し", desc: "もやしやキャベツと一緒にチン。ポン酢でさっぱり。" },
-            { name: "具だくさんカレー", desc: "お肉と野菜を煮込んで。明日の朝も食べられる！" },
-            { name: "和風パスタ", desc: "めんつゆとバターで簡単味付け。" },
-            { name: "オムライス", desc: "ケチャップで好きな絵を描こう！" }
-        ],
-        super: [
-            { name: "特製ロースカツ", desc: "トースターで温め直せばサクサク復活。" },
-            { name: "お寿司盛り合わせ", desc: "今日は贅沢に！お刺身もいいかも。" },
-            { name: "若鶏の唐揚げ", desc: "お惣菜の定番。ビールに合う！" }
-        ],
-        out: [
-            { name: "ラーメン屋", desc: "こってり？さっぱり？" },
-            { name: "回転寿司", desc: "好きなネタを好きなだけ！" },
-            { name: "焼肉屋", desc: "スタミナ補給！" }
-        ]
-    };
+    // カウンター機能（CountAPI）
+    async function initCounter() {
+        const namespace = "necotatu2-studio";
+        const key = "visit-count";
 
-    let isSpinning = false;
-    let currentMode = '';
+        try {
+            // アクセス数を1増やす
+            const response = await fetch(`https://api.countapi.xyz/hit/${namespace}/${key}`);
+            const data = await response.json();
+            const current = data.value;
 
-    function decideDinner(mode) {
-        if (isSpinning) return;
-        isSpinning = true;
-        currentMode = mode;
+            // カウンター表示更新
+            document.getElementById('current-count').innerText = String(current).padStart(8, '0');
 
-        const resultDiv = document.getElementById('result');
-        const dishName = document.getElementById('dish-name');
-        const dishDesc = document.getElementById('dish-desc');
-        const recipeBtn = document.getElementById('recipe-button');
-        const mapBtn = document.getElementById('map-button');
-        
-        resultDiv.style.display = 'block';
-        dishName.classList.add('spinning');
-        dishDesc.innerText = "選んでいます...";
-        recipeBtn.style.display = "none";
-        mapBtn.style.display = "none";
+            // キリ番メーター計算（100人ごと）
+            const interval = 100;
+            const nextKiriban = Math.ceil((current + 1) / interval) * interval;
+            const remain = nextKiriban - current;
+            const progress = ((interval - remain) / interval) * 100;
 
-        const list = data[mode];
-        let shuffleCount = 0; // カウンターをリセット
-        
-        const interval = setInterval(() => {
-            const temp = list[Math.floor(Math.random() * list.length)];
-            dishName.innerText = temp.name;
-            shuffleCount++;
+            document.getElementById('remain-count').innerText = remain;
+            document.getElementById('target-kiriban').innerText = "Target: " + nextKiriban;
+            document.getElementById('meter-bar').style.width = progress + "%";
 
-            if (shuffleCount > 12) { // 12回シャッフルしたら終了
-                clearInterval(interval);
-                const finalResult = list[Math.floor(Math.random() * list.length)];
-                showResult(finalResult, mode);
-            }
-        }, 100);
-    }
-
-    function showResult(result, mode) {
-        const dishName = document.getElementById('dish-name');
-        const dishDesc = document.getElementById('dish-desc');
-        const modeLabel = document.getElementById('mode-label');
-        const recipeBtn = document.getElementById('recipe-button');
-        const mapBtn = document.getElementById('map-button');
-
-        dishName.classList.remove('spinning');
-        dishName.innerText = result.name;
-        dishDesc.innerText = result.desc;
-
-        if (mode === 'cook') {
-            modeLabel.innerText = "🍳 自炊モード";
-            modeLabel.style.background = "var(--accent-pink)";
-            recipeBtn.style.display = "flex";
-            recipeBtn.href = `https://www.kurashiru.com/search?query=${encodeURIComponent(result.name)}`;
-        } else if (mode === 'super') {
-            modeLabel.innerText = "🛒 お惣菜モード";
-            modeLabel.style.background = "var(--accent-blue)";
-            mapBtn.style.display = "flex";
-            mapBtn.innerText = "📍 近くのスーパーを探す";
-        } else {
-            modeLabel.innerText = "🍴 外食モード";
-            modeLabel.style.background = "var(--accent-green)";
-            mapBtn.style.display = "flex";
-            mapBtn.innerText = `📍 近くの${result.name}を探す`;
+        } catch (e) {
+            document.getElementById('current-count').innerText = "00001234"; // 失敗時のダミー
+            console.error("Counter Error:", e);
         }
-        isSpinning = false;
     }
 
-    function findPlace() {
-        let query = (currentMode === 'super') ? "スーパーマーケット" : document.getElementById('dish-name').innerText;
-        // 正しいGoogleマップの検索URL
-        window.open(`https://www.google.com/maps/search/${encodeURIComponent(query)}`, '_blank');
+    const details = {
+        lunch: {
+            title: "ひるめしえらんで",
+            desc: "【遊び方】\n1.「あそぶ」ボタンを押す\n2.お弁当箱をタップしておみくじを引く\n3.そのまま地図で店を探せます。🐱"
+        }
+    };
+    function showDetail(id) {
+        document.getElementById('modalTitle').innerText = details[id].title;
+        document.getElementById('modalDesc').innerText = details[id].desc;
+        document.getElementById('detailModal').style.display = 'flex';
     }
+    function closeDetail() { document.getElementById('detailModal').style.display = 'none'; }
+
+    window.onload = initCounter;
 </script>
 
 </body>
