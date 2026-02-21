@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ゆうはんなにしよ</title>
+    
+    <link rel="icon" href="myicon.jpg">
+    <link rel="apple-touch-icon" href="myicon.jpg">
+
     <style>
         :root {
             --bg-color: #1a1a2e;
@@ -34,7 +38,23 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        h1 { color: var(--accent-yellow); font-size: 1.8rem; margin-bottom: 20px; }
+        .title-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .app-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 2px solid var(--accent-yellow);
+        }
+
+        h1 { color: var(--accent-yellow); font-size: 1.6rem; margin: 0; }
         p.intro { font-size: 0.9rem; color: #a2a2d0; margin-bottom: 20px; }
 
         .btn-group { display: flex; flex-direction: column; gap: 12px; }
@@ -53,15 +73,13 @@
         button:active { transform: scale(0.95); }
         button:disabled { opacity: 0.6; cursor: not-allowed; }
 
-        /* 結果表示エリア */
         #result {
             margin-top: 25px; padding: 25px; border: 2px dashed var(--accent-yellow);
             border-radius: 15px; display: none; background: rgba(255, 255, 255, 0.05);
         }
 
-        .mode-tag { display: inline-block; padding: 4px 15px; border-radius: 20px; font-size: 0.8rem; margin-bottom: 10px; }
+        .mode-tag { display: inline-block; padding: 4px 15px; border-radius: 20px; font-size: 0.8rem; margin-bottom: 10px; color: white; }
         
-        /* ギミック用アニメーション */
         #dish-name { 
             font-size: 1.8rem; 
             margin: 10px 0; 
@@ -70,25 +88,25 @@
         }
         
         .spinning { opacity: 0.7; filter: blur(1px); }
-
         #dish-desc { font-size: 1rem; color: #ccc; line-height: 1.5; min-height: 3em; }
         
-        /* アクションボタン */
         .btn-action {
             display: none; text-decoration: none; padding: 12px; border-radius: 50px; 
             font-weight: bold; margin-top: 15px; font-size: 0.9rem;
             justify-content: center; align-items: center;
         }
         .btn-recipe { color: var(--accent-yellow); border: 2px solid var(--accent-yellow); }
-        .btn-map { color: #fff; border: 2px solid #fff; background: rgba(255,255,255,0.1); }
+        .btn-map { color: #fff; border: 2px solid #fff; background: rgba(255,255,255,0.1); width: 100%; }
 
-        /* アフィリエイトエリア */
-        .ad-container {
-            margin-top: 40px; padding: 15px; background: rgba(255, 255, 255, 0.03);
-            border-radius: 10px; border: 1px solid rgba(255,255,255,0.05);
+        /* 楽天アフィリエイト用デザイン */
+        .ad-container { 
+            margin-top: 40px; 
+            padding: 15px; 
+            background: #fff; 
+            border-radius: 10px; 
+            color: #333;
         }
-        .ad-label { font-size: 10px; color: #666; margin-bottom: 8px; display: block; letter-spacing: 1px; }
-        .ad-content a { color: var(--accent-blue); text-decoration: none; font-size: 0.85rem; }
+        .ad-label { font-size: 10px; color: #999; display: block; margin-bottom: 8px; font-weight: bold; }
 
         .back-link { margin-top: 30px; display: block; color: #a2a2d0; text-decoration: none; font-size: 0.8rem; }
     </style>
@@ -96,7 +114,11 @@
 <body>
 
 <div class="container">
-    <h1>🌙 ゆうはんなにしよ</h1>
+    <div class="title-container">
+        <img src="myicon.jpg" alt="Icon" class="app-icon" onerror="this.style.display='none'">
+        <h1>ゆうはんなにしよ</h1>
+    </div>
+    
     <p class="intro">今日の夜ごはんはどうする？</p>
 
     <div class="btn-group">
@@ -115,10 +137,9 @@
     </div>
 
     <div class="ad-container">
-        <span class="ad-label">ADVERTISEMENT</span>
-        <div class="ad-content">
-            <a href="#" target="_blank">🛒 重い荷物も玄関まで！便利なネットスーパーはこちら</a>
-        </div>
+        <span class="ad-label">今夜のおすすめ食材</span>
+        <a href="https://hb.afl.rakuten.co.jp/ichiba/5133cb26.1a0e6e3e.5133cb27.3cc98bd7/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fkouragumi%2F201175%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjY0eDY0IiwibmFtIjoxLCJuYW1wIjoicmlnaHQiLCJjb20iOjEsImNvbXAiOiJkb3duIiwicHJpY2UiOjAsImJvciI6MSwiY29sIjoxLCJiYnRuIjoxLCJwcm9kIjowLCJhbXAiOmZhbHNlfQ%3D%3D" target="_blank" rel="nofollow sponsored noopener" style="word-wrap:break-word;"><img src="https://hbb.afl.rakuten.co.jp/hgb/5133cb26.1a0e6e3e.5133cb27.3cc98bd7/?me_id=1269065&item_id=10001520&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fkouragumi%2Fcabinet%2F10531638%2Fimgrc0114997850.jpg%3F_ex%3D64x64&s=64x64&t=pict" border="0" style="margin:2px" alt="" title=""></a>
+        <p style="font-size: 0.75rem; margin: 5px 0 0; color: #666;">楽天でお得な食材をチェック！</p>
     </div>
 
     <a href="https://jyonjyon-code.github.io/hirumeshi/" class="back-link">← ひるめしえらんでに戻る</a>
@@ -132,19 +153,36 @@
             { name: "具だくさんカレー", desc: "お肉と野菜を煮込んで。明日の朝も食べられる！" },
             { name: "和風パスタ", desc: "めんつゆとバターで簡単味付け。きのことベーコンが合う。" },
             { name: "親子丼", desc: "鶏肉と卵があればすぐできる。優しい甘辛味。" },
-            { name: "オムライス", desc: "ケチャップで好きな絵を描こう。気分も上がる！" }
+            { name: "オムライス", desc: "ケチャップで好きな絵を描こう。気分も上がる！" },
+            { name: "鶏の照り焼き", desc: "甘辛ダレでご飯が進む！片栗粉をまぶすとジューシーに。" },
+            { name: "麻婆豆腐", desc: "市販の素を使えば失敗なし。ネギをたっぷり入れるのがコツ。" },
+            { name: "焼きそば", desc: "冷蔵庫の余り物一掃メニュー！目玉焼きを乗せて豪華に。" },
+            { name: "ガパオライス", desc: "バジルとナンプラーの香りが最高。目玉焼きは必須！" },
+            { name: "鮭のムニエル", desc: "バターの香りが食欲をそそる。レモンを添えてさっぱり。" },
+            { name: "肉じゃが", desc: "家庭料理の定番。ほっこりする甘めの味付けで。" },
+            { name: "回鍋肉", desc: "キャベツがたっぷり食べられる！甜麺醤（テンメンジャン）をきかせて。" }
         ],
         super: [
             { name: "特製ロースカツ", desc: "トースターで温め直せばサクサク復活。ソースをたっぷりと。" },
             { name: "お寿司盛り合わせ", desc: "今日は贅沢に！お刺身コーナーもチェック。" },
             { name: "若鶏の唐揚げ", desc: "お惣菜の定番。ビールや炭酸水との相性バツグン。" },
-            { name: "ハンバーグ弁当", desc: "迷ったらこれ。ボリューム満点で満足度高め。" }
+            { name: "ハンバーグ弁当", desc: "迷ったらこれ。ボリューム満点で満足度高め。" },
+            { name: "焼き鳥アソート", desc: "タレと塩、両方楽しもう。ビールのお供に最高。" },
+            { name: "中華バイキングセット", desc: "エビチリ、麻婆豆腐。少しずつ色々食べたい時に。" },
+            { name: "天ぷら盛り合わせ", desc: "うどんを茹でて、天ぷらうどんにするのもアリ！" },
+            { name: "海鮮丼", desc: "スーパーの鮮魚コーナーを狙え！夕方の値引きがチャンス。" },
+            { name: "お好み焼き・たこ焼き", desc: "たまに無性に食べたくなる粉もん。マヨネーズはたっぷりで。" }
         ],
         out: [
             { name: "ラーメン屋", desc: "こってり家系？それとも、さっぱり塩ラーメン？" },
             { name: "回転寿司", desc: "好きなネタを好きなだけ。サイドメニューも充実。" },
             { name: "焼肉屋", desc: "元気を出したい夜はこれ！お肉を焼いてスタミナ補給。" },
-            { name: "定食屋さん", desc: "おふくろの味が恋しい時に。焼き魚定食がおすすめ。" }
+            { name: "定食屋さん", desc: "おふくろの味が恋しい時に。焼き魚定食がおすすめ。" },
+            { name: "牛丼屋", desc: "早くて旨くて安い。紅ショウガをたっぷり乗せて。" },
+            { name: "カレー屋", desc: "スパイスの香りで食欲アップ！ナンかライスか選ぼう。" },
+            { name: "イタリアン・パスタ屋", desc: "オシャレな気分でディナー。ピザもシェアしちゃう？" },
+            { name: "ファミレス", desc: "メニューが豊富で迷っちゃう。ドリンクバーでゆっくり。" },
+            { name: "ハンバーガー店", desc: "ジャンクな気分ならここ！ポテトも忘れずに。" }
         ]
     };
 
@@ -156,7 +194,6 @@
         isSpinning = true;
         currentMode = mode;
 
-        // UIのリセット
         const resultDiv = document.getElementById('result');
         const dishName = document.getElementById('dish-name');
         const dishDesc = document.getElementById('dish-desc');
@@ -170,19 +207,19 @@
         dishName.classList.add('spinning');
 
         const list = data[mode];
-        let count = 0;
+        let shuffleCount = 0; 
         
-        // スロットギミック
+        // シャッフルアニメーション（100ms間隔）
         const interval = setInterval(() => {
             const temp = list[Math.floor(Math.random() * list.length)];
             dishName.innerText = temp.name;
-            count++;
+            shuffleCount++;
 
-            if (count > 12) {
+            if (shuffleCount > 15) { 
                 clearInterval(interval);
                 finishSelection(mode, list);
             }
-        }, 100);
+        }, 80);
     }
 
     function finishSelection(mode, list) {
@@ -223,6 +260,7 @@
 
     function findPlace() {
         let query = (currentMode === 'super') ? "スーパーマーケット" : document.getElementById('dish-name').innerText;
+        // Googleマップ検索を正しいURLに修正
         window.open(`https://www.google.com/maps/search/${encodeURIComponent(query)}`, '_blank');
     }
 </script>
