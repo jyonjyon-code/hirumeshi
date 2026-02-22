@@ -11,8 +11,6 @@
         .card { background: white; padding: 25px; border-radius: 30px; box-shadow: 0 10px 30px rgba(255,100,120,0.15); display: inline-block; width: 95%; max-width: 400px; border: 4px solid #ff4d6d; box-sizing: border-box; }
         .stats-box { background: #4a1a1a; color: #fff; border-radius: 15px; padding: 15px; margin-bottom: 20px; text-align: left; position: relative; }
         .stats-val { font-size: 20px; font-weight: 900; color: #ff4d6d; }
-        
-        /* 統計シェアボタン */
         .btn-stats-share { position: absolute; top: 15px; right: 15px; background: #fff; color: #000; border: none; border-radius: 50%; width: 35px; height: 35px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; }
 
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; background: #fffcfc; border: 1px solid #ffe5e9; padding: 5px; border-radius: 15px; margin-bottom: 20px; }
@@ -23,7 +21,8 @@
         .history-item { font-size: 12px; padding: 10px 8px; border-bottom: 1px solid #ffeef0; display: flex; align-items: center; justify-content: space-between; }
         .history-info { display: flex; flex-direction: column; text-align: left; flex-grow: 1; }
         .history-date { font-weight: bold; color: #ff4d6d; font-size: 13px; }
-        .history-shogo { color: #888; font-size: 11px; }
+        .history-time { color: #888; font-size: 10px; margin-left: 5px; font-weight: normal; }
+        .history-shogo { color: #666; font-size: 11px; }
         .history-score { font-weight: 900; color: #4a1a1a; margin-right: 15px; }
 
         .btn-del-item { background: #eee; color: #888; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 12px; cursor: pointer; line-height: 22px; padding: 0; }
@@ -47,7 +46,7 @@
     <div class="calendar-grid" id="calendar-grid"></div>
 
     <h3 style="font-size:16px; color:#ff4d6d; text-align:left; border-bottom:2px solid #ff4d6d; padding-bottom:5px;">
-        🍓 最近の記録
+        🍓 観測ログ（個別）
         <button class="btn-delete-all" onclick="clearHistory()">全消去</button>
     </h3>
     <div id="history-list"></div>
@@ -65,10 +64,16 @@
         const month = now.getMonth(); 
         
         let mTotal = 0, aTotal = 0;
+        let dailyTotals = {}; // カレンダー合算用
+
         history.forEach(h => {
             const s = Number(h.score) || 0;
             aTotal += s;
-            if(h.fullDateKey && h.fullDateKey.startsWith(`${year}-${month + 1}-`)) mTotal += s;
+            if(h.fullDateKey && h.fullDateKey.startsWith(`${year}-${month + 1}-`)) {
+                mTotal += s;
+            }
+            // 日ごとの合計を計算
+            dailyTotals[h.fullDateKey] = (dailyTotals[h.fullDateKey] || 0) + s;
         });
 
         document.getElementById('month-total').innerText = mTotal.toFixed(1);
@@ -77,6 +82,7 @@
         let rank = aTotal >= 300 ? "🍓 いちごの神様" : aTotal >= 50 ? "いちご貴族" : aTotal >= 10 ? "いちご国民" : "いちご市民";
         document.getElementById('total-rank').innerText = "現在の属性: " + rank;
 
+        // カレンダー描画
         const firstDay = new Date(year, month, 1).getDay();
         const lastDate = new Date(year, month + 1, 0).getDate();
         let html = '';
@@ -85,20 +91,21 @@
         for(let i=0; i<firstDay; i++) html += '<div></div>';
         for(let d=1; d<=lastDate; d++){
             const targetKey = `${year}-${month + 1}-${d}`;
-            const record = history.find(h => h.fullDateKey === targetKey);
-            html += `<div class="calendar-day">${d}${record ? `<div class="cal-score">${Number(record.score).toFixed(1)}🍓</div>` : ''}</div>`;
+            const dayScore = dailyTotals[targetKey];
+            html += `<div class="calendar-day">${d}${dayScore ? `<div class="cal-score">${dayScore.toFixed(1)}🍓</div>` : ''}</div>`;
         }
         document.getElementById('calendar-grid').innerHTML = html;
         document.getElementById('calendar-month').innerText = `${year}年 ${month + 1}月`;
         
-        const listHtml = history.slice(0, 10).map((h, index) => `
+        // 個別履歴リスト（時間付き）
+        const listHtml = history.map((h, index) => `
             <div class="history-item">
                 <div class="history-info">
-                    <span class="history-date">${h.date}</span>
+                    <span class="history-date">${h.date}<span class="history-time">${h.time || '--:--'}</span></span>
                     <span class="history-shogo">${h.shogo}</span>
                 </div>
                 <span class="history-score">${Number(h.score).toFixed(1)}🍓</span>
-                <button class="btn-del-item" onclick="deleteSingleItem('${h.fullDateKey}')">×</button>
+                <button class="btn-del-item" onclick="deleteSingleEntry(${index})">×</button>
             </div>
         `).join('');
         document.getElementById('history-list').innerHTML = listHtml || '<div style="color:#ccc;font-size:12px;margin-top:10px;">データがありません</div>';
@@ -112,10 +119,10 @@
         window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
     }
 
-    function deleteSingleItem(dateKey) {
-        if(confirm(dateKey + " の記録を完全に削除しますか？")) {
+    function deleteSingleEntry(index) {
+        if(confirm("この1件の記録を削除しますか？")) {
             let history = JSON.parse(localStorage.getItem('ichigo-history') || '[]');
-            history = history.filter(h => h.fullDateKey !== dateKey);
+            history.splice(index, 1);
             localStorage.setItem('ichigo-history', JSON.stringify(history));
             renderAll();
         }
