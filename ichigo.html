@@ -14,53 +14,57 @@
         .item-row { display: flex; align-items: center; justify-content: space-between; margin: 15px 0; padding-bottom: 10px; border-bottom: 1px dashed #ffe5e9; }
         .item-row:last-child { border-bottom: none; }
         .item-label { font-size: 15px; font-weight: bold; flex-grow: 1; text-align: left; }
+        
+        .sweet-select { 
+            font-family: 'Zen Maru Gothic', sans-serif; font-size: 12px; padding: 5px; border-radius: 8px; border: 1px solid #ff4d6d;
+            margin-top: 5px; width: 100%; color: #4a1a1a; background: white;
+        }
+
         .controls { display: flex; align-items: center; gap: 5px; }
         .btn-plus { width: 40px; height: 40px; border-radius: 50%; border: none; background: #ff4d6d; color: white; font-size: 20px; cursor: pointer; font-weight: bold; box-shadow: 0 3px 0 #c92a42; }
         .btn-minus { width: 32px; height: 32px; border-radius: 50%; border: 2px solid #ff4d6d; background: white; color: #ff4d6d; font-size: 18px; cursor: pointer; font-weight: bold; }
-        .btn-clear { width: 32px; height: 32px; border-radius: 8px; border: 1px solid #ccc; background: #f8f8f8; color: #888; font-size: 11px; cursor: pointer; font-weight: bold; margin-left: 8px; }
-        .count-num { font-size: 22px; font-weight: 900; min-width: 35px; color: #ff4d6d; text-align: center; }
+        
         .btn-main { background: #ff4d6d; color: white; border: none; padding: 15px 30px; border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 18px; width: 100%; margin-top: 15px; box-shadow: 0 4px 0 #c92a42; }
         .btn-main:active { transform: translateY(2px); box-shadow: 0 2px 0 #c92a42; }
-        .btn-nav { display: block; margin-top: 20px; color: #ff4d6d; text-decoration: none; font-size: 14px; font-weight: bold; border: 2px solid #ff4d6d; padding: 10px; border-radius: 15px; background: white; }
+
+        /* ランク別楽天エリアのスタイル */
+        .rakuten-area { margin-top: 15px; padding: 15px; border-radius: 15px; display: none; border: 2px solid transparent; transition: 0.3s; }
+        .rakuten-msg { font-size: 12px; font-weight: bold; margin-bottom: 8px; }
+        .rakuten-link { color: white; font-weight: bold; text-decoration: none; font-size: 14px; display: block; padding: 10px; border-radius: 10px; box-shadow: 0 4px 0 rgba(0,0,0,0.1); }
+        
+        /* ランクごとの色分け */
+        .rank-gold { background: #fff9e6; border-color: #ffd700; } /* 化身：金 */
+        .rank-gold .rakuten-link { background: #d4af37; }
+        .rank-gold .rakuten-msg { color: #b8860b; }
+
+        .rank-normal { background: #fff0f0; border-color: #ffccd5; } /* その他：ピンク */
+        .rank-normal .rakuten-link { background: #ff4d6d; }
+        .rank-normal .rakuten-msg { color: #ff4d6d; }
+
         #judgment-area { display: none; margin-top: 20px; padding: 20px; background: #fffbf0; border-radius: 20px; border: 2px dashed #ff4d6d; animation: pop 0.4s; }
         @keyframes pop { from { transform: scale(0.9); } to { transform: scale(1); } }
         .shogo { font-size: 22px; font-weight: 900; color: #ff4d6d; }
-        .campaign-banner { background: #ff4d6d; color: white; font-size: 11px; padding: 3px 10px; border-radius: 10px; margin-bottom: 10px; display: none; }
     </style>
 </head>
 <body>
 <div class="card">
     <div class="main-title">きみは今日<br>いちごを食べたか</div>
     <div class="sub-nickname">今日イチ</div>
-    <div id="campaign-info" class="campaign-banner">🍓 今日は15日！いちごポイント2倍デー 🍓</div>
 
     <div class="counter-group">
-        <div class="item-row">
-            <div class="item-label">🍓 生のいちご</div>
-            <div class="controls">
-                <button class="btn-minus" onclick="change('raw', -1)">−</button>
-                <span class="count-num" id="raw-count">0</span>
-                <button class="btn-plus" onclick="change('raw', 1)">＋</button>
-                <button class="btn-clear" onclick="clearItem('raw')">C</button>
+        <div class="item-row"><div class="item-label">🍓 生のいちご</div><div class="controls"><button class="btn-minus" onclick="change('raw', -1)">−</button><span class="count-num" id="raw-count">0</span><button class="btn-plus" onclick="change('raw', 1)">＋</button></div></div>
+        <div class="item-row"><div class="item-label">🥄 ジャム(杯)</div><div class="controls"><button class="btn-minus" onclick="change('jam', -1)">−</button><span class="count-num" id="jam-count">0</span><button class="btn-plus" onclick="change('jam', 1)">＋</button></div></div>
+        <div class="item-row" style="flex-direction: column; align-items: flex-start;">
+            <div style="display: flex; width: 100%; justify-content: space-between; align-items: center;">
+                <div class="item-label">🍰 スイーツ系</div>
+                <div class="controls"><button class="btn-minus" onclick="change('sweet', -1)">−</button><span class="count-num" id="sweet-count">0</span><button class="btn-plus" onclick="change('sweet', 1)">＋</button></div>
             </div>
-        </div>
-        <div class="item-row">
-            <div class="item-label">🥄 ジャム(杯)</div>
-            <div class="controls">
-                <button class="btn-minus" onclick="change('jam', -1)">−</button>
-                <span class="count-num" id="jam-count">0</span>
-                <button class="btn-plus" onclick="change('jam', 1)">＋</button>
-                <button class="btn-clear" onclick="clearItem('jam')">C</button>
-            </div>
-        </div>
-        <div class="item-row">
-            <div class="item-label">🍰 スイーツ系</div>
-            <div class="controls">
-                <button class="btn-minus" onclick="change('sweet', -1)">−</button>
-                <span class="count-num" id="sweet-count">0</span>
-                <button class="btn-plus" onclick="change('sweet', 1)">＋</button>
-                <button class="btn-clear" onclick="clearItem('sweet')">C</button>
-            </div>
+            <select id="sweet-type" class="sweet-select">
+                <option value="2.0">ショートケーキ (2.0🍓)</option>
+                <option value="1.5">いちご大福 (1.5🍓)</option>
+                <option value="3.0">いちごパフェ (3.0🍓)</option>
+                <option value="1.0">いちごチョコ (1.0🍓)</option>
+            </select>
         </div>
     </div>
 
@@ -69,41 +73,70 @@
     <div id="judgment-area">
         <div class="shogo" id="shogo-text"></div>
         <p id="comment-text" style="font-size:14px; color:#7a4a4a;"></p>
+        
+        <div id="rakuten-box" class="rakuten-area">
+            <div id="rakuten-msg" class="rakuten-msg"></div>
+            <a id="rakuten-url" href="" class="rakuten-link" target="_blank"></a>
+        </div>
     </div>
 
-    <a href="ichigo_log.html" class="btn-nav">🗓️ 履歴・カレンダーを見る</a>
-    <br>
-    <a href="index.html" style="color:#888; font-size:12px; text-decoration:none;">ねこたスタジオへ戻る</a>
+    <a href="ichigo_log.html" class="btn-nav">🗓️ 履歴を見る</a>
+    <a href="index.html" style="color:#888; font-size:12px; text-decoration:none; margin-top:15px; display:inline-block;">スタジオへ戻る</a>
 </div>
 
 <script>
     let counts = { raw: 0, jam: 0, sweet: 0 };
-    window.onload = () => { if (new Date().getDate() === 15) document.getElementById('campaign-info').style.display = 'inline-block'; };
-
     function change(type, delta) { counts[type] = Math.max(0, counts[type] + delta); updateUI(); }
-    function clearItem(type) { if(confirm("この項目を0に戻しますか？")) { counts[type] = 0; updateUI(); } }
     function updateUI() { for(let k in counts) document.getElementById(k + '-count').innerText = counts[k]; }
 
     function judge() {
-        const now = new Date();
-        const fullDateKey = `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}`;
-        let total = (Number(counts.raw) * 1.0) + (Number(counts.jam) * 0.5) + (Number(counts.sweet) * 2.0);
-        if (now.getDate() === 15) total *= 2;
+        const sweetMultiplier = parseFloat(document.getElementById('sweet-type').value);
+        let total = (Number(counts.raw) * 1.0) + (Number(counts.jam) * 0.5) + (Number(counts.sweet) * sweetMultiplier);
+        if (new Date().getDate() === 15) total *= 2;
 
-        let shogo = total >= 10 ? "いちごの化身" : total >= 5 ? "いちご騎士" : total >= 1 ? "いちご愛好家" : "いちご見習い";
+        let shogo = "", rakutenText = "", rakutenUrl = "", rankClass = "";
+        
+        // 通常のいちご検索URL
+        const normalUrl = "https://hb.afl.rakuten.co.jp/hgc/38bc4499.7d06e22c.38bc449a.2e400495/?pc=https%3A%2F%2Fsearch.rakuten.co.jp%2Fsearch%2Fmall%2F%25E3%2581%2584%25E3%2581%25A1%25E3%2581%2594%2F&link_type=hybrid_url";
+        // 最高級あまおう検索URL
+        const premiumUrl = "https://hb.afl.rakuten.co.jp/hgc/38bc4499.7d06e22c.38bc449a.2e400495/?pc=https%3A%2F%2Fsearch.rakuten.co.jp%2Fsearch%2Fmall%2F%25E3%2581%2582%25E3%2581%25BE%25E3%2581%258A%25E3%2581%2586%2B%25E3%2582%25AE%25E3%2583%2595%25E3%2583%2588%2F&link_type=hybrid_url";
+
+        if (total >= 10) {
+            shogo = "いちごの化身";
+            rakutenText = "✨ さらなる高みへ！最高級苺を召喚 ✨";
+            rakutenUrl = premiumUrl;
+            rankClass = "rank-gold";
+        } else {
+            shogo = total >= 5 ? "いちご騎士" : total >= 1 ? "いちご愛好家" : "いちご見習い";
+            rakutenText = "🍓 足りない分を楽天で補給する 🍓";
+            rakutenUrl = normalUrl;
+            rankClass = "rank-normal";
+        }
+
         document.getElementById('shogo-text').innerText = "【" + shogo + "】";
         document.getElementById('comment-text').innerText = "今日の摂取量は " + total.toFixed(1) + " 🍓 でした！";
+        
+        // 楽天リンクの更新
+        const rBox = document.getElementById('rakuten-box');
+        rBox.className = "rakuten-area " + rankClass;
+        document.getElementById('rakuten-msg').innerText = total >= 1 ? "素晴らしい摂取量です！" : "もっと徳を積みましょう";
+        document.getElementById('rakuten-url').innerText = rakutenText;
+        document.getElementById('rakuten-url').href = rakutenUrl;
+        
         document.getElementById('judgment-area').style.display = 'block';
+        rBox.style.display = 'block';
 
+        // 履歴保存処理（前回と同様）
+        saveHistory(total, shogo);
+    }
+
+    function saveHistory(total, shogo) {
+        const now = new Date();
+        const fullDateKey = `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}`;
         let history = JSON.parse(localStorage.getItem('ichigo-history') || '[]');
         history = history.filter(h => h.fullDateKey !== fullDateKey);
-        history.unshift({ 
-            date: `${now.getMonth()+1}/${now.getDate()}`, 
-            fullDateKey: fullDateKey, 
-            shogo: shogo, 
-            score: Number(total) 
-        });
-        localStorage.setItem('ichigo-history', JSON.stringify(history));
+        history.unshift({ date: `${now.getMonth()+1}/${now.getDate()}`, fullDateKey, shogo, score: Number(total) });
+        localStorage.setItem('ichigo-history', JSON.stringify(history.slice(0, 31)));
     }
 </script>
 </body>
