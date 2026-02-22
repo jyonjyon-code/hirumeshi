@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>今日イチ | きみは今日いちごを食べたか</title>
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Zen Maru Gothic', sans-serif; text-align: center; background: #fff5f6; padding: 20px; color: #4a1a1a; margin: 0; }
+        .card { background: white; padding: 25px; border-radius: 30px; box-shadow: 0 10px 30px rgba(255,100,120,0.15); display: inline-block; width: 95%; max-width: 400px; border: 4px solid #ff4d6d; box-sizing: border-box; }
+        h1 { color: #ff4d6d; font-size: 24px; margin-bottom: 5px; }
+        .subtitle { font-size: 12px; color: #ff85a1; margin-bottom: 20px; font-weight: bold; }
+        
+        .counter-group { background: #fffcfc; border-radius: 20px; padding: 15px; margin-bottom: 15px; border: 1px solid #ffe5e9; }
+        .item-row { display: flex; align-items: center; justify-content: space-between; margin: 12px 0; }
+        .item-label { font-size: 16px; font-weight: bold; }
+        .controls { display: flex; align-items: center; gap: 12px; }
+        .btn-round { width: 32px; height: 32px; border-radius: 50%; border: none; background: #ff4d6d; color: white; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        .count-num { font-size: 18px; font-weight: 900; min-width: 25px; color: #ff4d6d; }
+
+        /* 詳細入力エリア */
+        .advanced-toggle { font-size: 12px; color: #ff85a1; cursor: pointer; text-decoration: underline; margin-bottom: 10px; display: block; }
+        #advanced-area { display: none; background: #fff0f3; border-radius: 15px; padding: 15px; margin-bottom: 15px; border: 1px solid #ffccd5; text-align: left; }
+        .select-row { margin-bottom: 10px; }
+        select { width: 100%; padding: 8px; border-radius: 10px; border: 1px solid #ff4d6d; font-family: 'Zen Maru Gothic', sans-serif; font-size: 14px; }
+
+        #judgment-area { display: none; margin-top: 20px; padding: 20px; background: #fffbf0; border-radius: 20px; border: 2px dashed #ff4d6d; animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes pop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        
+        .shogo { font-size: 22px; font-weight: 900; color: #ff4d6d; margin: 10px 0; }
+        .comment { font-size: 14px; color: #7a4a4a; line-height: 1.5; white-space: pre-wrap; }
+
+        .btn-main { background: #ff4d6d; color: white; border: none; padding: 15px 30px; border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 18px; width: 100%; margin-top: 10px; box-shadow: 0 4px 0 #c92a42; }
+        .btn-main:active { transform: translateY(2px); box-shadow: 0 2px 0 #c92a42; }
+        
+        .btn-rakuten { background: #bf0000; color: white; text-decoration: none; padding: 12px; border-radius: 50px; display: block; margin-top: 15px; font-weight: bold; font-size: 14px; }
+        .btn-back { background: #888; color: white; border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; text-decoration: none; display: inline-block; margin-top: 30px; font-size: 13px; }
+
+        .history { margin-top: 30px; text-align: left; }
+        .history h3 { font-size: 16px; color: #ff4d6d; border-bottom: 2px solid #ff4d6d; margin-bottom: 10px; }
+        .history-item { font-size: 12px; padding: 8px; border-bottom: 1px solid #ffeef0; display: flex; justify-content: space-between; }
+        
+        .campaign-banner { background: #ff4d6d; color: white; font-size: 11px; padding: 3px 10px; border-radius: 10px; margin-bottom: 10px; display: none; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1>今日イチ</h1>
+    <div class="subtitle">きみは今日いちごを食べたか</div>
+
+    <div id="campaign-info" class="campaign-banner">🍓 今日は15日！ポイント2倍デー 🍓</div>
+
+    <div class="counter-group">
+        <div class="item-row">
+            <div class="item-label">🍓 生のいちご</div>
+            <div class="controls">
+                <button class="btn-round" onclick="change('raw', -1)">-</button>
+                <span class="count-num" id="raw-count">0</span>
+                <button class="btn-round" onclick="change('raw', 1)">+</button>
+            </div>
+        </div>
+        <div class="item-row">
+            <div class="item-label">🥄 ジャム(杯)</div>
+            <div class="controls">
+                <button class="btn-round" onclick="change('jam', -1)">-</button>
+                <span class="count-num" id="jam-count">0</span>
+                <button class="btn-round" onclick="change('jam', 1)">+</button>
+            </div>
+        </div>
+        <div class="item-row">
+            <div class="item-label">🍰 スイーツ系</div>
+            <div class="controls">
+                <button class="btn-round" onclick="change('sweet', -1)">-</button>
+                <span class="count-num" id="sweet-count">0</span>
+                <button class="btn-round" onclick="change('sweet', 1)">+</button>
+            </div>
+        </div>
+    </div>
+
+    <span class="advanced-toggle" onclick="toggleAdvanced()">▼ もっと詳しく入力（チョコ・飲料など）</span>
+    
+    <div id="advanced-area">
+        <div class="select-row">
+            <select id="extra-item" onchange="addExtra()">
+                <option value="0">項目を選択して追加</option>
+                <option value="2.0">いちご大福 (+2.0)</option>
+                <option value="1.5">いちごアイス (+1.5)</option>
+                <option value="0.5">いちご飴 (+0.5)</option>
+                <option value="0.3">いちご味のチョコ・菓子 (+0.3)</option>
+                <option value="0.2">いちごオレ・飲料 (+0.2)</option>
+            </select>
+        </div>
+        <div style="font-size: 12px; color: #ff4d6d; font-weight: bold;">
+            詳細ボーナス: <span id="extra-total">0.0</span> 🍓
+        </div>
+    </div>
+
+    <button class="btn-main" onclick="judge()">摂取量を報告する</button>
+
+    <div id="judgment-area">
+        <div id="date-label" style="font-size: 11px; color: #999;"></div>
+        <div class="shogo" id="shogo-text"></div>
+        <p class="comment" id="comment-text"></p>
+        
+        <a id="rakuten-link" class="btn-rakuten" target="_blank" rel="nofollow sponsored noopener">
+            いちごを補充する（楽天）
+        </a>
+    </div>
+
+    <div class="history">
+        <h3>🍓 最近のいちご記録</h3>
+        <div id="history-list"></div>
+    </div>
+
+    <a href="index.html" class="btn-back">ねこたスタジオへ戻る</a>
+</div>
+
+<script>
+    const RAKUTEN_AFID = "51366796.8818598a.51366797.ddbb51d0";
+    let counts = { raw: 0, jam: 0, sweet: 0 };
+    let extraScore = 0.0;
+
+    // 起動時に15日かチェック
+    window.onload = function() {
+        const today = new Date().getDate();
+        if (today === 15) {
+            document.getElementById('campaign-info').style.display = 'inline-block';
+        }
+        displayHistory();
+    };
+
+    function change(type, delta) {
+        counts[type] = Math.max(0, counts[type] + delta);
+        document.getElementById(type + '-count').innerText = counts[type];
+    }
+
+    function toggleAdvanced() {
+        const area = document.getElementById('advanced-area');
+        area.style.display = area.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function addExtra() {
+        const select = document.getElementById('extra-item');
+        const val = parseFloat(select.value);
+        if (val > 0) {
+            extraScore += val;
+            document.getElementById('extra-total').innerText = extraScore.toFixed(1);
+            select.value = "0"; 
+        }
+    }
+
+    function judge() {
+        const now = new Date();
+        const date = now.getDate();
+        const dateStr = `${now.getMonth()+1}/${date}`;
+        
+        // 基本計算
+        let total = (counts.raw * 1.0) + (counts.jam * 0.5) + (counts.sweet * 2.0) + extraScore;
+        
+        // 15日ポイント2倍
+        let isCampaign = false;
+        if (date === 15) {
+            total = total * 2;
+            isCampaign = true;
+        }
+
+        let shogo = "";
+        let comment = "";
+
+        if (total === 0) {
+            shogo = "いちご欠乏症";
+            comment = "きみは今日、いちごを一粒も食べていないようだね。明日は赤いいちごに巡り会えますように。";
+        } else if (total < 2) {
+            shogo = "いちご初心者";
+            comment = "かすかにいちごの気配を感じた一日。もっと真っ赤に染まっていこう。";
+        } else if (total < 8) {
+            shogo = "いちご愛好家";
+            comment = "なかなかの摂取量です。きみの血の数パーセントはいちごに置き換わっているよ！";
+        } else if (total < 15) {
+            shogo = "いちごマスター";
+            comment = "素晴らしい！いちごの妖精が君の肩で休憩し始めるレベルだ。";
+        } else {
+            shogo = "いちごの化身";
+            comment = "もはや君自身がいちごと言っても過言ではない。甘酸っぱい人生を謳歌しているね！";
+        }
+
+        if (isCampaign && total > 0) {
+            shogo = "【祝15日】" + shogo;
+            comment = "今日は15日（いちごの日）！ポイント2倍で称号がパワーアップ中だよ！🍓🍓\n\n" + comment;
+        }
+
+        document.getElementById('date-label').innerText = dateStr + " の判定";
+        document.getElementById('shogo-text').innerText = "【" + shogo + "】";
+        document.getElementById('comment-text').innerText = comment;
+        document.getElementById('judgment-area').style.display = 'block';
+
+        const keywords = ["あまおう いちご", "とちおとめ", "いちご スイーツ", "いちご 詰め合わせ"];
+        const randomKey = keywords[Math.floor(Math.random() * keywords.length)];
+        document.getElementById('rakuten-link').href = `https://hb.afl.rakuten.co.jp/hgc/${RAKUTEN_AFID}/?pc=https%3A%2F%2Fsearch.rakuten.co.jp%2Fsearch%2Fmall%2F${encodeURIComponent(randomKey)}%2F`;
+
+        saveHistory(dateStr, shogo, total.toFixed(1));
+    }
+
+    function saveHistory(date, shogo, score) {
+        let history = JSON.parse(localStorage.getItem('ichigo-history') || '[]');
+        history.unshift({ date, shogo, score });
+        history = history.slice(0, 5);
+        localStorage.setItem('ichigo-history', JSON.stringify(history));
+        displayHistory();
+    }
+
+    function displayHistory() {
+        const history = JSON.parse(localStorage.getItem('ichigo-history') || '[]');
+        const list = document.getElementById('history-list');
+        list.innerHTML = history.length ? history.map(h => `
+            <div class="history-item">
+                <span>${h.date}</span>
+                <span><strong>${h.shogo}</strong></span>
+                <span>${h.score}🍓</span>
+            </div>
+        `).join('') : '<div style="font-size:11px; color:#ccc;">まだ記録はありません</div>';
+    }
+</script>
+
+</body>
+</html>
