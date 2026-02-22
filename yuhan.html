@@ -5,39 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
-    <title>ゆうはんなにしよ</title>
+    <title>ゆうはんなにしよ | ねこたスタジオ</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        /* 配色を明るいネイビー ＆ 温かいオレンジに変更 */
         body { font-family: 'Hiragino Kaku Gothic ProN', sans-serif; text-align: center; background: #eceff1; padding: 20px; color: #333; margin: 0; }
-        
         .card { background: #ffffff; padding: 30px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); display: inline-block; width: 90%; max-width: 380px; border: 4px solid #f39c12; margin-top: 20px; box-sizing: border-box; }
-        
         h2 { color: #f39c12; margin-bottom: 20px; font-size: 26px; letter-spacing: 2px; }
-        
-        /* スロット部分を少し明るいブルーに */
         #slot-display { font-size: 80px; margin: 20px 0; min-height: 120px; display: flex; align-items: center; justify-content: center; background: #fff9f0; border-radius: 15px; border: 2px solid #f39c12; }
-        
         .mode-selector { margin-bottom: 25px; display: flex; justify-content: center; gap: 5px; }
         .mode-btn { border: 2px solid #f39c12; padding: 10px 5px; cursor: pointer; background: white; border-radius: 15px; font-size: 12px; color: #f39c12; font-weight: bold; flex: 1; transition: 0.3s; }
         .active-mode { background: #f39c12; color: white; }
-        
         #result-area { display: none; background: #fffcf0; border: 2px dashed #f39c12; padding: 20px; border-radius: 15px; margin-top: 20px; animation: fadeIn 0.5s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        
         .btn { color: white; border: none; padding: 15px 25px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; margin-top: 15px; font-size: 16px; width: 100%; box-sizing: border-box; }
-        
-        /* ボタンの色味を調整 */
-        .btn-action { background: #e67e22; } /* オレンジ */
-        .btn-rakuten { background: #bf0000; } /* 楽天レッド */
-        .btn-search { background: #3498db; } /* ブルー */
+        .btn-action { background: #e67e22; }
+        .btn-rakuten { background: #bf0000; }
+        .btn-search { background: #3498db; }
         .btn-retry { background: #95a5a6; font-size: 14px; padding: 10px; }
-        .btn-back { background: #888; color: white; border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; margin-top: 25px; font-size: 14px; }
-
+        
+        /* SNS・ナビゲーション */
+        .studio-nav { margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px; }
+        .btn-back { background: #888; color: white; border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; font-size: 14px; margin-bottom: 10px; width: 100%; box-sizing: border-box; }
+        .sns-group { display: flex; gap: 10px; }
+        .btn-sns { color: white; border: none; padding: 10px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px; flex: 1; }
+        .btn-x { background: #000; }
+        .btn-insta { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
+        
         #hint { font-size: 14px; color: #7f8c8d; margin-top: 10px; }
     </style>
 </head>
 <body>
-    
 <div class="card">
     <h2>ゆうはんなにしよ</h2>
     <div class="mode-selector">
@@ -45,49 +42,77 @@
         <button id="buy-btn" class="mode-btn" onclick="setMode('buy')">買ってくる</button>
         <button id="out-btn" class="mode-btn" onclick="setMode('out')">外食する</button>
     </div>
-
     <div id="slot-display">🍳</div>
     <button id="start-btn" class="btn btn-action" onclick="startSlot()">メニューを決める！</button>
     <p id="hint">今夜の気分を選んでスタート！</p>
-
+    
     <div id="result-area">
         <h2 id="food-result" style="margin: 0 0 10px; font-size: 28px; color: #f39c12;"></h2>
         <p id="food-desc" style="font-size: 14px; color: #555; margin-bottom: 20px;"></p>
         
+        <a id="x-share-btn" class="btn btn-x" target="_blank">
+            <i class="fa-brands fa-x-twitter"></i> 結果をXで報告する
+        </a>
+        
         <a id="action-link" class="btn btn-search" target="_blank">レシピを検索</a>
         <a id="rakuten-link" class="btn btn-rakuten" target="_blank" rel="nofollow sponsored noopener">楽天で探す</a>
-        
         <button class="btn btn-retry" onclick="reset()">もういちど決める</button>
     </div>
 
-    <br>
-    <a href="index.html" class="btn-back">ねこたスタジオへ戻る</a>
+    <div class="studio-nav">
+        <a href="index.html" class="btn-back">ねこたスタジオへ戻る</a>
+        <div class="sns-group">
+            <a href="https://x.com/necotatu2" target="_blank" class="btn-sns btn-x">
+                <i class="fa-brands fa-x-twitter"></i> 公式X
+            </a>
+            <a href="https://www.instagram.com/necotastudio" target="_blank" class="btn-sns btn-insta">
+                <i class="fa-brands fa-instagram"></i> 公式Insta
+            </a>
+        </div>
+    </div>
 </div>
 
 <script>
     const RAKUTEN_AFID = "51366796.8818598a.51366797.ddbb51d0"; 
-
+    const APP_URL = "https://jyonjyon-code.github.io/hirumeshi/"; // GitHubのリンク
     let currentMode = 'cook';
-    const emojis = ["🍳", "🍱", "🍕", "🍜", "🍛", "🥘", "🍖", "🥗"];
+    const emojis = ["🍳", "🍱", "🍕", "🍜", "🍛", "🥘", "🍖", "🥗", "🍣", "🍔", "🍝", "🥟"];
     
+    // メニューデータ（省略なし）
     const menuData = {
         cook: [
             { name: "ハンバーグ", keyword: "ハンバーグ", desc: "ふっくらジューシーに焼いちゃおう！" },
             { name: "生姜焼き", keyword: "生姜焼き", desc: "ご飯がすすむ定番メニュー！" },
             { name: "麻婆豆腐", keyword: "麻婆豆腐", desc: "ピリ辛でスタミナアップ！" },
-            { name: "パスタ", keyword: "パスタ", desc: "冷蔵庫の余り物でおしゃれに。" }
+            { name: "パスタ", keyword: "パスタ", desc: "冷蔵庫の余り物でおしゃれに。" },
+            { name: "オムライス", keyword: "オムライス", desc: "ケチャップで可愛くメッセージを書く？" },
+            { name: "野菜炒め", keyword: "野菜炒め", desc: "シャキシャキ野菜で健康的に。" },
+            { name: "肉じゃが", keyword: "肉じゃが", desc: "煮崩れ注意！おふくろの味。" },
+            { name: "親子丼", keyword: "親子丼", desc: "鶏肉とたまごのハーモニー。" },
+            { name: "焼飯（チャーハン）", keyword: "チャーハン", desc: "強火でパラパラに仕上げて！" },
+            { name: "鶏の照り焼き", keyword: "鶏 照り焼き", desc: "甘辛いタレがたまらない一品。" }
         ],
         buy: [
             { name: "お惣菜盛り合わせ", keyword: "お惣菜", desc: "スーパーの特売品を狙え！" },
             { name: "デリバリーピザ", keyword: "ピザ", desc: "たまには楽して贅沢気分。" },
             { name: "お寿司パック", keyword: "寿司", desc: "今日もお疲れ様。ご褒美寿司！" },
-            { name: "冷凍餃子", keyword: "冷凍餃子", desc: "今の冷凍食品はプロの味！" }
+            { name: "冷凍餃子", keyword: "冷凍餃子", desc: "今の冷凍食品はプロの味！" },
+            { name: "コンビニ弁当", keyword: "コンビニ弁当", desc: "手軽さナンバーワン。新作あるかな？" },
+            { name: "ホットスナック", keyword: "ホットスナック", desc: "チキンとビールで最高の夜に。" },
+            { name: "ほか弁", keyword: "弁当", desc: "出来立ての温かさが嬉しい。" },
+            { name: "スーパーの刺身", keyword: "刺身盛り合わせ", desc: "今夜は晩酌スタイルで。" },
+            { name: "カップ麺セット", keyword: "カップヌードル", desc: "究極の手抜き！トッピングで豪華に。" }
         ],
         out: [
             { name: "焼肉", keyword: "焼肉", desc: "元気が出る魔法の食べ物！" },
             { name: "ラーメン", keyword: "ラーメン", desc: "こだわりの一杯を探しに行こう。" },
             { name: "ファミレス", keyword: "ファミレス", desc: "好きなものを自由に選ぼう！" },
-            { name: "イタリアン", keyword: "イタリアン", desc: "ワインと一緒にゆっくりと。" }
+            { name: "イタリアン", keyword: "イタリアン", desc: "パスタやピザを囲んでゆっくり。" },
+            { name: "回転寿司", keyword: "回転寿司", desc: "回るお寿司をどんどん取ろう！" },
+            { name: "定食屋さん", keyword: "定食", desc: "バランスの良い和食でリセット。" },
+            { name: "カレー屋", keyword: "インドカレー", desc: "本格スパイスでデトックス！" },
+            { name: "居酒屋ごはん", keyword: "居酒屋", desc: "おつまみを色々つまむ楽しさ。" },
+            { name: "ファストフード", keyword: "バーガー", desc: "ガッツリいきたい気分なら！" }
         ]
     };
 
@@ -102,7 +127,6 @@
         const display = document.getElementById('slot-display');
         const startBtn = document.getElementById('start-btn');
         startBtn.style.display = 'none';
-        
         let count = 0;
         const timer = setInterval(() => {
             display.innerText = emojis[Math.floor(Math.random() * emojis.length)];
@@ -125,6 +149,13 @@
         document.getElementById('food-result').innerText = res.name;
         document.getElementById('food-desc').innerText = res.desc;
 
+        // --- Xシェアリンクの作成 ---
+        const modeText = currentMode === 'cook' ? '自炊する' : currentMode === 'buy' ? '買ってくる' : '外食する';
+        const tweetText = encodeURIComponent(`今夜の夕食メニューは…\n【 ${res.name} 】に決定！\n(${modeText})\n\n#ゆうはんなにしよ #ねこたスタジオ\n`);
+        const tweetUrl = `https://twitter.com/intent/tweet?text=${tweetText}&url=${encodeURIComponent(APP_URL)}`;
+        document.getElementById('x-share-btn').href = tweetUrl;
+        // -------------------------
+
         const actionLink = document.getElementById('action-link');
         if (currentMode === 'out') {
             actionLink.innerText = "近くのお店を探す";
@@ -136,7 +167,6 @@
 
         const rakutenKeyword = res.keyword + (currentMode === 'cook' ? " 材料" : " お取り寄せ");
         const rakutenBase = "https://hb.afl.rakuten.co.jp/hgc/" + RAKUTEN_AFID + "/?pc=https%3A%2F%2Fsearch.rakuten.co.jp%2Fsearch%2Fmall%2F" + encodeURIComponent(rakutenKeyword) + "%2F";
-        
         const rakutenBtn = document.getElementById('rakuten-link');
         rakutenBtn.href = rakutenBase;
         rakutenBtn.innerText = res.name + " を楽天で探す";
@@ -150,6 +180,5 @@
         document.getElementById('hint').style.display = 'block';
     }
 </script>
-
 </body>
 </html>
