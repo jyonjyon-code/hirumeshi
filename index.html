@@ -46,7 +46,6 @@
         }
         .app-card:hover { transform: translateY(-8px); }
         
-        /* アイコン表示エリアの統一 */
         .app-icon-wrap { 
             padding: 30px 0; 
             background: #fffcf0; 
@@ -62,7 +61,6 @@
             object-fit: cover;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
-        /* 絵文字アイコン用（画像がない場合） */
         .app-icon-emoji { font-size: 70px; }
         
         .app-info { padding: 20px; flex-grow: 1; }
@@ -100,7 +98,8 @@
 <div class="container">
     <div class="app-card">
         <div class="app-icon-wrap">
-            <img src="icon.png" alt="ひるめし" class="app-icon-img">
+            <img src="icon.png" alt="ひるめし" class="app-icon-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <span class="app-icon-emoji" style="display:none;">🍱</span>
         </div>
         <div class="app-info">
             <h2>ひるめしえらんで</h2>
@@ -126,7 +125,8 @@
 
     <div class="app-card" style="border-top: 5px solid var(--ichigo-pink);">
         <div class="app-icon-wrap" style="background: #fff5f6;">
-            <img src="icon-ichigo.jpg" alt="今日イチ" class="app-icon-img">
+            <img src="icon-ichigo.jpg" alt="今日イチ" class="app-icon-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <span class="app-icon-emoji" style="display:none;">🍓</span>
         </div>
         <div class="app-info">
             <h2>今日イチ</h2>
