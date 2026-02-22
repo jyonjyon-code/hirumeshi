@@ -26,7 +26,15 @@
         .history-score { font-weight: 900; color: #4a1a1a; margin-right: 15px; }
 
         .btn-del-item { background: #eee; color: #888; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 12px; cursor: pointer; line-height: 22px; padding: 0; }
-        .btn-back { display: block; margin-top: 20px; color: white; background: #ff4d6d; text-decoration: none; padding: 12px; border-radius: 50px; font-size: 14px; font-weight: bold; box-shadow: 0 4px 0 #c92a42; }
+        
+        /* ナビゲーションとSNS */
+        .studio-nav { margin-top: 20px; border-top: 1px solid #ffe5e9; padding-top: 20px; }
+        .btn-back { display: block; margin-bottom: 10px; color: white; background: #ff4d6d; text-decoration: none; padding: 12px; border-radius: 50px; font-size: 14px; font-weight: bold; box-shadow: 0 4px 0 #c92a42; text-align: center; }
+        .sns-group { display: flex; gap: 10px; margin-top: 10px; }
+        .btn-sns { color: white; border: none; padding: 10px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px; flex: 1; }
+        .btn-x { background: #000; }
+        .btn-insta { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
+        
         .btn-delete-all { color: #cc0000; font-size: 11px; background: none; border: none; text-decoration: underline; cursor: pointer; float: right; }
     </style>
 </head>
@@ -51,7 +59,17 @@
     </h3>
     <div id="history-list"></div>
 
-    <a href="ichigo.html" class="btn-back">いちごを報告しに行く</a>
+    <div class="studio-nav">
+        <a href="ichigo.html" class="btn-back">いちごを報告しに行く</a>
+        <div class="sns-group">
+            <a href="https://x.com/necotatu2" target="_blank" class="btn-sns btn-x">
+                <i class="fa-brands fa-x-twitter"></i> 公式X
+            </a>
+            <a href="https://www.instagram.com/necotastudio" target="_blank" class="btn-sns btn-insta">
+                <i class="fa-brands fa-instagram"></i> 公式Insta
+            </a>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -64,7 +82,7 @@
         const month = now.getMonth(); 
         
         let mTotal = 0, aTotal = 0;
-        let dailyTotals = {}; // カレンダー合算用
+        let dailyTotals = {}; 
 
         history.forEach(h => {
             const s = Number(h.score) || 0;
@@ -72,7 +90,6 @@
             if(h.fullDateKey && h.fullDateKey.startsWith(`${year}-${month + 1}-`)) {
                 mTotal += s;
             }
-            // 日ごとの合計を計算
             dailyTotals[h.fullDateKey] = (dailyTotals[h.fullDateKey] || 0) + s;
         });
 
@@ -82,7 +99,6 @@
         let rank = aTotal >= 300 ? "🍓 いちごの神様" : aTotal >= 50 ? "いちご貴族" : aTotal >= 10 ? "いちご国民" : "いちご市民";
         document.getElementById('total-rank').innerText = "現在の属性: " + rank;
 
-        // カレンダー描画
         const firstDay = new Date(year, month, 1).getDay();
         const lastDate = new Date(year, month + 1, 0).getDate();
         let html = '';
@@ -97,7 +113,6 @@
         document.getElementById('calendar-grid').innerHTML = html;
         document.getElementById('calendar-month').innerText = `${year}年 ${month + 1}月`;
         
-        // 個別履歴リスト（時間付き）
         const listHtml = history.map((h, index) => `
             <div class="history-item">
                 <div class="history-info">
