@@ -13,251 +13,101 @@
         .sub-nickname { font-size: 28px; color: #ff4d6d; margin-bottom: 20px; display: block; font-weight: 900; background: #fff0f3; border-radius: 10px; padding: 5px; }
         
         .counter-group { background: #fffcfc; border-radius: 20px; padding: 15px; margin-bottom: 10px; border: 1px solid #ffe5e9; }
-        .item-row { display: flex; align-items: center; justify-content: space-between; margin: 12px 0; }
+        .item-row { display: flex; align-items: center; justify-content: space-between; margin: 15px 0; padding-bottom: 10px; border-bottom: 1px dashed #ffe5e9; }
+        .item-row:last-child { border-bottom: none; }
         .item-label { font-size: 15px; font-weight: bold; flex-grow: 1; text-align: left; }
-        .controls { display: flex; align-items: center; gap: 8px; }
         
-        /* ボタン類 */
-        .btn-round { width: 30px; height: 30px; border-radius: 50%; border: none; background: #ff4d6d; color: white; font-size: 16px; cursor: pointer; font-weight: bold; }
-        .btn-clear { width: 24px; height: 24px; border-radius: 4px; border: 1px solid #ccc; background: white; color: #888; font-size: 11px; cursor: pointer; font-weight: bold; }
-        .count-num { font-size: 18px; font-weight: 900; min-width: 25px; color: #ff4d6d; text-align: center; }
-
-        .btn-reset-all { font-size: 11px; color: #888; background: none; border: 1px solid #eee; border-radius: 5px; cursor: pointer; padding: 2px 8px; margin-top: 5px; }
-
-        .advanced-toggle { font-size: 12px; color: #ff85a1; cursor: pointer; text-decoration: underline; margin-bottom: 10px; display: block; }
-        #advanced-area { display: none; background: #fff0f3; border-radius: 15px; padding: 15px; margin-bottom: 15px; border: 1px solid #ffccd5; text-align: left; }
-        select { width: 100%; padding: 8px; border-radius: 10px; border: 1px solid #ff4d6d; font-family: 'Zen Maru Gothic', sans-serif; }
-
-        #judgment-area { display: none; margin-top: 20px; padding: 20px; background: #fffbf0; border-radius: 20px; border: 2px dashed #ff4d6d; animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        @keyframes pop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .controls { display: flex; align-items: center; gap: 5px; }
+        .btn-plus { width: 40px; height: 40px; border-radius: 50%; border: none; background: #ff4d6d; color: white; font-size: 20px; cursor: pointer; font-weight: bold; box-shadow: 0 3px 0 #c92a42; }
+        .btn-minus { width: 32px; height: 32px; border-radius: 50%; border: 2px solid #ff4d6d; background: white; color: #ff4d6d; font-size: 18px; cursor: pointer; font-weight: bold; }
+        .btn-clear { width: 32px; height: 32px; border-radius: 8px; border: 1px solid #ccc; background: #f8f8f8; color: #888; font-size: 11px; cursor: pointer; font-weight: bold; margin-left: 8px; }
         
-        .shogo { font-size: 22px; font-weight: 900; color: #ff4d6d; margin: 10px 0; }
-        .comment { font-size: 14px; color: #7a4a4a; line-height: 1.5; white-space: pre-wrap; }
+        .count-num { font-size: 22px; font-weight: 900; min-width: 35px; color: #ff4d6d; text-align: center; }
 
-        .btn-main { background: #ff4d6d; color: white; border: none; padding: 15px 30px; border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 18px; width: 100%; margin-top: 10px; box-shadow: 0 4px 0 #c92a42; }
+        .btn-main { background: #ff4d6d; color: white; border: none; padding: 15px 30px; border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 18px; width: 100%; margin-top: 15px; box-shadow: 0 4px 0 #c92a42; }
         .btn-main:active { transform: translateY(2px); box-shadow: 0 2px 0 #c92a42; }
         
-        .btn-rakuten { background: #bf0000; color: white; text-decoration: none; padding: 12px; border-radius: 50px; display: block; margin-top: 15px; font-weight: bold; font-size: 14px; }
+        .btn-nav { display: block; margin-top: 20px; color: #ff4d6d; text-decoration: none; font-size: 14px; font-weight: bold; border: 2px solid #ff4d6d; padding: 10px; border-radius: 15px; background: white; }
+        .btn-nav:hover { background: #fff0f3; }
         
-        /* カレンダー */
-        .history { margin-top: 30px; text-align: left; }
-        .history h3 { font-size: 16px; color: #ff4d6d; border-bottom: 2px solid #ff4d6d; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        
-        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; background: #fffcfc; border: 1px solid #ffe5e9; padding: 5px; border-radius: 15px; }
-        .calendar-day { font-size: 10px; height: 45px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; background: white; border-radius: 5px; padding-top: 4px; border: 1px solid #fff5f6; }
-        .cal-score { font-size: 9px; color: #ff4d6d; font-weight: 900; margin-top: 2px; line-height: 1; }
-        .cal-ichigo { font-size: 10px; }
-        .cal-header { font-size: 10px; font-weight: bold; color: #ff85a1; text-align: center; padding: 5px 0; }
-
-        .history-item { font-size: 11px; padding: 8px; border-bottom: 1px solid #ffeef0; display: flex; justify-content: space-between; }
-        .btn-delete-all { font-size: 10px; color: #cc0000; background: none; border: none; text-decoration: underline; cursor: pointer; }
-
-        .btn-back { background: #888; color: white; border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; text-decoration: none; display: inline-block; margin-top: 30px; font-size: 13px; }
+        #judgment-area { display: none; margin-top: 20px; padding: 20px; background: #fffbf0; border-radius: 20px; border: 2px dashed #ff4d6d; animation: pop 0.4s; }
+        @keyframes pop { from { transform: scale(0.9); } to { transform: scale(1); } }
+        .shogo { font-size: 22px; font-weight: 900; color: #ff4d6d; }
         .campaign-banner { background: #ff4d6d; color: white; font-size: 11px; padding: 3px 10px; border-radius: 10px; margin-bottom: 10px; display: none; }
     </style>
 </head>
 <body>
-
 <div class="card">
     <div class="main-title">きみは今日<br>いちごを食べたか</div>
     <div class="sub-nickname">今日イチ</div>
-
-    <div id="campaign-info" class="campaign-banner">🍓 今日は15日！ポイント2倍デー 🍓</div>
+    <div id="campaign-info" class="campaign-banner">🍓 今日は15日！いちごポイント2倍デー 🍓</div>
 
     <div class="counter-group">
         <div class="item-row">
             <div class="item-label">🍓 生のいちご</div>
             <div class="controls">
-                <button class="btn-clear" onclick="clearItem('raw')">C</button>
-                <button class="btn-round" onclick="change('raw', -1)">-</button>
+                <button class="btn-minus" onclick="change('raw', -1)">−</button>
                 <span class="count-num" id="raw-count">0</span>
-                <button class="btn-round" onclick="change('raw', 1)">+</button>
+                <button class="btn-plus" onclick="change('raw', 1)">＋</button>
+                <button class="btn-clear" onclick="clearItem('raw')">C</button>
             </div>
         </div>
         <div class="item-row">
             <div class="item-label">🥄 ジャム(杯)</div>
             <div class="controls">
-                <button class="btn-clear" onclick="clearItem('jam')">C</button>
-                <button class="btn-round" onclick="change('jam', -1)">-</button>
+                <button class="btn-minus" onclick="change('jam', -1)">−</button>
                 <span class="count-num" id="jam-count">0</span>
-                <button class="btn-round" onclick="change('jam', 1)">+</button>
+                <button class="btn-plus" onclick="change('jam', 1)">＋</button>
+                <button class="btn-clear" onclick="clearItem('jam')">C</button>
             </div>
         </div>
         <div class="item-row">
             <div class="item-label">🍰 スイーツ系</div>
             <div class="controls">
-                <button class="btn-clear" onclick="clearItem('sweet')">C</button>
-                <button class="btn-round" onclick="change('sweet', -1)">-</button>
+                <button class="btn-minus" onclick="change('sweet', -1)">−</button>
                 <span class="count-num" id="sweet-count">0</span>
-                <button class="btn-round" onclick="change('sweet', 1)">+</button>
+                <button class="btn-plus" onclick="change('sweet', 1)">＋</button>
+                <button class="btn-clear" onclick="clearItem('sweet')">C</button>
             </div>
-        </div>
-        <button class="btn-reset-all" onclick="resetAll()">全項目をリセット</button>
-    </div>
-
-    <span class="advanced-toggle" onclick="toggleAdvanced()">▼ もっと詳しく入力</span>
-    <div id="advanced-area">
-        <select id="extra-item" onchange="addExtra()">
-            <option value="0">項目を選択して追加</option>
-            <option value="2.0">いちご大福 (+2.0)</option>
-            <option value="1.5">いちごアイス (+1.5)</option>
-            <option value="0.3">いちご味のチョコ・菓子 (+0.3)</option>
-            <option value="0.2">いちごオレ・飲料 (+0.2)</option>
-        </select>
-        <div style="font-size: 12px; color: #ff4d6d; font-weight: bold; margin-top: 8px;">
-            詳細ボーナス: <span id="extra-total">0.0</span> 🍓
-            <button class="btn-clear" style="margin-left:10px;" onclick="clearItem('extra')">C</button>
         </div>
     </div>
 
     <button class="btn-main" onclick="judge()">摂取量を報告する</button>
 
     <div id="judgment-area">
-        <div id="date-label" style="font-size: 11px; color: #999;"></div>
         <div class="shogo" id="shogo-text"></div>
-        <p class="comment" id="comment-text"></p>
-        <a id="rakuten-link" class="btn-rakuten" target="_blank" rel="nofollow sponsored noopener">いちごを補充する（楽天）</a>
+        <p id="comment-text" style="font-size:14px; color:#7a4a4a;"></p>
     </div>
 
-    <div class="history">
-        <h3><span>🗓️ いちごカレンダー</span></h3>
-        <div id="calendar-month" style="font-size: 12px; color: #ff4d6d; font-weight: bold; margin-bottom: 5px;"></div>
-        <div class="calendar-grid" id="calendar-grid"></div>
-
-        <h3>
-            <span>🍓 最近のいちご記録</span>
-            <button class="btn-delete-all" onclick="clearHistory()">全削除</button>
-        </h3>
-        <div id="history-list"></div>
-    </div>
-
-    <a href="index.html" class="btn-back">ねこたスタジオへ戻る</a>
+    <a href="ichigo_log.html" class="btn-nav">🗓️ 履歴・カレンダーを見る</a>
+    <br>
+    <a href="index.html" style="color:#888; font-size:12px; text-decoration:none;">ねこたスタジオへ戻る</a>
 </div>
 
 <script>
-    const RAKUTEN_AFID = "51366796.8818598a.51366797.ddbb51d0";
     let counts = { raw: 0, jam: 0, sweet: 0 };
-    let extraScore = 0.0;
+    window.onload = () => { if (new Date().getDate() === 15) document.getElementById('campaign-info').style.display = 'inline-block'; };
 
-    window.onload = function() {
-        if (new Date().getDate() === 15) document.getElementById('campaign-info').style.display = 'inline-block';
-        updateUI();
-        displayHistory();
-        renderCalendar();
-    };
-
-    function change(type, delta) {
-        counts[type] = Math.max(0, counts[type] + delta);
-        updateUI();
-    }
-
-    function clearItem(type) {
-        if (type === 'extra') {
-            extraScore = 0.0;
-            document.getElementById('extra-total').innerText = "0.0";
-        } else {
-            counts[type] = 0;
-        }
-        updateUI();
-    }
-
-    function resetAll() {
-        counts = { raw: 0, jam: 0, sweet: 0 };
-        extraScore = 0.0;
-        document.getElementById('extra-total').innerText = "0.0";
-        updateUI();
-    }
-
-    function updateUI() {
-        document.getElementById('raw-count').innerText = counts['raw'];
-        document.getElementById('jam-count').innerText = counts['jam'];
-        document.getElementById('sweet-count').innerText = counts['sweet'];
-    }
-
-    function toggleAdvanced() {
-        const area = document.getElementById('advanced-area');
-        area.style.display = area.style.display === 'block' ? 'none' : 'block';
-    }
-
-    function addExtra() {
-        const select = document.getElementById('extra-item');
-        const val = parseFloat(select.value);
-        if (val > 0) {
-            extraScore += val;
-            document.getElementById('extra-total').innerText = extraScore.toFixed(1);
-            select.value = "0"; 
-        }
-    }
+    function change(type, delta) { counts[type] = Math.max(0, counts[type] + delta); updateUI(); }
+    function clearItem(type) { if(confirm("この項目を0に戻しますか？")) { counts[type] = 0; updateUI(); } }
+    function updateUI() { for(let k in counts) document.getElementById(k + '-count').innerText = counts[k]; }
 
     function judge() {
         const now = new Date();
-        const dateStr = `${now.getMonth()+1}/${now.getDate()}`;
         const fullDateKey = `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}`;
-        
-        let total = (counts.raw * 1.0) + (counts.jam * 0.5) + (counts.sweet * 2.0) + extraScore;
+        let total = (counts.raw * 1.0) + (counts.jam * 0.5) + (counts.sweet * 2.0);
         if (now.getDate() === 15) total *= 2;
 
-        let shogo = total === 0 ? "いちご欠乏症" : total < 2 ? "いちご初心者" : total < 8 ? "いちご愛好家" : total < 15 ? "いちごマスター" : "いちごの化身";
-        
-        document.getElementById('date-label').innerText = dateStr + " の判定";
+        let shogo = total >= 10 ? "いちごの化身" : total >= 5 ? "いちご騎士" : total >= 1 ? "いちご愛好家" : "いちご見習い";
         document.getElementById('shogo-text').innerText = "【" + shogo + "】";
+        document.getElementById('comment-text').innerText = "今日の摂取量は " + total.toFixed(1) + " 🍓 でした！";
         document.getElementById('judgment-area').style.display = 'block';
 
-        saveHistory(dateStr, fullDateKey, shogo, total.toFixed(1));
-        renderCalendar();
-    }
-
-    function saveHistory(date, fullDateKey, shogo, score) {
         let history = JSON.parse(localStorage.getItem('ichigo-history') || '[]');
         history = history.filter(h => h.fullDateKey !== fullDateKey);
-        history.unshift({ date, fullDateKey, shogo, score });
-        localStorage.setItem('ichigo-history', JSON.stringify(history.slice(0, 31)));
-        displayHistory();
-    }
-
-    function clearHistory() {
-        if(confirm("すべての記録を削除しますか？")) {
-            localStorage.removeItem('ichigo-history');
-            displayHistory();
-            renderCalendar();
-        }
-    }
-
-    function displayHistory() {
-        const history = JSON.parse(localStorage.getItem('ichigo-history') || '[]');
-        const list = document.getElementById('history-list');
-        list.innerHTML = history.length ? history.slice(0, 5).map(h => `
-            <div class="history-item">
-                <span>${h.date}</span><span><strong>${h.shogo}</strong></span><span>${h.score}🍓</span>
-            </div>
-        `).join('') : '<div style="font-size:11px; color:#ccc;">記録なし</div>';
-    }
-
-    function renderCalendar() {
-        const now = new Date();
-        const year = now.getFullYear();
-        const month = now.getMonth();
-        document.getElementById('calendar-month').innerText = `${year}年 ${month + 1}月`;
-        
-        const firstDay = new Date(year, month, 1).getDay();
-        const lastDate = new Date(year, month + 1, 0).getDate();
-        const history = JSON.parse(localStorage.getItem('ichigo-history') || '[]');
-        
-        let html = '';
-        const weekDays = ['日','月','火','水','木','金','土'];
-        weekDays.forEach(d => html += `<div class="cal-header">${d}</div>`);
-        
-        for (let i = 0; i < firstDay; i++) html += '<div></div>';
-        for (let d = 1; d <= lastDate; d++) {
-            const key = `${year}-${month + 1}-${d}`;
-            const record = history.find(h => h.fullDateKey === key);
-            
-            let scoreHtml = record ? `<div class="cal-score">${record.score}</div><div class="cal-ichigo">🍓</div>` : '';
-            html += `<div class="calendar-day">${d}${scoreHtml}</div>`;
-        }
-        document.getElementById('calendar-grid').innerHTML = html;
+        history.unshift({ date: `${now.getMonth()+1}/${now.getDate()}`, fullDateKey, shogo, score: total });
+        localStorage.setItem('ichigo-history', JSON.stringify(history));
     }
 </script>
-
 </body>
 </html>
