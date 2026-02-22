@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>いちご記録帳 | 今日イチ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Zen Maru Gothic', sans-serif; text-align: center; background: #fff5f6; padding: 20px; color: #4a1a1a; margin: 0; }
+        .card { background: white; padding: 25px; border-radius: 30px; box-shadow: 0 10px 30px rgba(255,100,120,0.15); display: inline-block; width: 95%; max-width: 400px; border: 4px solid #ff4d6d; box-sizing: border-box; }
+        
+        .stats-box { background: #4a1a1a; color: #fff; border-radius: 15px; padding: 15px; margin-bottom: 20px; text-align: left; }
+        .stats-val { font-size: 20px; font-weight: 900; color: #ff4d6d; }
+        
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; background: #fffcfc; border: 1px solid #ffe5e9; padding: 5px; border-radius: 15px; margin-bottom: 20px; }
+        .calendar-day { font-size: 10px; height: 50px; background: white; border-radius: 5px; display: flex; flex-direction: column; align-items: center; padding-top: 4px; border: 1px solid #fff5f6; }
+        .cal-score { font-size: 9px; color: #ff4d6d; font-weight: 900; margin-top: 2px; }
+        .cal-header { font-size: 10px; font-weight: bold; color: #ff85a1; padding: 5px 0; }
+
+        .history-item { font-size: 12px; padding: 8px; border-bottom: 1px solid #ffeef0; display: flex; justify-content: space-between; }
+        .btn-back { display: block; margin-top: 20px; color: white; background: #888; text-decoration: none; padding: 12px; border-radius: 50px; font-size: 14px; font-weight: bold; }
+        .btn-delete { color: #cc0000; font-size: 11px; background: none; border: none; text-decoration: underline; cursor: pointer; float: right; }
+    </style>
+</head>
+<body>
+<div class="card">
+    <h1 style="color:#ff4d6d; font-size:22px; margin-top:0;">🗓️ いちご記録帳</h1>
+    
+    <div class="stats-box">
+        <div style="font-size:11px; color:#ff85a1; font-weight:bold;">累計観測データ</div>
+        <div style="margin: 5px 0;">今月の合計: <span class="stats-val" id="month-total">0.0</span> 🍓</div>
+        <div style="margin: 5px 0;">全累計: <span class="stats-val" id="all-total">0.0</span> 🍓</div>
+        <div id="total-rank" style="color:#ffd700; font-weight:bold; font-size:13px; margin-top:5px;"></div>
+    </div>
+
+    <div id="calendar-month" style="font-size:14px; font-weight:bold; color:#ff4d6d; margin-bottom:5px;"></div>
+    <div class="calendar-grid" id="calendar-grid"></div>
+
+    <h3 style="font-size:16px; color:#ff4d6d; text-align:left; border-bottom:2px solid #ff4d6d; padding-bottom:5px;">
+        🍓 最近の記録
+        <button class="btn-delete" onclick="clearHistory()">全消去</button>
+    </h3>
+    <div id="history-list"></div>
+
+    <a href="ichigo.html" class="btn-back">入力画面へ戻る</a>
+</div>
+
+<script>
+    window.onload = renderAll;
+
+    function renderAll() {
+        const history = JSON.parse(localStorage.getItem('ichigo-history') || '[]');
+        const now = new Date();
+        const currentMonthPrefix = `${now.getFullYear()}-${now.getMonth()+1}-`;
+        
+        let mTotal = 0, aTotal = 0;
+        history.forEach(h => {
+            aTotal += h.score;
+            if(h.fullDateKey.startsWith(currentMonthPrefix)) mTotal += h.score;
+        });
+        document.getElementById('month-total').innerText = mTotal.toFixed(1);
+        document.getElementById('all-total').innerText = aTotal.toFixed(1);
+        
+        let rank = aTotal >= 300 ? "🍓 いちごの神様" : aTotal >= 50 ? "いちご貴族" : "いちご国民";
+        document.getElementById('total-rank').innerText = "現在の属性: " + rank;
+
+        const first = new Date(now.getFullYear(), now.getMonth(), 1).getDay();
+        const last = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+        let html = '';
+        ['日','月','火','水','木','金','土'].forEach(d => html += `<div class="cal-header">${d}</div>`);
+        for(let i=0; i<first; i++) html += '<div></div>';
+        for(let d=1; d<=last; d++){
+            const key = `${now.getFullYear()}-${now.getMonth()+1}-${d}`;
+            const rec = history.find(h => h.fullDateKey === key);
+            html += `<div class="calendar-day">${d}${rec ? `<div class="cal-score">${rec.score}🍓</div>` : ''}</div>`;
+        }
+        document.getElementById('calendar-grid').innerHTML = html;
+        document.getElementById('calendar-month').innerText = `${now.getFullYear()}年 ${now.getMonth()+1}月`;
+        document.getElementById('history-list').innerHTML = history.slice(0,5).map(h => `<div class="history-item"><span>${h.date}</span><span>${h.shogo}</span><span>${h.score.toFixed(1)}🍓</span></div>`).join('');
+    }
+
+    function clearHistory() { if(confirm("すべての履歴を削除しますか？")) { localStorage.removeItem('ichigo-history'); renderAll(); } }
+</script>
+</body>
+</html>
