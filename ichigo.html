@@ -21,8 +21,10 @@
         .btn-minus { width: 32px; height: 32px; border-radius: 50%; border: 2px solid #ff4d6d; background: white; color: #ff4d6d; font-size: 18px; cursor: pointer; font-weight: bold; }
         .btn-main { background: #ff4d6d; color: white; border: none; padding: 15px 30px; border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 18px; width: 100%; margin-top: 15px; box-shadow: 0 4px 0 #c92a42; transition: 0.2s; }
         .btn-main:active { transform: translateY(2px); box-shadow: 0 2px 0 #c92a42; }
+        
         #judgment-area { display: none; margin-top: 20px; padding: 20px; background: #fffbf0; border-radius: 20px; border: 2px dashed #ff4d6d; animation: pop 0.4s; }
         @keyframes pop { from { transform: scale(0.9); } to { transform: scale(1); } }
+        
         .shogo { font-size: 22px; font-weight: 900; color: #ff4d6d; }
         .rakuten-area { margin-top: 15px; padding: 15px; border-radius: 15px; display: none; border: 2px solid transparent; }
         .rakuten-link { color: white; font-weight: bold; text-decoration: none; font-size: 14px; display: block; padding: 10px; border-radius: 10px; box-shadow: 0 4px 0 rgba(0,0,0,0.1); }
@@ -30,8 +32,15 @@
         .rank-gold .rakuten-link { background: #d4af37; }
         .rank-normal { background: #fff0f0; border-color: #ffccd5; }
         .rank-normal .rakuten-link { background: #ff4d6d; }
+
+        /* ナビゲーションとSNS */
+        .studio-nav { margin-top: 20px; border-top: 1px solid #ffe5e9; padding-top: 20px; }
+        .btn-nav { display: block; margin-bottom: 10px; color: #ff4d6d; text-decoration: none; font-size: 14px; font-weight: bold; border: 2px solid #ff4d6d; padding: 10px; border-radius: 15px; background: white; }
+        .sns-group { display: flex; gap: 10px; margin-top: 10px; }
+        .btn-sns { color: white; border: none; padding: 10px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px; flex: 1; }
+        .btn-x { background: #000; }
+        .btn-insta { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
         .btn-share { background: #000; color: white; border: none; padding: 12px; border-radius: 25px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; }
-        .btn-nav { display: block; margin-top: 20px; color: #ff4d6d; text-decoration: none; font-size: 14px; font-weight: bold; border: 2px solid #ff4d6d; padding: 10px; border-radius: 15px; background: white; }
     </style>
 </head>
 <body>
@@ -75,8 +84,18 @@
         </button>
     </div>
 
-    <a href="ichigo_log.html" class="btn-nav">🗓️ 履歴・カレンダーを見る</a>
-    <a href="index.html" style="color:#888; font-size:12px; text-decoration:none; margin-top:15px; display:inline-block;">ねこたスタジオへ戻る</a>
+    <div class="studio-nav">
+        <a href="ichigo_log.html" class="btn-nav">🗓️ 履歴・カレンダーを見る</a>
+        <a href="index.html" style="color:#888; font-size:12px; text-decoration:none; display:inline-block; margin-bottom: 10px;">ねこたスタジオへ戻る</a>
+        <div class="sns-group">
+            <a href="https://x.com/necotatu2" target="_blank" class="btn-sns btn-x">
+                <i class="fa-brands fa-x-twitter"></i> 公式X
+            </a>
+            <a href="https://www.instagram.com/necotastudio" target="_blank" class="btn-sns btn-insta">
+                <i class="fa-brands fa-instagram"></i> 公式Insta
+            </a>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -91,16 +110,10 @@
 
         if (new Date().getDate() === 15) addScore *= 2;
 
-        // 記録を保存し、その日の累計を取得
         const dayTotal = saveHistory(addScore);
-
-        // 累計に基づいた称号判定
         let shogo = dayTotal >= 10 ? "いちごの化身" : dayTotal >= 5 ? "いちご騎士" : dayTotal >= 1 ? "いちご愛好家" : "いちご見習い";
-        
-        // 履歴の最新エントリに称号を反映
         updateLatestShogo(shogo);
 
-        // UI更新
         document.getElementById('shogo-text').innerText = "【" + shogo + "】";
         document.getElementById('comment-text').innerText = `今回: +${addScore.toFixed(1)}🍓\n今日の合計: ${dayTotal.toFixed(1)}🍓`;
         
@@ -114,7 +127,6 @@
         document.getElementById('judgment-area').style.display = 'block';
         rBox.style.display = 'block';
         
-        // カウンターリセット
         counts = { raw: 0, jam: 0, sweet: 0 };
         updateUI();
     }
@@ -123,32 +135,15 @@
         const now = new Date();
         const fullDateKey = `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}`;
         const timeStr = `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
-        
         let history = JSON.parse(localStorage.getItem('ichigo-history') || '[]');
-        
-        // 個別エントリーとして追加
-        history.unshift({ 
-            date: `${now.getMonth()+1}/${now.getDate()}`, 
-            time: timeStr,
-            fullDateKey, 
-            shogo: "判定中...", 
-            score: Number(addScore) 
-        });
-        
+        history.unshift({ date: `${now.getMonth()+1}/${now.getDate()}`, time: timeStr, fullDateKey, shogo: "判定中...", score: Number(addScore) });
         localStorage.setItem('ichigo-history', JSON.stringify(history.slice(0, 100)));
-
-        // 今日の累計を計算して返す
-        return history
-            .filter(h => h.fullDateKey === fullDateKey)
-            .reduce((sum, item) => sum + item.score, 0);
+        return history.filter(h => h.fullDateKey === fullDateKey).reduce((sum, item) => sum + item.score, 0);
     }
 
     function updateLatestShogo(shogo) {
         let history = JSON.parse(localStorage.getItem('ichigo-history') || '[]');
-        if (history.length > 0) {
-            history[0].shogo = shogo;
-            localStorage.setItem('ichigo-history', JSON.stringify(history));
-        }
+        if (history.length > 0) { history[0].shogo = shogo; localStorage.setItem('ichigo-history', JSON.stringify(history)); }
     }
 
     function shareOnX() {
