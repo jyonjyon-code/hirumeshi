@@ -14,9 +14,19 @@
         .calendar-day { font-size: 10px; height: 50px; background: white; border-radius: 5px; display: flex; flex-direction: column; align-items: center; padding-top: 4px; border: 1px solid #fff5f6; }
         .cal-score { font-size: 9px; color: #ff4d6d; font-weight: 900; margin-top: 2px; }
         .cal-header { font-size: 10px; font-weight: bold; color: #ff85a1; padding: 5px 0; }
-        .history-item { font-size: 12px; padding: 8px; border-bottom: 1px solid #ffeef0; display: flex; justify-content: space-between; }
+
+        .history-item { font-size: 12px; padding: 10px 8px; border-bottom: 1px solid #ffeef0; display: flex; align-items: center; justify-content: space-between; }
+        .history-info { display: flex; flex-direction: column; text-align: left; flex-grow: 1; }
+        .history-date { font-weight: bold; color: #ff4d6d; font-size: 13px; }
+        .history-shogo { color: #888; font-size: 11px; }
+        .history-score { font-weight: 900; color: #4a1a1a; margin-right: 15px; }
+
+        /* 個別削除ボタン */
+        .btn-del-item { background: #eee; color: #888; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 12px; cursor: pointer; line-height: 22px; padding: 0; }
+        .btn-del-item:hover { background: #ff4d6d; color: white; }
+
         .btn-back { display: block; margin-top: 20px; color: white; background: #888; text-decoration: none; padding: 12px; border-radius: 50px; font-size: 14px; font-weight: bold; }
-        .btn-delete { color: #cc0000; font-size: 11px; background: none; border: none; text-decoration: underline; cursor: pointer; float: right; }
+        .btn-delete-all { color: #cc0000; font-size: 11px; background: none; border: none; text-decoration: underline; cursor: pointer; float: right; }
     </style>
 </head>
 <body>
@@ -35,7 +45,7 @@
 
     <h3 style="font-size:16px; color:#ff4d6d; text-align:left; border-bottom:2px solid #ff4d6d; padding-bottom:5px;">
         🍓 最近の記録
-        <button class="btn-delete" onclick="clearHistory()">全消去</button>
+        <button class="btn-delete-all" onclick="clearHistory()">全消去</button>
     </h3>
     <div id="history-list"></div>
 
@@ -62,7 +72,7 @@
         document.getElementById('all-total').innerText = aTotal.toFixed(1);
         
         let rank = aTotal >= 300 ? "🍓 いちごの神様" : aTotal >= 50 ? "いちご貴族" : aTotal >= 10 ? "いちご国民" : "いちご市民";
-        document.getElementById('total-rank').innerText = "属性: " + rank;
+        document.getElementById('total-rank').innerText = "現在の属性: " + rank;
 
         const firstDay = new Date(year, month, 1).getDay();
         const lastDate = new Date(year, month + 1, 0).getDate();
@@ -78,8 +88,29 @@
         document.getElementById('calendar-grid').innerHTML = html;
         document.getElementById('calendar-month').innerText = `${year}年 ${month + 1}月`;
         
-        const listHtml = history.slice(0, 10).map(h => `<div class="history-item"><span>${h.date}</span><span>${h.shogo}</span><span>${Number(h.score).toFixed(1)}🍓</span></div>`).join('');
+        // 履歴リストの描画（削除ボタン付き）
+        const listHtml = history.slice(0, 10).map((h, index) => `
+            <div class="history-item">
+                <div class="history-info">
+                    <span class="history-date">${h.date}</span>
+                    <span class="history-shogo">${h.shogo}</span>
+                </div>
+                <span class="history-score">${Number(h.score).toFixed(1)}🍓</span>
+                <button class="btn-del-item" onclick="deleteSingleItem('${h.fullDateKey}')" title="この記録を削除">×</button>
+            </div>
+        `).join('');
         document.getElementById('history-list').innerHTML = listHtml || '<div style="color:#ccc;font-size:12px;margin-top:10px;">データがありません</div>';
+    }
+
+    // 個別削除の関数
+    function deleteSingleItem(dateKey) {
+        if(confirm(dateKey + " の記録を削除しますか？")) {
+            let history = JSON.parse(localStorage.getItem('ichigo-history') || '[]');
+            // 指定された日付キー以外のデータを残す
+            history = history.filter(h => h.fullDateKey !== dateKey);
+            localStorage.setItem('ichigo-history', JSON.stringify(history));
+            renderAll(); // 再描画
+        }
     }
 
     function clearHistory() { if(confirm("すべての履歴を削除しますか？")) { localStorage.removeItem('ichigo-history'); renderAll(); } }
