@@ -8,28 +8,20 @@
     <style>
         body { font-family: 'Zen Maru Gothic', sans-serif; text-align: center; background: #fff5f6; padding: 20px; color: #4a1a1a; margin: 0; }
         .card { background: white; padding: 25px; border-radius: 30px; box-shadow: 0 10px 30px rgba(255,100,120,0.15); display: inline-block; width: 95%; max-width: 400px; border: 4px solid #ff4d6d; box-sizing: border-box; }
-        
         .main-title { color: #ff4d6d; font-size: 20px; margin-bottom: 5px; font-weight: 900; line-height: 1.4; }
         .sub-nickname { font-size: 28px; color: #ff4d6d; margin-bottom: 20px; display: block; font-weight: 900; background: #fff0f3; border-radius: 10px; padding: 5px; }
-        
         .counter-group { background: #fffcfc; border-radius: 20px; padding: 15px; margin-bottom: 10px; border: 1px solid #ffe5e9; }
         .item-row { display: flex; align-items: center; justify-content: space-between; margin: 15px 0; padding-bottom: 10px; border-bottom: 1px dashed #ffe5e9; }
         .item-row:last-child { border-bottom: none; }
         .item-label { font-size: 15px; font-weight: bold; flex-grow: 1; text-align: left; }
-        
         .controls { display: flex; align-items: center; gap: 5px; }
         .btn-plus { width: 40px; height: 40px; border-radius: 50%; border: none; background: #ff4d6d; color: white; font-size: 20px; cursor: pointer; font-weight: bold; box-shadow: 0 3px 0 #c92a42; }
         .btn-minus { width: 32px; height: 32px; border-radius: 50%; border: 2px solid #ff4d6d; background: white; color: #ff4d6d; font-size: 18px; cursor: pointer; font-weight: bold; }
         .btn-clear { width: 32px; height: 32px; border-radius: 8px; border: 1px solid #ccc; background: #f8f8f8; color: #888; font-size: 11px; cursor: pointer; font-weight: bold; margin-left: 8px; }
-        
         .count-num { font-size: 22px; font-weight: 900; min-width: 35px; color: #ff4d6d; text-align: center; }
-
         .btn-main { background: #ff4d6d; color: white; border: none; padding: 15px 30px; border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 18px; width: 100%; margin-top: 15px; box-shadow: 0 4px 0 #c92a42; }
         .btn-main:active { transform: translateY(2px); box-shadow: 0 2px 0 #c92a42; }
-        
         .btn-nav { display: block; margin-top: 20px; color: #ff4d6d; text-decoration: none; font-size: 14px; font-weight: bold; border: 2px solid #ff4d6d; padding: 10px; border-radius: 15px; background: white; }
-        .btn-nav:hover { background: #fff0f3; }
-        
         #judgment-area { display: none; margin-top: 20px; padding: 20px; background: #fffbf0; border-radius: 20px; border: 2px dashed #ff4d6d; animation: pop 0.4s; }
         @keyframes pop { from { transform: scale(0.9); } to { transform: scale(1); } }
         .shogo { font-size: 22px; font-weight: 900; color: #ff4d6d; }
@@ -95,7 +87,7 @@
     function judge() {
         const now = new Date();
         const fullDateKey = `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}`;
-        let total = (counts.raw * 1.0) + (counts.jam * 0.5) + (counts.sweet * 2.0);
+        let total = (Number(counts.raw) * 1.0) + (Number(counts.jam) * 0.5) + (Number(counts.sweet) * 2.0);
         if (now.getDate() === 15) total *= 2;
 
         let shogo = total >= 10 ? "いちごの化身" : total >= 5 ? "いちご騎士" : total >= 1 ? "いちご愛好家" : "いちご見習い";
@@ -105,7 +97,12 @@
 
         let history = JSON.parse(localStorage.getItem('ichigo-history') || '[]');
         history = history.filter(h => h.fullDateKey !== fullDateKey);
-        history.unshift({ date: `${now.getMonth()+1}/${now.getDate()}`, fullDateKey, shogo, score: total });
+        history.unshift({ 
+            date: `${now.getMonth()+1}/${now.getDate()}`, 
+            fullDateKey: fullDateKey, 
+            shogo: shogo, 
+            score: Number(total) 
+        });
         localStorage.setItem('ichigo-history', JSON.stringify(history));
     }
 </script>
