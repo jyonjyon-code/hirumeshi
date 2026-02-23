@@ -2,38 +2,62 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>いちご観測ログ | 今日イチ</title>
     <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        body { font-family: 'Zen Maru Gothic', sans-serif; background: #fff5f6; padding: 20px; color: #4a1a1a; text-align: center; }
-        .card { background: white; padding: 25px 20px; border-radius: 30px; box-shadow: 0 10px 30px rgba(255,100,120,0.15); max-width: 400px; margin: auto; border: 4px solid #ff4d6d; }
-        h2 { color: #ff4d6d; font-weight: 900; margin-bottom: 20px; font-size: 22px; }
-        #log-list { text-align: left; }
-        .log-item { background: #fffcfc; border: 1px solid #ffe5e9; padding: 15px; border-radius: 15px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; position: relative; }
-        .log-date { font-weight: bold; font-size: 13px; color: #888; }
-        .log-score { font-weight: 900; color: #ff4d6d; font-size: 20px; }
-        .btn-back { display: block; margin-top: 15px; color: #ff4d6d; text-decoration: none; font-weight: bold; font-size: 15px; border: 2px solid #ff4d6d; padding: 12px; border-radius: 15px; }
-        .btn-clear { background: none; border: 1px solid #ccc; color: #999; padding: 5px 10px; border-radius: 10px; font-size: 11px; cursor: pointer; margin-top: 20px; }
-        #status-msg { color: #ff4d6d; font-weight: bold; margin: 20px 0; font-size: 14px; }
+        body { font-family: 'Zen Maru Gothic', sans-serif; text-align: center; background: #fff5f6; padding: 15px; color: #4a1a1a; margin: 0; }
+        .card { background: white; padding: 25px 20px; border-radius: 30px; box-shadow: 0 10px 30px rgba(255,100,120,0.15); display: inline-block; width: 100%; max-width: 400px; border: 4px solid #ff4d6d; box-sizing: border-box; }
+        h2 { color: #ff4d6d; font-size: 22px; font-weight: 900; margin-bottom: 20px; }
+        
+        .log-container { text-align: left; }
+        .log-item { 
+            background: #fffcfc; border: 1px solid #ffe5e9; padding: 12px 15px; border-radius: 18px; 
+            margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
+            position: relative;
+        }
+        .log-info { display: flex; flex-direction: column; }
+        .log-date { font-size: 11px; color: #ff8fa3; font-weight: bold; margin-bottom: 2px; }
+        .log-time { font-size: 16px; font-weight: 900; color: #4a1a1a; }
+        
+        .log-right { display: flex; align-items: center; gap: 10px; margin-right: 25px; }
+        .log-score { font-size: 18px; font-weight: 900; color: #ff4d6d; }
+        
+        /* Xボタンのスタイル */
+        .btn-x-small { 
+            color: #555; font-size: 16px; cursor: pointer; text-decoration: none; 
+            transition: 0.2s; padding: 5px;
+        }
+        .btn-x-small:hover { color: #000; }
+
+        .btn-delete { 
+            position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+            background: none; border: none; color: #ddd; font-size: 18px; cursor: pointer;
+        }
+        .btn-delete:hover { color: #ff4d6d; }
+
+        .btn-back { 
+            display: block; margin-top: 20px; color: #ff4d6d; text-decoration: none; 
+            font-size: 15px; font-weight: bold; border: 2px solid #ff4d6d; padding: 12px; border-radius: 15px; 
+        }
+        #status-msg { margin: 20px 0; font-size: 14px; font-weight: bold; color: #ff4d6d; }
     </style>
 </head>
 <body>
 
 <div class="card">
-    <h2>🗓️ いちご観測ログ</h2>
-    <div id="status-msg">読み込み中...🍓</div>
-    <div id="log-list"></div>
+    <h2>🍓 観測ログ</h2>
+    <div id="status-msg">読み込み中...</div>
+    <div id="log-list" class="log-container"></div>
     
     <a href="ichigo.html" class="btn-back">入力画面に戻る</a>
-    
-    <button class="btn-clear" onclick="clearOldData()">古いスマホデータを消去してリセット</button>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyA7pcr0G4qEx0yLNWueZPdaeQoEBjFuoic",
@@ -49,52 +73,69 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    const logList = document.getElementById('log-list');
-    const statusMsg = document.getElementById('status-msg');
-
-    window.clearOldData = () => {
-        if(confirm("スマホに残っている古いデータを消去しますか？(クラウドのデータは消えません)")){
-            localStorage.removeItem('ichigo-history');
-            location.reload();
-        }
-    };
-
     onAuthStateChanged(auth, async (user) => {
+        const logList = document.getElementById('log-list');
+        const statusMsg = document.getElementById('status-msg');
+
         if (user) {
             try {
                 const userRef = doc(db, "users", user.uid);
                 const userSnap = await getDoc(userRef);
 
-                if (userSnap.exists()) {
-                    const history = userSnap.data().history || [];
+                if (userSnap.exists() && userSnap.data().history) {
+                    let history = userSnap.data().history;
                     history.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
                     
                     statusMsg.style.display = 'none';
                     logList.innerHTML = '';
                     
-                    history.forEach(item => {
-                        const dateText = item.date || "日付不明";
-                        const scoreText = item.score !== undefined ? Number(item.score).toFixed(1) : "0.0";
-                        
+                    history.forEach((item) => {
+                        const dateObj = new Date(item.timestamp);
+                        const displayTime = isNaN(dateObj) ? "--:--" : `${dateObj.getHours()}:${String(dateObj.getMinutes()).padStart(2, '0')}`;
+                        const displayDate = item.date || "日付不明";
+                        const score = Number(item.score).toFixed(1);
+
                         const div = document.createElement('div');
                         div.className = 'log-item';
                         div.innerHTML = `
-                            <span class="log-date">${dateText}</span>
-                            <span class="log-score">${scoreText} 🍓</span>
+                            <div class="log-info">
+                                <span class="log-date">${displayDate}</span>
+                                <span class="log-time">${displayTime}</span>
+                            </div>
+                            <div class="log-right">
+                                <span class="log-score">${score}🍓</span>
+                                <a class="btn-x-small" href="https://twitter.com/intent/tweet?text=${encodeURIComponent('【今日イチ】'+displayDate+' '+displayTime+' の観測結果は '+score+'🍓 でした！\n#今日イチ #ねこたスタジオ\n')}&url=${encodeURIComponent('https://jyonjyon-code.github.io/hirumeshi/ichigo.html')}" target="_blank">
+                                    <i class="fa-brands fa-x-twitter"></i>
+                                </a>
+                            </div>
+                            <button class="btn-delete" onclick="deleteItem('${item.timestamp}')">×</button>
                         `;
                         logList.appendChild(div);
                     });
                 } else {
-                    statusMsg.innerText = "クラウドにデータがありません。";
+                    statusMsg.innerText = "記録がまだありません🍓";
                 }
             } catch (e) {
-                statusMsg.innerText = "エラーが発生しました。";
+                statusMsg.innerText = "読み込みエラー";
             }
         } else {
-            statusMsg.innerHTML = "ログインしてください。";
+            statusMsg.innerHTML = "ログインしてください";
         }
     });
-</script>
 
+    window.deleteItem = async (timestamp) => {
+        if (!confirm("この記録を消去しますか？")) return;
+        const user = auth.currentUser;
+        if (!user) return;
+        const userRef = doc(db, "users", user.uid);
+        const userSnap = await getDoc(userRef);
+        if (userSnap.exists()) {
+            const oldHistory = userSnap.data().history;
+            const newHistory = oldHistory.filter(h => h.timestamp !== timestamp);
+            await updateDoc(userRef, { history: newHistory });
+            location.reload();
+        }
+    };
+</script>
 </body>
 </html>
