@@ -4,10 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>きみは今日いちごを食べたか | 今日イチ</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="今日イチ">
+
     <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         body { font-family: 'Zen Maru Gothic', sans-serif; text-align: center; background: #fff5f6; padding: 20px; color: #4a1a1a; margin: 0; }
+        
+        /* ポップアップのスタイル */
+        #app-guide { 
+            display: none; 
+            background: #ff4d6d; 
+            color: white; 
+            padding: 12px; 
+            font-size: 12px; 
+            border-radius: 15px; 
+            margin: 0 auto 15px auto; 
+            line-height: 1.5; 
+            text-align: left; 
+            max-width: 400px; 
+            box-shadow: 0 4px 10px rgba(255, 77, 109, 0.3);
+            animation: fadeIn 0.5s ease-out;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
         .card { background: white; padding: 25px; border-radius: 30px; box-shadow: 0 10px 30px rgba(255,100,120,0.15); display: inline-block; width: 95%; max-width: 400px; border: 4px solid #ff4d6d; box-sizing: border-box; }
         .main-title { color: #ff4d6d; font-size: 20px; margin-bottom: 5px; font-weight: 900; line-height: 1.4; }
         .sub-nickname { font-size: 28px; color: #ff4d6d; margin-bottom: 20px; display: block; font-weight: 900; background: #fff0f3; border-radius: 10px; padding: 5px; }
@@ -33,7 +55,6 @@
         .rank-normal { background: #fff0f0; border-color: #ffccd5; }
         .rank-normal .rakuten-link { background: #ff4d6d; }
 
-        /* ナビゲーションとSNS */
         .studio-nav { margin-top: 20px; border-top: 1px solid #ffe5e9; padding-top: 20px; }
         .btn-nav { display: block; margin-bottom: 10px; color: #ff4d6d; text-decoration: none; font-size: 14px; font-weight: bold; border: 2px solid #ff4d6d; padding: 10px; border-radius: 15px; background: white; }
         .sns-group { display: flex; gap: 10px; margin-top: 10px; }
@@ -44,6 +65,12 @@
     </style>
 </head>
 <body>
+
+<div id="app-guide">
+    <i class="fa-solid fa-circle-info"></i> <strong>SNSブラウザをご利用中の方へ：</strong><br>
+    記録を共有・保存するために、右上のメニューから<strong>「ブラウザで開く」</strong>を選び、ホーム画面に追加してね！🍓
+</div>
+
 <div class="card">
     <div class="main-title">きみは今日<br>いちごを食べたか</div>
     <div class="sub-nickname">今日イチ</div>
@@ -99,6 +126,13 @@
 </div>
 
 <script>
+    // SNSブラウザ判定とバナー表示
+    const ua = navigator.userAgent.toLowerCase();
+    const isSNS = ua.indexOf('twitter') > -1 || ua.indexOf('instagram') > -1 || ua.indexOf('line') > -1 || ua.indexOf('fbav') > -1;
+    if (isSNS) {
+        document.getElementById('app-guide').style.display = 'block';
+    }
+
     let counts = { raw: 0, jam: 0, sweet: 0 };
     function change(type, delta) { counts[type] = Math.max(0, counts[type] + delta); updateUI(); }
     function updateUI() { for(let k in counts) document.getElementById(k + '-count').innerText = counts[k]; }
