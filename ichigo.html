@@ -2,8 +2,9 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>きみは今日いちごを食べたか | 今日イチ</title>
+    
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="今日イチ">
@@ -11,18 +12,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        body { font-family: 'Zen Maru Gothic', sans-serif; text-align: center; background: #fff5f6; padding: 20px; color: #4a1a1a; margin: 0; }
+        body { font-family: 'Zen Maru Gothic', sans-serif; text-align: center; background: #fff5f6; padding: 15px; color: #4a1a1a; margin: 0; }
         
-        /* ポップアップのスタイル */
+        /* SNSブラウザ用バナー */
         #app-guide { 
             display: none; 
             background: #ff4d6d; 
             color: white; 
             padding: 12px; 
-            font-size: 12px; 
+            font-size: 11px; 
             border-radius: 15px; 
             margin: 0 auto 15px auto; 
-            line-height: 1.5; 
+            line-height: 1.6; 
             text-align: left; 
             max-width: 400px; 
             box-shadow: 0 4px 10px rgba(255, 77, 109, 0.3);
@@ -30,17 +31,24 @@
         }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .card { background: white; padding: 25px; border-radius: 30px; box-shadow: 0 10px 30px rgba(255,100,120,0.15); display: inline-block; width: 95%; max-width: 400px; border: 4px solid #ff4d6d; box-sizing: border-box; }
-        .main-title { color: #ff4d6d; font-size: 20px; margin-bottom: 5px; font-weight: 900; line-height: 1.4; }
-        .sub-nickname { font-size: 28px; color: #ff4d6d; margin-bottom: 20px; display: block; font-weight: 900; background: #fff0f3; border-radius: 10px; padding: 5px; }
-        .counter-group { background: #fffcfc; border-radius: 20px; padding: 15px; margin-bottom: 10px; border: 1px solid #ffe5e9; }
-        .item-row { display: flex; align-items: center; justify-content: space-between; margin: 15px 0; padding-bottom: 10px; border-bottom: 1px dashed #ffe5e9; }
+        .card { background: white; padding: 25px 20px; border-radius: 30px; box-shadow: 0 10px 30px rgba(255,100,120,0.15); display: inline-block; width: 100%; max-width: 400px; border: 4px solid #ff4d6d; box-sizing: border-box; }
+        
+        /* タイトルの改行崩れ防止 */
+        .main-title { color: #ff4d6d; font-size: 20px; margin-bottom: 5px; font-weight: 900; line-height: 1.3; white-space: nowrap; }
+        .sub-nickname { font-size: 26px; color: #ff4d6d; margin-bottom: 20px; display: block; font-weight: 900; background: #fff0f3; border-radius: 12px; padding: 8px; }
+        
+        .counter-group { background: #fffcfc; border-radius: 20px; padding: 10px 15px; margin-bottom: 10px; border: 1px solid #ffe5e9; }
+        .item-row { display: flex; align-items: center; justify-content: space-between; margin: 12px 0; padding-bottom: 8px; border-bottom: 1px dashed #ffe5e9; }
         .item-row:last-child { border-bottom: none; }
-        .item-label { font-size: 15px; font-weight: bold; flex-grow: 1; text-align: left; }
-        .sweet-select { font-family: 'Zen Maru Gothic', sans-serif; font-size: 12px; padding: 5px; border-radius: 8px; border: 1px solid #ff4d6d; margin-top: 5px; width: 100%; color: #4a1a1a; background: white; }
-        .controls { display: flex; align-items: center; gap: 5px; }
-        .btn-plus { width: 40px; height: 40px; border-radius: 50%; border: none; background: #ff4d6d; color: white; font-size: 20px; cursor: pointer; font-weight: bold; box-shadow: 0 3px 0 #c92a42; }
-        .btn-minus { width: 32px; height: 32px; border-radius: 50%; border: 2px solid #ff4d6d; background: white; color: #ff4d6d; font-size: 18px; cursor: pointer; font-weight: bold; }
+        
+        .item-label { font-size: 14px; font-weight: bold; flex-grow: 1; text-align: left; }
+        .sweet-select { font-family: 'Zen Maru Gothic', sans-serif; font-size: 13px; padding: 8px; border-radius: 10px; border: 1px solid #ff4d6d; margin-top: 8px; width: 100%; color: #4a1a1a; background: white; -webkit-appearance: none; appearance: none; }
+        
+        .controls { display: flex; align-items: center; gap: 8px; }
+        .count-num { font-size: 18px; font-weight: 900; min-width: 25px; }
+        .btn-plus { width: 42px; height: 42px; border-radius: 50%; border: none; background: #ff4d6d; color: white; font-size: 22px; cursor: pointer; font-weight: bold; box-shadow: 0 3px 0 #c92a42; }
+        .btn-minus { width: 34px; height: 34px; border-radius: 50%; border: 2px solid #ff4d6d; background: white; color: #ff4d6d; font-size: 18px; cursor: pointer; font-weight: bold; }
+        
         .btn-main { background: #ff4d6d; color: white; border: none; padding: 15px 30px; border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 18px; width: 100%; margin-top: 15px; box-shadow: 0 4px 0 #c92a42; transition: 0.2s; }
         .btn-main:active { transform: translateY(2px); box-shadow: 0 2px 0 #c92a42; }
         
@@ -49,39 +57,57 @@
         
         .shogo { font-size: 22px; font-weight: 900; color: #ff4d6d; }
         .rakuten-area { margin-top: 15px; padding: 15px; border-radius: 15px; display: none; border: 2px solid transparent; }
-        .rakuten-link { color: white; font-weight: bold; text-decoration: none; font-size: 14px; display: block; padding: 10px; border-radius: 10px; box-shadow: 0 4px 0 rgba(0,0,0,0.1); }
+        .rakuten-link { color: white; font-weight: bold; text-decoration: none; font-size: 13px; display: block; padding: 10px; border-radius: 10px; box-shadow: 0 4px 0 rgba(0,0,0,0.1); }
         .rank-gold { background: #fff9e6; border-color: #ffd700; }
         .rank-gold .rakuten-link { background: #d4af37; }
         .rank-normal { background: #fff0f0; border-color: #ffccd5; }
         .rank-normal .rakuten-link { background: #ff4d6d; }
 
         .studio-nav { margin-top: 20px; border-top: 1px solid #ffe5e9; padding-top: 20px; }
-        .btn-nav { display: block; margin-bottom: 10px; color: #ff4d6d; text-decoration: none; font-size: 14px; font-weight: bold; border: 2px solid #ff4d6d; padding: 10px; border-radius: 15px; background: white; }
+        .btn-nav { display: block; margin-bottom: 10px; color: #ff4d6d; text-decoration: none; font-size: 14px; font-weight: bold; border: 2px solid #ff4d6d; padding: 12px; border-radius: 15px; background: white; }
         .sns-group { display: flex; gap: 10px; margin-top: 10px; }
-        .btn-sns { color: white; border: none; padding: 10px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px; flex: 1; }
+        .btn-sns { color: white; border: none; padding: 10px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 12px; flex: 1; }
         .btn-x { background: #000; }
         .btn-insta { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
-        .btn-share { background: #000; color: white; border: none; padding: 12px; border-radius: 25px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; }
+        .btn-share { background: #000; color: white; border: none; padding: 12px; border-radius: 25px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; font-size: 14px; }
     </style>
 </head>
 <body>
 
 <div id="app-guide">
-    <i class="fa-solid fa-circle-info"></i> <strong>SNSブラウザをご利用中の方へ：</strong><br>
-    記録を共有・保存するために、右上のメニューから<strong>「ブラウザで開く」</strong>を選び、ホーム画面に追加してね！🍓
+    <i class="fa-solid fa-circle-info"></i> <strong>SNS内ブラウザをご利用中の方へ</strong><br>
+    記録を同期するために、右上のメニューから<strong>「ブラウザで開く」</strong>を選び、ホーム画面に追加してください🍓
 </div>
 
 <div class="card">
-    <div class="main-title">きみは今日<br>いちごを食べたか</div>
+    <div class="main-title">きみは今日 いちごを食べたか</div>
     <div class="sub-nickname">今日イチ</div>
 
     <div class="counter-group">
-        <div class="item-row"><div class="item-label">🍓 生のいちご</div><div class="controls"><button class="btn-minus" onclick="change('raw', -1)">−</button><span class="count-num" id="raw-count">0</span><button class="btn-plus" onclick="change('raw', 1)">＋</button></div></div>
-        <div class="item-row"><div class="item-label">🥄 ジャム(杯)</div><div class="controls"><button class="btn-minus" onclick="change('jam', -1)">−</button><span class="count-num" id="jam-count">0</span><button class="btn-plus" onclick="change('jam', 1)">＋</button></div></div>
+        <div class="item-row">
+            <div class="item-label">🍓 生のいちご</div>
+            <div class="controls">
+                <button class="btn-minus" onclick="change('raw', -1)">−</button>
+                <span class="count-num" id="raw-count">0</span>
+                <button class="btn-plus" onclick="change('raw', 1)">＋</button>
+            </div>
+        </div>
+        <div class="item-row">
+            <div class="item-label">🥄 ジャム(杯)</div>
+            <div class="controls">
+                <button class="btn-minus" onclick="change('jam', -1)">−</button>
+                <span class="count-num" id="jam-count">0</span>
+                <button class="btn-plus" onclick="change('jam', 1)">＋</button>
+            </div>
+        </div>
         <div class="item-row" style="flex-direction: column; align-items: flex-start;">
             <div style="display: flex; width: 100%; justify-content: space-between; align-items: center;">
                 <div class="item-label">🍰 スイーツ系</div>
-                <div class="controls"><button class="btn-minus" onclick="change('sweet', -1)">−</button><span class="count-num" id="sweet-count">0</span><button class="btn-plus" onclick="change('sweet', 1)">＋</button></div>
+                <div class="controls">
+                    <button class="btn-minus" onclick="change('sweet', -1)">−</button>
+                    <span class="count-num" id="sweet-count">0</span>
+                    <button class="btn-plus" onclick="change('sweet', 1)">＋</button>
+                </div>
             </div>
             <select id="sweet-type" class="sweet-select">
                 <option value="2.0">ショートケーキ (2.0🍓)</option>
@@ -126,9 +152,16 @@
 </div>
 
 <script>
-    // SNSブラウザ判定とバナー表示
+    // SNSブラウザ判定（X/Twitter強化版）
     const ua = navigator.userAgent.toLowerCase();
-    const isSNS = ua.indexOf('twitter') > -1 || ua.indexOf('instagram') > -1 || ua.indexOf('line') > -1 || ua.indexOf('fbav') > -1;
+    const isSNS = (
+        ua.indexOf('twitter') > -1 || 
+        ua.indexOf('twttr') > -1 || 
+        ua.indexOf('instagram') > -1 || 
+        ua.indexOf('line') > -1 || 
+        ua.indexOf('fbav') > -1 || 
+        (ua.indexOf('iphone') > -1 && ua.indexOf('applewebkit') > -1 && ua.indexOf('safari') === -1)
+    );
     if (isSNS) {
         document.getElementById('app-guide').style.display = 'block';
     }
