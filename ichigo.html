@@ -4,48 +4,87 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>きみは今日いちごを食べたか | 今日イチ</title>
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="今日イチ">
+
     <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         body { font-family: 'Zen Maru Gothic', sans-serif; text-align: center; background: #fff5f6; padding: 15px; color: #4a1a1a; margin: 0; }
+        
+        #app-guide { 
+            display: none; 
+            background: #ff4d6d; 
+            color: white; 
+            padding: 12px; 
+            font-size: 11px; 
+            border-radius: 15px; 
+            margin: 0 auto 15px auto; 
+            line-height: 1.6; 
+            text-align: left; 
+            max-width: 400px; 
+            box-shadow: 0 4px 10px rgba(255, 77, 109, 0.3);
+        }
+
         .card { background: white; padding: 25px 20px; border-radius: 30px; box-shadow: 0 10px 30px rgba(255,100,120,0.15); display: inline-block; width: 100%; max-width: 400px; border: 4px solid #ff4d6d; box-sizing: border-box; }
         .main-title { color: #ff4d6d; font-size: 20px; margin-bottom: 5px; font-weight: 900; line-height: 1.3; white-space: nowrap; }
         .sub-nickname { font-size: 26px; color: #ff4d6d; margin-bottom: 20px; display: block; font-weight: 900; background: #fff0f3; border-radius: 12px; padding: 8px; }
         
-        /* ログインセクションのスタイル */
-        #auth-section { margin-bottom: 15px; }
-        .btn-login { background: white; color: #444; border: 1px solid #ddd; padding: 10px 15px; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; margin-bottom: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .user-info { font-size: 13px; color: #ff4d6d; margin-bottom: 10px; display: none; background: #fff; padding: 5px; border-radius: 8px; font-weight: bold; }
+        /* ログインボタン用 */
+        .auth-section { margin-bottom: 15px; }
+        .btn-login { background: white; color: #444; border: 1px solid #ddd; padding: 10px 20px; border-radius: 10px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; font-size: 14px; }
+        .user-info { font-size: 12px; color: #ff4d6d; font-weight: bold; margin-bottom: 10px; }
 
         .counter-group { background: #fffcfc; border-radius: 20px; padding: 10px 15px; margin-bottom: 10px; border: 1px solid #ffe5e9; }
         .item-row { display: flex; align-items: center; justify-content: space-between; margin: 12px 0; padding-bottom: 8px; border-bottom: 1px dashed #ffe5e9; }
         .item-row:last-child { border-bottom: none; }
+        
         .item-label { font-size: 14px; font-weight: bold; flex-grow: 1; text-align: left; }
         .sweet-select { font-family: 'Zen Maru Gothic', sans-serif; font-size: 13px; padding: 8px; border-radius: 10px; border: 1px solid #ff4d6d; margin-top: 8px; width: 100%; color: #4a1a1a; background: white; }
+        
         .controls { display: flex; align-items: center; gap: 8px; }
         .count-num { font-size: 18px; font-weight: 900; min-width: 25px; }
         .btn-plus { width: 42px; height: 42px; border-radius: 50%; border: none; background: #ff4d6d; color: white; font-size: 22px; cursor: pointer; font-weight: bold; box-shadow: 0 3px 0 #c92a42; }
         .btn-minus { width: 34px; height: 34px; border-radius: 50%; border: 2px solid #ff4d6d; background: white; color: #ff4d6d; font-size: 18px; cursor: pointer; font-weight: bold; }
-        .btn-main { background: #ff4d6d; color: white; border: none; padding: 15px 30px; border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 18px; width: 100%; margin-top: 15px; box-shadow: 0 4px 0 #c92a42; transition: 0.2s; }
+        
+        .btn-main { background: #ff4d6d; color: white; border: none; padding: 15px 30px; border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 18px; width: 100%; margin-top: 15px; box-shadow: 0 4px 0 #c92a42; }
         
         #judgment-area { display: none; margin-top: 20px; padding: 20px; background: #fffbf0; border-radius: 20px; border: 2px dashed #ff4d6d; }
         .shogo { font-size: 22px; font-weight: 900; color: #ff4d6d; }
+        .rakuten-area { margin-top: 15px; padding: 15px; border-radius: 15px; display: none; }
+        .rakuten-link { color: white; font-weight: bold; text-decoration: none; font-size: 13px; display: block; padding: 10px; border-radius: 10px; }
+        .rank-gold { background: #fff9e6; border-color: #ffd700; }
+        .rank-gold .rakuten-link { background: #d4af37; }
+        .rank-normal { background: #fff0f0; border-color: #ffccd5; }
+        .rank-normal .rakuten-link { background: #ff4d6d; }
+
         .studio-nav { margin-top: 20px; border-top: 1px solid #ffe5e9; padding-top: 20px; }
-        .btn-nav { display: block; margin-bottom: 10px; color: #ff4d6d; text-decoration: none; font-size: 14px; font-weight: bold; border: 2px solid #ff4d6d; padding: 12px; border-radius: 15px; }
+        .btn-nav { display: block; margin-bottom: 10px; color: #ff4d6d; text-decoration: none; font-size: 14px; font-weight: bold; border: 2px solid #ff4d6d; padding: 12px; border-radius: 15px; background: white; }
         .btn-share { background: #000; color: white; border: none; padding: 12px; border-radius: 25px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; font-size: 14px; }
+        .sns-group { display: flex; gap: 10px; margin-top: 10px; }
+        .btn-sns { color: white; border: none; padding: 10px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 12px; flex: 1; }
+        .btn-x { background: #000; }
+        .btn-insta { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
     </style>
 </head>
 <body>
+
+<div id="app-guide">
+    <i class="fa-solid fa-circle-info"></i> <strong>SNS内ブラウザをご利用中の方へ</strong><br>
+    記録を同期するために、右上のメニューから<strong>「ブラウザで開く」</strong>を選び、ホーム画面に追加してください🍓
+</div>
 
 <div class="card">
     <div class="main-title">きみは今日 いちごを食べたか</div>
     <div class="sub-nickname">今日イチ</div>
 
-    <div id="auth-section">
-        <button id="btn-login" class="btn-login">
-            <i class="fa-brands fa-google"></i> Googleでログインして同期
+    <div class="auth-section">
+        <div id="user-display" class="user-info" style="display:none;"></div>
+        <button id="login-btn" class="btn-login">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" width="18"> Googleでログインして同期
         </button>
-        <div id="user-info" class="user-info"></div>
     </div>
 
     <div class="counter-group">
@@ -78,7 +117,12 @@
                 <option value="2.0">ショートケーキ (2.0🍓)</option>
                 <option value="3.0">いちごパフェ (3.0🍓)</option>
                 <option value="1.5">いちご大福 (1.5🍓)</option>
+                <option value="1.2">いちごタルト (1.2🍓)</option>
                 <option value="1.0">いちごチョコ (1.0🍓)</option>
+                <option value="0.8">いちごアイス/ソルベ (0.8🍓)</option>
+                <option value="0.5">いちご飴/グミ (0.5🍓)</option>
+                <option value="0.3">いちごオレ/飲料 (0.3🍓)</option>
+                <option value="0.1">その他・微量 (0.1🍓)</option>
             </select>
         </div>
     </div>
@@ -88,6 +132,10 @@
     <div id="judgment-area">
         <div class="shogo" id="shogo-text"></div>
         <p id="comment-text" style="font-size:14px; color:#7a4a4a; white-space: pre-wrap;"></p>
+        <div id="rakuten-box" class="rakuten-area">
+            <div id="rakuten-msg" style="font-size:12px; font-weight:bold; margin-bottom:8px;"></div>
+            <a id="rakuten-url" href="" class="rakuten-link" target="_blank"></a>
+        </div>
         <button onclick="shareOnX()" class="btn-share">
             <i class="fa-brands fa-x-twitter"></i> ランクを報告する
         </button>
@@ -95,16 +143,23 @@
 
     <div class="studio-nav">
         <a href="ichigo_log.html" class="btn-nav">🗓️ 履歴・カレンダーを見る</a>
-        <a href="index.html" style="color:#888; font-size:12px; text-decoration:none;">ねこたスタジオへ戻る</a>
+        <a href="index.html" style="color:#888; font-size:12px; text-decoration:none; display:inline-block; margin-bottom: 10px;">ねこたスタジオへ戻る</a>
+        <div class="sns-group">
+            <a href="https://x.com/necotatu2" target="_blank" class="btn-sns btn-x">
+                <i class="fa-brands fa-x-twitter"></i> 公式X
+            </a>
+            <a href="https://www.instagram.com/necotastudio" target="_blank" class="btn-sns btn-insta">
+                <i class="fa-brands fa-instagram"></i> 公式Insta
+            </a>
+        </div>
     </div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // 遵さんのプロジェクト設定
     const firebaseConfig = {
         apiKey: "AIzaSyA7pcr0G4qEx0yLNWueZPdaeQoEBjFuoic",
         authDomain: "necotastudio-app.firebaseapp.com",
@@ -120,80 +175,100 @@
     const db = getFirestore(app);
     const provider = new GoogleAuthProvider();
 
-    let currentUser = null;
-    let counts = { raw: 0, jam: 0, sweet: 0 };
+    const loginBtn = document.getElementById('login-btn');
+    const userDisplay = document.getElementById('user-display');
 
-    // ログイン処理
-    document.getElementById('btn-login').onclick = async () => {
-        try {
-            await signInWithPopup(auth, provider);
-        } catch (error) {
-            console.error("Login failed", error);
-            alert("ログインに失敗しました。AuthenticationでGoogleログインが有効になっているか、承認済みドメインにgithub.ioが追加されているか確認してください。");
-        }
-    };
+    loginBtn.onclick = () => signInWithPopup(auth, provider);
 
-    // ログイン監視
     onAuthStateChanged(auth, (user) => {
         if (user) {
-            currentUser = user;
-            document.getElementById('btn-login').style.display = 'none';
-            document.getElementById('user-info').style.display = 'block';
-            document.getElementById('user-info').innerText = `🍓 ${user.displayName} さんでログイン中`;
+            loginBtn.style.display = 'none';
+            userDisplay.style.display = 'block';
+            userDisplay.innerText = `🍓 ${user.displayName} さんでログイン中`;
+        } else {
+            loginBtn.style.display = 'flex';
+            userDisplay.style.display = 'none';
         }
     });
 
-    window.change = (type, delta) => {
-        counts[type] = Math.max(0, counts[type] + delta);
-        document.getElementById(type + '-count').innerText = counts[type];
+    // カウンターロジック
+    let counts = { raw: 0, jam: 0, sweet: 0 };
+    window.change = (type, delta) => { 
+        counts[type] = Math.max(0, counts[type] + delta); 
+        for(let k in counts) document.getElementById(k + '-count').innerText = counts[k];
     };
 
     window.judge = async () => {
         const sweetMultiplier = parseFloat(document.getElementById('sweet-type').value);
-        let addScore = (counts.raw * 1.0) + (counts.jam * 0.5) + (counts.sweet) * sweetMultiplier;
+        let addScore = (Number(counts.raw) * 1.0) + (Number(counts.jam) * 0.5) + (Number(counts.sweet) * sweetMultiplier);
         if (addScore === 0) return alert("いちごを摂取してから報告してください🍓");
 
+        if (new Date().getDate() === 15) addScore *= 2;
+
         const now = new Date();
-        const dateStr = `${now.getMonth()+1}/${now.getDate()}`;
-        
+        const fullDateKey = `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}`;
+        const timeStr = `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
+        const logEntry = { 
+            date: `${now.getMonth()+1}/${now.getDate()}`, 
+            time: timeStr, 
+            timestamp: now.toISOString(),
+            score: Number(addScore)
+        };
+
         // ローカル保存
         let history = JSON.parse(localStorage.getItem('ichigo-history') || '[]');
-        history.unshift({ score: addScore, date: dateStr, timestamp: now.getTime() });
+        history.unshift(logEntry);
         localStorage.setItem('ichigo-history', JSON.stringify(history.slice(0, 100)));
-        const dayTotal = history.reduce((s, h) => s + h.score, 0);
 
-        // 【クラウド保存】ログイン中ならFirebaseへ
-        if (currentUser) {
-            try {
-                const userRef = doc(db, "users", currentUser.uid);
-                await setDoc(userRef, {
-                    history: arrayUnion({
-                        date: dateStr,
-                        score: addScore,
-                        timestamp: now.toISOString()
-                    }),
-                    lastUpdate: new Date().toISOString()
-                }, { merge: true });
-            } catch (e) {
-                console.error("Cloud save error:", e);
+        // クラウド保存
+        const user = auth.currentUser;
+        if (user) {
+            const userRef = doc(db, "users", user.uid);
+            const userSnap = await getDoc(userRef);
+            if (!userSnap.exists()) {
+                await setDoc(userRef, { history: [logEntry] });
+            } else {
+                await updateDoc(userRef, { history: arrayUnion(logEntry) });
             }
         }
 
-        let shogo = addScore >= 10 ? "いちごの化身" : addScore >= 5 ? "いちご騎士" : "いちご愛好家";
-        document.getElementById('shogo-text').innerText = "【" + shogo + "】";
-        document.getElementById('comment-text').innerText = `今回: +${addScore.toFixed(1)}🍓\n合計: ${dayTotal.toFixed(1)}🍓`;
-        document.getElementById('judgment-area').style.display = 'block';
+        const dayTotal = history.filter(h => {
+            const d = new Date(h.timestamp || h.fullDateKey);
+            return d.getDate() === now.getDate() && d.getMonth() === now.getMonth();
+        }).reduce((sum, item) => sum + item.score, 0);
+
+        let shogo = dayTotal >= 10 ? "いちごの化身" : dayTotal >= 5 ? "いちご騎士" : dayTotal >= 1 ? "いちご愛好家" : "いちご見習い";
         
-        // リセット
+        document.getElementById('shogo-text').innerText = "【" + shogo + "】";
+        document.getElementById('comment-text').innerText = `今回: +${addScore.toFixed(1)}🍓\n今日の合計: ${dayTotal.toFixed(1)}🍓`;
+        
+        const rBox = document.getElementById('rakuten-box');
+        const isGold = dayTotal >= 10;
+        rBox.className = "rakuten-area " + (isGold ? "rank-gold" : "rank-normal");
+        document.getElementById('rakuten-msg').innerText = dayTotal >= 1 ? "素晴らしい摂取量です！" : "もっと徳を積みましょう";
+        document.getElementById('rakuten-url').innerText = isGold ? "✨ 最高級苺を楽天で召喚 ✨" : "🍓 楽天でいちごを補給 🍓";
+        document.getElementById('rakuten-url').href = isGold ? "https://hb.afl.rakuten.co.jp/hgc/38bc4499.7d06e22c.38bc449a.2e400495/?pc=https%3A%2F%2Fsearch.rakuten.co.jp%2Fsearch%2Fmall%2F%25E3%2581%2582%25E3%2581%25BE%25E3%2581%258A%25E3%2581%2586%2B%25E3%2582%25AE%25E3%2583%2595%25E3%2583%2588%2F&link_type=hybrid_url" : "https://hb.afl.rakuten.co.jp/hgc/38bc4499.7d06e22c.38bc449a.2e400495/?pc=https%3A%2F%2Fsearch.rakuten.co.jp%2Fsearch%2Fmall%2F%25E3%2581%2584%25E3%2581%25A1%25E3%2581%2594%2F&link_type=hybrid_url";
+        
+        document.getElementById('judgment-area').style.display = 'block';
+        rBox.style.display = 'block';
+        
         counts = { raw: 0, jam: 0, sweet: 0 };
-        ['raw','jam','sweet'].forEach(k => document.getElementById(k+'-count').innerText = 0);
+        for(let k in counts) document.getElementById(k + '-count').innerText = 0;
     };
 
     window.shareOnX = () => {
-        const text = encodeURIComponent(`【${document.getElementById('shogo-text').innerText}】にランクアップ！今日のいちご摂取量を報告しました🍓\n#今日イチ #ねこたスタジオ\n`);
-        const url = encodeURIComponent(window.location.href);
-        window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+        const shogo = document.getElementById('shogo-text').innerText;
+        const comment = document.getElementById('comment-text').innerText.split('\n')[1]; 
+        const url = "https://jyonjyon-code.github.io/hirumeshi/ichigo.html";
+        const text = `【今日イチ】\n私の称号は${shogo}！\n${comment}\nきみは今日いちごを食べたか？🍓\n#今日イチ #いちご #ねこたスタジオ`;
+        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
     };
+
+    // SNSブラウザ判定
+    const ua = navigator.userAgent.toLowerCase();
+    if (ua.indexOf('twitter') > -1 || ua.indexOf('instagram') > -1 || ua.indexOf('line') > -1) {
+        document.getElementById('app-guide').style.display = 'block';
+    }
 </script>
 </body>
 </html>
