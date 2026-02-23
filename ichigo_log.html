@@ -10,21 +10,24 @@
         .card { background: white; padding: 25px 20px; border-radius: 30px; box-shadow: 0 10px 30px rgba(255,100,120,0.15); max-width: 400px; margin: auto; border: 4px solid #ff4d6d; }
         h2 { color: #ff4d6d; font-weight: 900; margin-bottom: 20px; font-size: 22px; }
         #log-list { text-align: left; }
-        .log-item { background: #fffcfc; border: 1px solid #ffe5e9; padding: 15px; border-radius: 15px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
-        .log-date { font-weight: bold; font-size: 14px; color: #888; }
+        .log-item { background: #fffcfc; border: 1px solid #ffe5e9; padding: 15px; border-radius: 15px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; position: relative; }
+        .log-date { font-weight: bold; font-size: 13px; color: #888; }
         .log-score { font-weight: 900; color: #ff4d6d; font-size: 20px; }
-        .btn-back { display: block; margin-top: 25px; color: #ff4d6d; text-decoration: none; font-weight: bold; font-size: 15px; border: 2px solid #ff4d6d; padding: 12px; border-radius: 15px; transition: 0.3s; }
-        .btn-back:hover { background: #ff4d6d; color: white; }
-        #status-msg { color: #ff4d6d; font-weight: bold; margin: 20px 0; font-size: 14px; line-height: 1.6; }
+        .btn-back { display: block; margin-top: 15px; color: #ff4d6d; text-decoration: none; font-weight: bold; font-size: 15px; border: 2px solid #ff4d6d; padding: 12px; border-radius: 15px; }
+        .btn-clear { background: none; border: 1px solid #ccc; color: #999; padding: 5px 10px; border-radius: 10px; font-size: 11px; cursor: pointer; margin-top: 20px; }
+        #status-msg { color: #ff4d6d; font-weight: bold; margin: 20px 0; font-size: 14px; }
     </style>
 </head>
 <body>
 
 <div class="card">
     <h2>🗓️ いちご観測ログ</h2>
-    <div id="status-msg">通信中...🍓</div>
+    <div id="status-msg">読み込み中...🍓</div>
     <div id="log-list"></div>
+    
     <a href="ichigo.html" class="btn-back">入力画面に戻る</a>
+    
+    <button class="btn-clear" onclick="clearOldData()">古いスマホデータを消去してリセット</button>
 </div>
 
 <script type="module">
@@ -32,7 +35,6 @@
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // 遵さんのFirebase設定
     const firebaseConfig = {
         apiKey: "AIzaSyA7pcr0G4qEx0yLNWueZPdaeQoEBjFuoic",
         authDomain: "necotastudio-app.firebaseapp.com",
@@ -50,40 +52,46 @@
     const logList = document.getElementById('log-list');
     const statusMsg = document.getElementById('status-msg');
 
-    // ログイン状態をチェックしてデータを取得
+    window.clearOldData = () => {
+        if(confirm("スマホに残っている古いデータを消去しますか？(クラウドのデータは消えません)")){
+            localStorage.removeItem('ichigo-history');
+            location.reload();
+        }
+    };
+
     onAuthStateChanged(auth, async (user) => {
         if (user) {
-            statusMsg.innerText = `${user.displayName} さんの記録を読み込み中...`;
             try {
                 const userRef = doc(db, "users", user.uid);
                 const userSnap = await getDoc(userRef);
 
-                if (userSnap.exists() && userSnap.data().history) {
-                    const history = userSnap.data().history;
-                    // 新しい順にソート
+                if (userSnap.exists()) {
+                    const history = userSnap.data().history || [];
                     history.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
                     
                     statusMsg.style.display = 'none';
                     logList.innerHTML = '';
                     
                     history.forEach(item => {
+                        const dateText = item.date || "日付不明";
+                        const scoreText = item.score !== undefined ? Number(item.score).toFixed(1) : "0.0";
+                        
                         const div = document.createElement('div');
                         div.className = 'log-item';
                         div.innerHTML = `
-                            <span class="log-date">${item.date}</span>
-                            <span class="log-score">${Number(item.score).toFixed(1)} 🍓</span>
+                            <span class="log-date">${dateText}</span>
+                            <span class="log-score">${scoreText} 🍓</span>
                         `;
                         logList.appendChild(div);
                     });
                 } else {
-                    statusMsg.innerText = "まだクラウドに記録がありません。入力画面から報告してみてください🍓";
+                    statusMsg.innerText = "クラウドにデータがありません。";
                 }
             } catch (e) {
-                console.error(e);
-                statusMsg.innerText = "データの読み込みに失敗しました。Firestoreのルールを確認してください。";
+                statusMsg.innerText = "エラーが発生しました。";
             }
         } else {
-            statusMsg.innerHTML = "ログインが必要です。<br>一度「入力画面」に戻ってログインしてください。";
+            statusMsg.innerHTML = "ログインしてください。";
         }
     });
 </script>
