@@ -109,7 +109,9 @@
             history = userSnap.data().history;
         }
         
-        // 時間順にソート（最新が上）
+        // ローカルストレージも同期させる（他画面用）
+        localStorage.setItem('ichigo-history', JSON.stringify(history));
+        
         history.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
         const now = new Date();
@@ -123,13 +125,7 @@
             const s = Number(h.score) || 0;
             const dateObj = new Date(h.timestamp);
             aTotal += s;
-            
-            // 今月の合計計算
-            if(dateObj.getFullYear() === year && dateObj.getMonth() === month) {
-                mTotal += s;
-            }
-            
-            // カレンダー用集計 (YYYY-M-D形式)
+            if(dateObj.getFullYear() === year && dateObj.getMonth() === month) mTotal += s;
             const dateKey = `${dateObj.getFullYear()}-${dateObj.getMonth() + 1}-${dateObj.getDate()}`;
             dailyTotals[dateKey] = (dailyTotals[dateKey] || 0) + s;
         });
@@ -141,7 +137,6 @@
         let rank = aTotal >= 300 ? "🍓 いちごの神様" : aTotal >= 50 ? "いちご貴族" : aTotal >= 10 ? "いちご国民" : "いちご市民";
         document.getElementById('total-rank').innerText = "現在の属性: " + rank;
 
-        // カレンダー描画
         const firstDay = new Date(year, month, 1).getDay();
         const lastDate = new Date(year, month + 1, 0).getDate();
         let html = '';
@@ -156,8 +151,7 @@
         document.getElementById('calendar-grid').innerHTML = html;
         document.getElementById('calendar-month').innerText = `${year}年 ${month + 1}月`;
         
-        // ログリスト描画 (時間がundefinedにならないように修正)
-        const listHtml = history.map((h, index) => {
+        const listHtml = history.map((h) => {
             const dateObj = new Date(h.timestamp);
             const timeStr = isNaN(dateObj) ? "--:--" : `${dateObj.getHours()}:${String(dateObj.getMinutes()).padStart(2, '0')}`;
             const dateStr = h.date || `${dateObj.getMonth()+1}/${dateObj.getDate()}`;
@@ -177,15 +171,18 @@
         document.getElementById('history-list').innerHTML = listHtml || '<div style="color:#ccc;font-size:12px;margin-top:10px;">データがありません</div>';
     }
 
-    // グローバル関数として定義
+    // --- ここが修正ポイント！ ---
     window.deleteSingleEntry = async (timestamp) => {
         if(confirm("この1件の記録を削除しますか？")) {
             const user = auth.currentUser;
+            if(!user) return;
             const userRef = doc(db, "users", user.uid);
             const userSnap = await getDoc(userRef);
             if (userSnap.exists()) {
                 const newHistory = userSnap.data().history.filter(h => h.timestamp !== timestamp);
+                // クラウドとローカル両方を更新
                 await updateDoc(userRef, { history: newHistory });
+                localStorage.setItem('ichigo-history', JSON.stringify(newHistory));
                 location.reload();
             }
         }
@@ -194,11 +191,15 @@
     window.clearHistory = async () => {
         if(confirm("すべての履歴を削除しますか？")) {
             const user = auth.currentUser;
+            if(!user) return;
             const userRef = doc(db, "users", user.uid);
+            // クラウドとローカル両方を空にする
             await updateDoc(userRef, { history: [] });
+            localStorage.removeItem('ichigo-history');
             location.reload();
         }
     }
+    // -------------------------
 
     window.shareStats = () => {
         const aTotal = document.getElementById('all-total').innerText;
