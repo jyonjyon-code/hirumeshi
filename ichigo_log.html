@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>いちご観測ログ | 今日イチ</title>
+    <title>いちごカレンダー | 今日イチ</title>
     <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -11,45 +11,32 @@
         .card { background: white; padding: 25px 20px; border-radius: 30px; box-shadow: 0 10px 30px rgba(255,100,120,0.15); display: inline-block; width: 100%; max-width: 400px; border: 4px solid #ff4d6d; box-sizing: border-box; }
         h2 { color: #ff4d6d; font-size: 22px; font-weight: 900; margin-bottom: 20px; }
         
-        .log-container { text-align: left; }
+        /* カレンダー風のリスト表示 */
+        .day-group { background: #fffcfc; border: 2px solid #ffe5e9; border-radius: 20px; margin-bottom: 15px; overflow: hidden; }
+        .day-header { background: #ffe5e9; padding: 10px; font-weight: 900; color: #ff4d6d; display: flex; justify-content: space-between; align-items: center; }
+        .day-total { font-size: 14px; background: white; padding: 2px 10px; border-radius: 10px; }
+        
         .log-item { 
-            background: #fffcfc; border: 1px solid #ffe5e9; padding: 12px 15px; border-radius: 18px; 
-            margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
-            position: relative;
+            padding: 12px 15px; border-bottom: 1px dashed #ffe5e9; display: flex; justify-content: space-between; align-items: center; position: relative;
         }
-        .log-info { display: flex; flex-direction: column; }
-        .log-date { font-size: 11px; color: #ff8fa3; font-weight: bold; margin-bottom: 2px; }
-        .log-time { font-size: 16px; font-weight: 900; color: #4a1a1a; }
+        .log-item:last-child { border-bottom: none; }
+        .log-time { font-size: 15px; font-weight: 900; color: #4a1a1a; }
+        .log-right { display: flex; align-items: center; gap: 12px; margin-right: 25px; }
+        .log-score { font-size: 16px; font-weight: 900; color: #ff4d6d; }
         
-        .log-right { display: flex; align-items: center; gap: 10px; margin-right: 25px; }
-        .log-score { font-size: 18px; font-weight: 900; color: #ff4d6d; }
-        
-        /* Xボタンのスタイル */
-        .btn-x-small { 
-            color: #555; font-size: 16px; cursor: pointer; text-decoration: none; 
-            transition: 0.2s; padding: 5px;
-        }
-        .btn-x-small:hover { color: #000; }
+        .btn-x-small { color: #888; font-size: 14px; cursor: pointer; text-decoration: none; }
+        .btn-delete { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #ddd; font-size: 16px; cursor: pointer; }
 
-        .btn-delete { 
-            position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
-            background: none; border: none; color: #ddd; font-size: 18px; cursor: pointer;
-        }
-        .btn-delete:hover { color: #ff4d6d; }
-
-        .btn-back { 
-            display: block; margin-top: 20px; color: #ff4d6d; text-decoration: none; 
-            font-size: 15px; font-weight: bold; border: 2px solid #ff4d6d; padding: 12px; border-radius: 15px; 
-        }
+        .btn-back { display: block; margin-top: 20px; color: #ff4d6d; text-decoration: none; font-size: 15px; font-weight: bold; border: 2px solid #ff4d6d; padding: 12px; border-radius: 15px; }
         #status-msg { margin: 20px 0; font-size: 14px; font-weight: bold; color: #ff4d6d; }
     </style>
 </head>
 <body>
 
 <div class="card">
-    <h2>🍓 観測ログ</h2>
+    <h2>🗓️ いちごカレンダー</h2>
     <div id="status-msg">読み込み中...</div>
-    <div id="log-list" class="log-container"></div>
+    <div id="log-list"></div>
     
     <a href="ichigo.html" class="btn-back">入力画面に戻る</a>
 </div>
@@ -84,34 +71,52 @@
 
                 if (userSnap.exists() && userSnap.data().history) {
                     let history = userSnap.data().history;
+                    // 時間順にソート
                     history.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
                     
+                    // 日付ごとにグループ化
+                    const groups = {};
+                    history.forEach(item => {
+                        if (!groups[item.date]) groups[item.date] = { items: [], total: 0 };
+                        groups[item.date].items.push(item);
+                        groups[item.date].total += Number(item.score);
+                    });
+
                     statusMsg.style.display = 'none';
                     logList.innerHTML = '';
                     
-                    history.forEach((item) => {
-                        const dateObj = new Date(item.timestamp);
-                        const displayTime = isNaN(dateObj) ? "--:--" : `${dateObj.getHours()}:${String(dateObj.getMinutes()).padStart(2, '0')}`;
-                        const displayDate = item.date || "日付不明";
-                        const score = Number(item.score).toFixed(1);
+                    for (const date in groups) {
+                        const groupDiv = document.createElement('div');
+                        groupDiv.className = 'day-group';
+                        
+                        let itemsHtml = '';
+                        groups[date].items.forEach(item => {
+                            const dateObj = new Date(item.timestamp);
+                            const time = isNaN(dateObj) ? "--:--" : `${dateObj.getHours()}:${String(dateObj.getMinutes()).padStart(2, '0')}`;
+                            const score = Number(item.score).toFixed(1);
+                            
+                            itemsHtml += `
+                                <div class="log-item">
+                                    <span class="log-time">${time}</span>
+                                    <div class="log-right">
+                                        <span class="log-score">${score}🍓</span>
+                                        <a class="btn-x-small" href="https://twitter.com/intent/tweet?text=${encodeURIComponent('【今日イチ】'+date+' '+time+' の観測結果は '+score+'🍓 でした！\n#今日イチ #ねこたスタジオ\n')}&url=${encodeURIComponent('https://jyonjyon-code.github.io/hirumeshi/ichigo.html')}" target="_blank">
+                                            <i class="fa-brands fa-x-twitter"></i>
+                                        </a>
+                                    </div>
+                                    <button class="btn-delete" onclick="deleteItem('${item.timestamp}')">×</button>
+                                </div>`;
+                        });
 
-                        const div = document.createElement('div');
-                        div.className = 'log-item';
-                        div.innerHTML = `
-                            <div class="log-info">
-                                <span class="log-date">${displayDate}</span>
-                                <span class="log-time">${displayTime}</span>
+                        groupDiv.innerHTML = `
+                            <div class="day-header">
+                                <span>${date}</span>
+                                <span class="day-total">合計 ${groups[date].total.toFixed(1)} 🍓</span>
                             </div>
-                            <div class="log-right">
-                                <span class="log-score">${score}🍓</span>
-                                <a class="btn-x-small" href="https://twitter.com/intent/tweet?text=${encodeURIComponent('【今日イチ】'+displayDate+' '+displayTime+' の観測結果は '+score+'🍓 でした！\n#今日イチ #ねこたスタジオ\n')}&url=${encodeURIComponent('https://jyonjyon-code.github.io/hirumeshi/ichigo.html')}" target="_blank">
-                                    <i class="fa-brands fa-x-twitter"></i>
-                                </a>
-                            </div>
-                            <button class="btn-delete" onclick="deleteItem('${item.timestamp}')">×</button>
+                            ${itemsHtml}
                         `;
-                        logList.appendChild(div);
-                    });
+                        logList.appendChild(groupDiv);
+                    }
                 } else {
                     statusMsg.innerText = "記録がまだありません🍓";
                 }
@@ -124,7 +129,7 @@
     });
 
     window.deleteItem = async (timestamp) => {
-        if (!confirm("この記録を消去しますか？")) return;
+        if (!confirm("消去しますか？")) return;
         const user = auth.currentUser;
         if (!user) return;
         const userRef = doc(db, "users", user.uid);
