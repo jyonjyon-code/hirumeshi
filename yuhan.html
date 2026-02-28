@@ -10,13 +10,12 @@
         body { font-family: 'Hiragino Kaku Gothic ProN', sans-serif; text-align: center; background: #eceff1; padding: 15px; color: #333; margin: 0; }
         .card { background: #ffffff; padding: 30px 20px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); display: inline-block; width: 100%; max-width: 400px; border: 4px solid #f39c12; margin-top: 10px; box-sizing: border-box; }
         
-        /* タイトル周りの微調整 */
         h2 { color: #f39c12; margin-bottom: 20px; font-size: 24px; letter-spacing: 1px; font-weight: 900; }
         
         #slot-display { font-size: 80px; margin: 15px 0; min-height: 140px; display: flex; align-items: center; justify-content: center; background: #fff9f0; border-radius: 20px; border: 2px solid #f3e5d0; }
         
         .mode-selector { margin-bottom: 20px; display: flex; justify-content: center; gap: 6px; }
-        .mode-btn { border: 2px solid #f39c12; padding: 12px 5px; cursor: pointer; background: white; border-radius: 15px; font-size: 13px; color: #f39c12; font-weight: bold; flex: 1; transition: 0.2s; }
+        .mode-btn { border: 2px solid #f39c12; padding: 12px 5px; cursor: pointer; background: white; border-radius: 15px; font-size: 13px; color: #f39c12; font-weight: bold; flex: 1; transition: 0.2s; outline: none; }
         .active-mode { background: #f39c12; color: white; box-shadow: 0 4px 0 #d35400; transform: translateY(-2px); }
         
         #result-area { display: none; background: #fffcf0; border: 2px dashed #f39c12; padding: 20px 15px; border-radius: 20px; margin-top: 20px; animation: fadeIn 0.4s ease-out; }
@@ -30,7 +29,6 @@
         .btn-search { background: #3498db; font-size: 15px; }
         .btn-retry { background: #95a5a6; font-size: 14px; padding: 10px; margin-top: 20px; }
         
-        /* SNS・ナビゲーション */
         .studio-nav { margin-top: 25px; border-top: 1px solid #ddd; padding-top: 20px; }
         .btn-back { color: #888; text-decoration: none; font-size: 13px; display: inline-block; margin-bottom: 15px; font-weight: bold; }
         .sns-group { display: flex; gap: 10px; }
@@ -154,10 +152,9 @@
 
         const actionLink = document.getElementById('action-link');
         
-        // --- モード別のリンク切り替え ---
         if (currentMode === 'cook') {
             actionLink.innerText = "🍳 レシピを検索する";
-            actionLink.href = "https://www.google.com/search?q=" + encodeURIComponent(res.keyword + " レシピ");
+            actionLink.href = "https://www.google.com/search?q=" + encodeURIComponent(res.name + " レシピ");
         } else if (currentMode === 'buy') {
             actionLink.innerText = "🛒 近くの買えるお店を探す";
             actionLink.href = "https://www.google.com/maps/search/" + encodeURIComponent(res.keyword);
@@ -166,13 +163,11 @@
             actionLink.href = "https://www.google.com/maps/search/" + encodeURIComponent(res.name);
         }
 
-        // 楽天リンクの最適化
         const rakutenLink = document.getElementById('rakuten-link');
         const rakutenKeyword = res.name + (currentMode === 'cook' ? " 材料" : " お取り寄せ");
-        rakutenLink.href = "https://hb.afl.rakuten.co.jp/hgc/" + RAKUTEN_AFID + "/?pc=https%3A%2F%2Fsearch.rakuten.co.jp%2Fsearch%2Fmall%2F" + encodeURIComponent(rakutenKeyword) + "%2F";
+        rakutenLink.href = "https://hb.afl.rakuten.co.jp/hgc/" + RAKUTEN_AFID + "/?pc=" + encodeURIComponent("https://search.rakuten.co.jp/search/mall/" + rakutenKeyword + "/");
         rakutenLink.innerText = `🎁 ${res.name} を楽天で探す`;
 
-        // Xシェア
         const modeText = currentMode === 'cook' ? '自炊' : currentMode === 'buy' ? '買い出し' : '外食';
         const tweetText = encodeURIComponent(`今夜の夕食は…\n【 ${res.name} 】に決定！\n(${modeText}モード)\n\n`);
         document.getElementById('x-share-btn').href = `https://twitter.com/intent/tweet?text=${tweetText}&url=${encodeURIComponent(APP_URL)}&hashtags=ゆうはんなにしよ,ねこたスタジオ`;
