@@ -223,7 +223,6 @@
             } catch(e) { console.error("Firebase Error:", e); }
         }
 
-        // 今日の合計を計算
         const dayTotal = history.filter(h => {
             const d = new Date(h.timestamp);
             return d.getDate() === now.getDate() && d.getMonth() === now.getMonth();
@@ -234,18 +233,25 @@
         document.getElementById('shogo-text').innerText = "【" + shogo + "】";
         document.getElementById('comment-text').innerText = `今回: +${addScore.toFixed(1)}🍓\n今日の合計: ${dayTotal.toFixed(1)}🍓`;
         
-        // --- アフィリエイト分岐 ---
+        // --- アフィリエイトリンク修正部分 ---
+        const RAKUTEN_AFID = "51366796.8818598a.51366797.ddbb51d0"; // あなたのIDに統一
         const rBox = document.getElementById('rakuten-box');
         const isGold = dayTotal >= 10;
+        
         rBox.className = "rakuten-area " + (isGold ? "rank-gold" : "rank-normal");
         document.getElementById('rakuten-msg').innerText = dayTotal >= 1 ? "素晴らしい摂取量です！" : "もっと徳を積みましょう";
         document.getElementById('rakuten-url').innerText = isGold ? "✨ 最高級苺を楽天で召喚 ✨" : "🍓 楽天でいちごを補給 🍓";
-        document.getElementById('rakuten-url').href = isGold ? "https://hb.afl.rakuten.co.jp/hgc/38bc4499.7d06e22c.38bc449a.2e400495/?pc=https%3A%2F%2Fsearch.rakuten.co.jp%2Fsearch%2Fmall%2F%25E3%2581%2582%25E3%2581%25BE%25E3%2581%2586%2B%25E3%2582%25AE%25E3%2583%2595%25E3%2583%2588%2F&link_type=hybrid_url" : "https://hb.afl.rakuten.co.jp/hgc/38bc4499.7d06e22c.38bc449a.2e400495/?pc=https%3A%2F%2Fsearch.rakuten.co.jp%2Fsearch%2Fmall%2F%25E3%2581%2584%25E3%2581%25A1%25E3%2581%2594%2F&link_type=hybrid_url";
+        
+        // 検索キーワードをランクで分岐
+        const searchKeyword = isGold ? "あまおう ギフト" : "いちご";
+        const encodedKeyword = encodeURIComponent(searchKeyword);
+        
+        // 正しいトラッキングURLの生成
+        document.getElementById('rakuten-url').href = `https://hb.afl.rakuten.co.jp/hgc/${RAKUTEN_AFID}/?pc=${encodeURIComponent('https://search.rakuten.co.jp/search/mall/' + encodedKeyword + '/')}`;
         
         document.getElementById('judgment-area').style.display = 'block';
         rBox.style.display = 'block';
         
-        // カウントをリセット
         counts = { raw: 0, jam: 0, sweet: 0 };
         for(let k in counts) document.getElementById(k + '-count').innerText = 0;
     };
