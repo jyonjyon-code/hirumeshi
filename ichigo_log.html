@@ -10,15 +10,18 @@
         body { font-family: 'Zen Maru Gothic', sans-serif; text-align: center; background: #fff5f6; padding: 20px; color: #4a1a1a; margin: 0; }
         .card { background: white; padding: 25px; border-radius: 30px; box-shadow: 0 10px 30px rgba(255,100,120,0.15); display: inline-block; width: 95%; max-width: 400px; border: 4px solid #ff4d6d; box-sizing: border-box; }
         
-        /* 累計ボックスを少し華やかに */
         .stats-box { background: #4a1a1a; color: #fff; border-radius: 15px; padding: 15px; margin-bottom: 20px; text-align: left; position: relative; border: 2px solid #ff4d6d; }
         .stats-val { font-size: 20px; font-weight: 900; color: #ff4d6d; }
         .btn-stats-share { position: absolute; top: 15px; right: 15px; background: #fff; color: #000; border: none; border-radius: 50%; width: 35px; height: 35px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; }
 
+        .calendar-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; color: #ff4d6d; }
+        .nav-title { font-size: 16px; font-weight: 900; }
+        .btn-nav-cal { background: none; border: 1px solid #ff4d6d; color: #ff4d6d; border-radius: 10px; padding: 5px 10px; cursor: pointer; font-family: inherit; font-weight: bold; font-size: 12px; }
+        .btn-nav-cal:active { background: #fff0f3; }
+
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; background: #fffcfc; border: 1px solid #ffe5e9; padding: 5px; border-radius: 15px; margin-bottom: 20px; }
         .calendar-day { font-size: 10px; height: 50px; background: white; border-radius: 5px; display: flex; flex-direction: column; align-items: center; padding-top: 4px; border: 1px solid #fff5f6; position: relative; }
         
-        /* 15日（いちごの日）の特別装飾 */
         .ichigo-day-highlight { background: #fff0f3; border: 1px solid #ff4d6d; }
         .ichigo-day-label { font-size: 8px; color: #ff4d6d; font-weight: bold; position: absolute; bottom: 2px; }
 
@@ -52,17 +55,21 @@
     
     <div class="stats-box">
         <div style="font-size:11px; color:#ff85a1; font-weight:bold;">いちご観測累計</div>
-        <div style="margin: 5px 0;">今月の「よみ」: <span class="stats-val" id="month-total">0.0</span> 🍓</div>
+        <div style="margin: 5px 0;">今月のいちごよみ: <span class="stats-val" id="month-total">0.0</span> 🍓</div>
         <div style="margin: 5px 0;">生涯累計: <span class="stats-val" id="all-total">0.0</span> 🍓</div>
         <div id="total-rank" style="color:#ffd700; font-weight:bold; font-size:13px; margin-top:5px;">属性: ロード中...</div>
         <button class="btn-stats-share" onclick="shareStats()" title="累計をシェア"><i class="fa-brands fa-x-twitter"></i></button>
     </div>
 
-    <div id="calendar-month" style="font-size:14px; font-weight:bold; color:#ff4d6d; margin-bottom:5px;"></div>
+    <div class="calendar-nav">
+        <button class="btn-nav-cal" onclick="changeMonth(-1)">◀ 前月</button>
+        <div class="nav-title" id="calendar-title">2026年 2月 いちごよみ</div>
+        <button class="btn-nav-cal" onclick="changeMonth(1)">翌月 ▶</button>
+    </div>
     <div class="calendar-grid" id="calendar-grid"></div>
 
     <h3 style="font-size:16px; color:#ff4d6d; text-align:left; border-bottom:2px solid #ff4d6d; padding-bottom:5px;">
-        🍓 観測ログ（個別）
+        🍓 観測ログ（全期間）
         <button class="btn-delete-all" onclick="clearHistory()">全消去</button>
     </h3>
     <div id="history-list"></div>
@@ -99,38 +106,46 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
+    let currentViewDate = new Date();
+    let allHistory = [];
+
     onAuthStateChanged(auth, async (user) => {
         if (user) {
-            renderFromCloud(user);
+            await fetchData(user);
         } else {
             document.getElementById('loading-msg').innerText = "ログインが必要です";
         }
     });
 
-    async function renderFromCloud(user) {
+    async function fetchData(user) {
         const userRef = doc(db, "users", user.uid);
         const userSnap = await getDoc(userRef);
-        
-        let history = [];
         if (userSnap.exists() && userSnap.data().history) {
-            history = userSnap.data().history;
+            allHistory = userSnap.data().history;
         }
-        
-        localStorage.setItem('ichigo-history', JSON.stringify(history));
-        history.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        localStorage.setItem('ichigo-history', JSON.stringify(allHistory));
+        renderAll();
+    }
 
+    function renderAll() {
+        const year = currentViewDate.getFullYear();
+        const month = currentViewDate.getMonth();
         const now = new Date();
-        const year = now.getFullYear();
-        const month = now.getMonth(); 
         
-        let mTotal = 0, aTotal = 0;
+        let aTotal = 0;
+        let mTotal = 0; // 今月の累計（リアルタイムの現在月）
         let dailyTotals = {}; 
 
-        history.forEach(h => {
+        allHistory.forEach(h => {
             const s = Number(h.score) || 0;
             const dateObj = new Date(h.timestamp);
             aTotal += s;
-            if(dateObj.getFullYear() === year && dateObj.getMonth() === month) mTotal += s;
+            
+            // 実際の「今月」の累計を計算
+            if(dateObj.getFullYear() === now.getFullYear() && dateObj.getMonth() === now.getMonth()) {
+                mTotal += s;
+            }
+
             const dateKey = `${dateObj.getFullYear()}-${dateObj.getMonth() + 1}-${dateObj.getDate()}`;
             dailyTotals[dateKey] = (dailyTotals[dateKey] || 0) + s;
         });
@@ -151,8 +166,6 @@
         for(let d=1; d<=lastDate; d++){
             const targetKey = `${year}-${month + 1}-${d}`;
             const dayScore = dailyTotals[targetKey];
-            
-            // 15日の判定
             const isIchigoDay = (d === 15);
             const extraClass = isIchigoDay ? 'ichigo-day-highlight' : '';
             const extraLabel = isIchigoDay ? '<div class="ichigo-day-label">いちごの日</div>' : '';
@@ -160,9 +173,10 @@
             html += `<div class="calendar-day ${extraClass}">${d}${dayScore ? `<div class="cal-score">${dayScore.toFixed(1)}🍓</div>` : ''}${extraLabel}</div>`;
         }
         document.getElementById('calendar-grid').innerHTML = html;
-        document.getElementById('calendar-month').innerText = `${year}年 ${month + 1}月 の「よみ」`;
+        document.getElementById('calendar-title').innerText = `${year}年 ${month + 1}月 いちごよみ`;
         
-        const listHtml = history.map((h) => {
+        const sortedHistory = [...allHistory].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        const listHtml = sortedHistory.map((h) => {
             const dateObj = new Date(h.timestamp);
             const timeStr = isNaN(dateObj) ? "--:--" : `${dateObj.getHours()}:${String(dateObj.getMinutes()).padStart(2, '0')}`;
             const dateStr = h.date || `${dateObj.getMonth()+1}/${dateObj.getDate()}`;
@@ -182,20 +196,23 @@
         document.getElementById('history-list').innerHTML = listHtml || '<div style="color:#ccc;font-size:12px;margin-top:10px;">データがありません</div>';
     }
 
+    window.changeMonth = (delta) => {
+        currentViewDate.setMonth(currentViewDate.getMonth() + delta);
+        renderAll();
+    };
+
     window.deleteSingleEntry = async (timestamp) => {
         if(confirm("この1件の記録を削除しますか？")) {
             const user = auth.currentUser;
             if(!user) return;
             const userRef = doc(db, "users", user.uid);
-            const userSnap = await getDoc(userRef);
-            if (userSnap.exists()) {
-                const newHistory = userSnap.data().history.filter(h => h.timestamp !== timestamp);
-                await updateDoc(userRef, { history: newHistory });
-                localStorage.setItem('ichigo-history', JSON.stringify(newHistory));
-                location.reload();
-            }
+            const newHistory = allHistory.filter(h => h.timestamp !== timestamp);
+            await updateDoc(userRef, { history: newHistory });
+            allHistory = newHistory;
+            localStorage.setItem('ichigo-history', JSON.stringify(allHistory));
+            renderAll();
         }
-    }
+    };
 
     window.clearHistory = async () => {
         if(confirm("すべての履歴を削除しますか？")) {
@@ -203,10 +220,11 @@
             if(!user) return;
             const userRef = doc(db, "users", user.uid);
             await updateDoc(userRef, { history: [] });
+            allHistory = [];
             localStorage.removeItem('ichigo-history');
-            location.reload();
+            renderAll();
         }
-    }
+    };
 
     window.shareStats = () => {
         const aTotal = document.getElementById('all-total').innerText;
@@ -214,7 +232,7 @@
         const text = `【いちごよみ - 観測記録】\n生涯累計：${aTotal} 🍓\n${rank}\n私のいちご生活が綴られています。🍓\n#今日イチ #いちごよみ #ねこたスタジオ`;
         const url = "https://jyonjyon-code.github.io/hirumeshi/ichigo.html";
         window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
-    }
+    };
 </script>
 </body>
 </html>
