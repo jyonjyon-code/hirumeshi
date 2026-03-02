@@ -5,37 +5,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>今日イチ | きみは今日いちごを食べたか</title>
     
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#ff4d6d">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="今日イチ">
-    <link rel="apple-touch-icon" href="icon-ichigo.png">
 
     <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
         body { font-family: 'Zen Maru Gothic', sans-serif; text-align: center; background: #fff5f6; padding: 15px; color: #4a1a1a; margin: 0; }
-        #app-guide { display: none; background: #ff4d6d; color: white; padding: 12px; font-size: 11px; border-radius: 15px; margin: 0 auto 15px auto; line-height: 1.6; text-align: left; max-width: 400px; box-shadow: 0 4px 10px rgba(255, 77, 109, 0.3); }
+        
+        #app-guide { 
+            display: none; background: #ff4d6d; color: white; padding: 12px; font-size: 11px; border-radius: 15px; 
+            margin: 0 auto 15px auto; line-height: 1.6; text-align: left; max-width: 400px; box-shadow: 0 4px 10px rgba(255, 77, 109, 0.3);
+        }
+
         .card { background: white; padding: 25px 20px; border-radius: 30px; box-shadow: 0 10px 30px rgba(255,100,120,0.15); display: inline-block; width: 100%; max-width: 400px; border: 4px solid #ff4d6d; box-sizing: border-box; }
+        
         .main-title { color: #4a1a1a; font-size: 18px; margin-bottom: 5px; font-weight: 700; line-height: 1.3; }
-        .brand-badge { font-size: 36px; color: #ff4d6d; margin-bottom: 25px; display: inline-block; font-weight: 900; background: #fff0f3; border-radius: 15px; padding: 5px 30px; border: 4px solid #ff4d6d; letter-spacing: 0.1em; text-shadow: 2px 2px 0px #ffffff; box-shadow: 0 6px 0 #ffcad4; }
+        .brand-badge { 
+            font-size: 36px; color: #ff4d6d; margin-bottom: 25px; display: inline-block; font-weight: 900; 
+            background: #fff0f3; border-radius: 15px; padding: 5px 30px; border: 4px solid #ff4d6d; 
+            letter-spacing: 0.1em; text-shadow: 2px 2px 0px #ffffff; box-shadow: 0 6px 0 #ffcad4;
+        }
+        
         .auth-section { margin-bottom: 15px; }
         .btn-login { background: white; color: #444; border: 1px solid #ddd; padding: 10px 20px; border-radius: 10px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; font-size: 14px; }
         .user-info { font-size: 12px; color: #ff4d6d; font-weight: bold; margin-bottom: 10px; }
+
         .counter-group { background: #fffcfc; border-radius: 20px; padding: 10px 15px; margin-bottom: 10px; border: 1px solid #ffe5e9; }
         .item-row { display: flex; align-items: center; justify-content: space-between; margin: 12px 0; padding-bottom: 8px; border-bottom: 1px dashed #ffe5e9; }
         .item-row:last-child { border-bottom: none; }
+        
         .item-label { font-size: 14px; font-weight: bold; flex-grow: 1; text-align: left; }
         .sweet-select { font-family: 'Zen Maru Gothic', sans-serif; font-size: 13px; padding: 8px; border-radius: 10px; border: 1px solid #ff4d6d; margin-top: 8px; width: 100%; color: #4a1a1a; background: white; }
+        
         .controls { display: flex; align-items: center; gap: 8px; }
         .count-num { font-size: 18px; font-weight: 900; min-width: 25px; }
         .btn-plus { width: 42px; height: 42px; border-radius: 50%; border: none; background: #ff4d6d; color: white; font-size: 22px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 0 #c92a42; transition: 0.1s; }
         .btn-plus:active { transform: translateY(2px); box-shadow: 0 2px 0 #c92a42; }
         .btn-minus { width: 34px; height: 34px; border-radius: 50%; border: 2px solid #ff4d6d; background: white; color: #ff4d6d; font-size: 18px; cursor: pointer; font-weight: bold; }
+        
         .btn-main { background: #ff4d6d; color: white; border: none; padding: 18px 30px; border-radius: 50px; cursor: pointer; font-weight: 900; font-size: 20px; width: 100%; margin-top: 15px; box-shadow: 0 6px 0 #c92a42; transition: 0.1s; }
         .btn-main:active { transform: translateY(3px); box-shadow: 0 3px 0 #c92a42; }
+        
         #judgment-area { display: none; margin-top: 20px; padding: 20px; background: #fffbf0; border-radius: 20px; border: 2px dashed #ff4d6d; }
         .shogo { font-size: 22px; font-weight: 900; color: #ff4d6d; }
         .rakuten-area { margin-top: 15px; padding: 15px; border-radius: 15px; display: none; }
@@ -44,6 +57,7 @@
         .rank-gold .rakuten-link { background: #d4af37; }
         .rank-normal { background: #fff0f0; border-color: #ffccd5; }
         .rank-normal .rakuten-link { background: #ff4d6d; }
+
         .studio-nav { margin-top: 20px; border-top: 1px solid #ffe5e9; padding-top: 20px; }
         .btn-nav { display: block; margin-bottom: 10px; color: #ff4d6d; text-decoration: none; font-size: 14px; font-weight: bold; border: 2px solid #ff4d6d; padding: 12px; border-radius: 15px; background: white; transition: 0.2s; }
         .btn-share { background: #000; color: white; border: none; padding: 12px; border-radius: 25px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; font-size: 14px; }
@@ -51,7 +65,6 @@
         .btn-sns { color: white; border: none; padding: 10px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 12px; flex: 1; }
         .btn-x { background: #000; }
         .btn-insta { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
-        .ad-notice { font-size: 10px; color: #999; margin-top: 15px; }
     </style>
 </head>
 <body>
@@ -66,7 +79,7 @@
     <div class="brand-badge">今日イチ</div>
 
     <div class="auth-section">
-        <div id="user-display" class="user-info" style="display:none;">ログイン中...</div>
+        <div id="user-display" class="user-info" style="display:none;"></div>
         <button id="login-btn" class="btn-login">
             <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" width="18"> Googleでログイン
         </button>
@@ -137,13 +150,12 @@
                 <i class="fa-brands fa-instagram"></i> 公式Insta
             </a>
         </div>
-        <div class="ad-notice">※当サイトはアフィリエイト広告を利用しています</div>
     </div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, signInWithRedirect, getRedirectResult, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getFirestore, doc, setDoc, getDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -163,15 +175,7 @@
     const loginBtn = document.getElementById('login-btn');
     const userDisplay = document.getElementById('user-display');
 
-    // ログイン処理を「リダイレクト」に変更（スマホ対策）
-    loginBtn.onclick = () => {
-        signInWithRedirect(auth, provider);
-    };
-
-    // リダイレクト後のログイン結果を取得
-    getRedirectResult(auth).catch((error) => {
-        console.error("Login Error:", error.message);
-    });
+    loginBtn.onclick = () => signInWithPopup(auth, provider);
 
     onAuthStateChanged(auth, (user) => {
         if (user) {
@@ -229,7 +233,8 @@
         document.getElementById('shogo-text').innerText = "【" + shogo + "】";
         document.getElementById('comment-text').innerText = `今回: +${addScore.toFixed(1)}🍓\n今日の合計: ${dayTotal.toFixed(1)}🍓`;
         
-        const RAKUTEN_AFID = "51366796.8818598a.51366797.ddbb51d0"; 
+        // --- アフィリエイトリンク修正部分 ---
+        const RAKUTEN_AFID = "51366796.8818598a.51366797.ddbb51d0"; // あなたのIDに統一
         const rBox = document.getElementById('rakuten-box');
         const isGold = dayTotal >= 10;
         
@@ -237,9 +242,11 @@
         document.getElementById('rakuten-msg').innerText = dayTotal >= 1 ? "素晴らしい摂取量です！" : "もっと徳を積みましょう";
         document.getElementById('rakuten-url').innerText = isGold ? "✨ 最高級苺を楽天で召喚 ✨" : "🍓 楽天でいちごを補給 🍓";
         
+        // 検索キーワードをランクで分岐
         const searchKeyword = isGold ? "あまおう ギフト" : "いちご";
         const encodedKeyword = encodeURIComponent(searchKeyword);
         
+        // 正しいトラッキングURLの生成
         document.getElementById('rakuten-url').href = `https://hb.afl.rakuten.co.jp/hgc/${RAKUTEN_AFID}/?pc=${encodeURIComponent('https://search.rakuten.co.jp/search/mall/' + encodedKeyword + '/')}`;
         
         document.getElementById('judgment-area').style.display = 'block';
