@@ -172,27 +172,36 @@
     const db = getFirestore(app);
     const provider = new GoogleAuthProvider();
 
-    // Android/モバイル向け設定：ポップアップを避け、アカウント選択を強制する
+    // Android/モバイル向け設定：アカウント選択を強制し、リダイレクト後に確実に情報を引き継ぐ
     provider.setCustomParameters({ prompt: 'select_account' });
 
     const loginBtn = document.getElementById('login-btn');
     const userDisplay = document.getElementById('user-display');
 
-    // ログインボタンの処理（リダイレクト方式に変更）
+    // ログインボタンの処理（リダイレクト方式）
     loginBtn.onclick = () => signInWithRedirect(auth, provider);
 
-    // 認証状態の監視
+    // 【重要】リダイレクトから戻ってきた結果を明示的に受け取る処理
+    getRedirectResult(auth)
+        .then((result) => {
+            if (result?.user) {
+                console.log("Welcome:", result.user.displayName);
+            }
+        })
+        .catch((error) => {
+            console.error("Auth Error:", error.code, error.message);
+        });
+
+    // 認証状態の監視（お迎え処理）
     onAuthStateChanged(auth, (user) => {
         if (user) {
             loginBtn.style.display = 'none';
             userDisplay.style.display = 'block';
             userDisplay.innerText = `🍓 ${user.displayName} さん`;
+        } else {
+            loginBtn.style.display = 'flex';
+            userDisplay.style.display = 'none';
         }
-    });
-
-    // リダイレクト後の結果処理
-    getRedirectResult(auth).catch((error) => {
-        console.error("Auth Error:", error);
     });
 
     let counts = { raw: 0, jam: 0, sweet: 0 };
