@@ -1,0 +1,21 @@
+{
+  "name": "今日イチ | いちご摂取管理",
+  "short_name": "今日イチ",
+  "description": "きみは今日いちごを食べたか？毎日のいちご摂取量を記録する図書室アプリ。",
+  "start_url": "ichigo.html",
+  "display": "standalone",
+  "background_color": "#fff5f6",
+  "theme_color": "#ff4d6d",
+  "icons": [
+    {
+      "src": "icon-ichigo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-ichigo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
