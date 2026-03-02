@@ -2,15 +2,8 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>いちごよみ | 今日イチ</title>
-
-    <link rel="manifest" href="manifest.json">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="いちごよみ">
-    <link rel="apple-touch-icon" href="icon-ichigo.png">
-
     <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -24,6 +17,7 @@
         .calendar-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; color: #ff4d6d; }
         .nav-title { font-size: 16px; font-weight: 900; }
         .btn-nav-cal { background: none; border: 1px solid #ff4d6d; color: #ff4d6d; border-radius: 10px; padding: 5px 10px; cursor: pointer; font-family: inherit; font-weight: bold; font-size: 12px; }
+        .btn-nav-cal:active { background: #fff0f3; }
 
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; background: #fffcfc; border: 1px solid #ffe5e9; padding: 5px; border-radius: 15px; margin-bottom: 20px; }
         .calendar-day { font-size: 10px; height: 50px; background: white; border-radius: 5px; display: flex; flex-direction: column; align-items: center; padding-top: 4px; border: 1px solid #fff5f6; position: relative; }
@@ -41,12 +35,14 @@
         .history-shogo { color: #666; font-size: 11px; }
         .history-score { font-weight: 900; color: #4a1a1a; margin-right: 15px; }
 
-        .btn-del-item { background: #eee; color: #888; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 12px; cursor: pointer; }
+        .btn-del-item { background: #eee; color: #888; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 12px; cursor: pointer; line-height: 22px; padding: 0; }
         
         .studio-nav { margin-top: 20px; border-top: 1px solid #ffe5e9; padding-top: 20px; }
         .btn-back { display: block; margin-bottom: 10px; color: white; background: #ff4d6d; text-decoration: none; padding: 12px; border-radius: 50px; font-size: 14px; font-weight: bold; box-shadow: 0 4px 0 #c92a42; text-align: center; }
-        .btn-sns { color: white; border: none; padding: 10px; border-radius: 50px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px; flex: 1; }
+        .sns-group { display: flex; gap: 10px; margin-top: 10px; }
+        .btn-sns { color: white; border: none; padding: 10px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px; flex: 1; }
         .btn-x { background: #000; }
+        .btn-insta { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
         
         .btn-delete-all { color: #cc0000; font-size: 11px; background: none; border: none; text-decoration: underline; cursor: pointer; float: right; }
         #loading-msg { font-size: 12px; color: #ff4d6d; font-weight: bold; margin: 10px 0; }
@@ -62,7 +58,7 @@
         <div style="margin: 5px 0;">今月のいちごよみ: <span class="stats-val" id="month-total">0.0</span> 🍓</div>
         <div style="margin: 5px 0;">生涯累計: <span class="stats-val" id="all-total">0.0</span> 🍓</div>
         <div id="total-rank" style="color:#ffd700; font-weight:bold; font-size:13px; margin-top:5px;">属性: ロード中...</div>
-        <button class="btn-stats-share" onclick="shareStats()"><i class="fa-brands fa-x-twitter"></i></button>
+        <button class="btn-stats-share" onclick="shareStats()" title="累計をシェア"><i class="fa-brands fa-x-twitter"></i></button>
     </div>
 
     <div class="calendar-nav">
@@ -79,9 +75,14 @@
     <div id="history-list"></div>
 
     <div class="studio-nav">
-        <a href="ichigo.html" class="btn-back">← 記録を閉じて戻る</a>
-        <div style="display: flex; gap: 10px; margin-top: 10px;">
-            <a href="https://x.com/necotatu2" target="_blank" class="btn-sns btn-x"><i class="fa-brands fa-x-twitter"></i> 公式X</a>
+        <a href="ichigo.html" class="btn-back">いちごを報告しに行く</a>
+        <div class="sns-group">
+            <a href="https://x.com/necotatu2" target="_blank" class="btn-sns btn-x">
+                <i class="fa-brands fa-x-twitter"></i> 公式X
+            </a>
+            <a href="https://www.instagram.com/necotastudio" target="_blank" class="btn-sns btn-insta">
+                <i class="fa-brands fa-instagram"></i> 公式Insta
+            </a>
         </div>
     </div>
 </div>
@@ -97,7 +98,8 @@
         projectId: "necotastudio-app",
         storageBucket: "necotastudio-app.firebasestorage.app",
         messagingSenderId: "1093173509944",
-        appId: "1:1093173509944:web:5340935ddffdd49628cbcd"
+        appId: "1:1093173509944:web:5340935ddffdd49628cbcd",
+        measurementId: "G-W1NP66L6D4"
     };
 
     const app = initializeApp(firebaseConfig);
@@ -131,16 +133,19 @@
         const now = new Date();
         
         let aTotal = 0;
-        let mTotal = 0;
+        let mTotal = 0; // 今月の累計（リアルタイムの現在月）
         let dailyTotals = {}; 
 
         allHistory.forEach(h => {
             const s = Number(h.score) || 0;
             const dateObj = new Date(h.timestamp);
             aTotal += s;
+            
+            // 実際の「今月」の累計を計算
             if(dateObj.getFullYear() === now.getFullYear() && dateObj.getMonth() === now.getMonth()) {
                 mTotal += s;
             }
+
             const dateKey = `${dateObj.getFullYear()}-${dateObj.getMonth() + 1}-${dateObj.getDate()}`;
             dailyTotals[dateKey] = (dailyTotals[dateKey] || 0) + s;
         });
@@ -163,7 +168,9 @@
             const dayScore = dailyTotals[targetKey];
             const isIchigoDay = (d === 15);
             const extraClass = isIchigoDay ? 'ichigo-day-highlight' : '';
-            html += `<div class="calendar-day ${extraClass}">${d}${dayScore ? `<div class="cal-score">${dayScore.toFixed(1)}🍓</div>` : ''}${isIchigoDay ? '<div class="ichigo-day-label">いちごの日</div>' : ''}</div>`;
+            const extraLabel = isIchigoDay ? '<div class="ichigo-day-label">いちごの日</div>' : '';
+
+            html += `<div class="calendar-day ${extraClass}">${d}${dayScore ? `<div class="cal-score">${dayScore.toFixed(1)}🍓</div>` : ''}${extraLabel}</div>`;
         }
         document.getElementById('calendar-grid').innerHTML = html;
         document.getElementById('calendar-title').innerText = `${year}年 ${month + 1}月 いちごよみ`;
@@ -172,8 +179,9 @@
         const listHtml = sortedHistory.map((h) => {
             const dateObj = new Date(h.timestamp);
             const timeStr = isNaN(dateObj) ? "--:--" : `${dateObj.getHours()}:${String(dateObj.getMinutes()).padStart(2, '0')}`;
-            const dateStr = `${dateObj.getMonth()+1}/${dateObj.getDate()}`;
+            const dateStr = h.date || `${dateObj.getMonth()+1}/${dateObj.getDate()}`;
             const shogo = h.score >= 10 ? "いちごの化身" : h.score >= 5 ? "いちご騎士" : "いちご愛好家";
+            
             return `
                 <div class="history-item">
                     <div class="history-info">
@@ -201,6 +209,7 @@
             const newHistory = allHistory.filter(h => h.timestamp !== timestamp);
             await updateDoc(userRef, { history: newHistory });
             allHistory = newHistory;
+            localStorage.setItem('ichigo-history', JSON.stringify(allHistory));
             renderAll();
         }
     };
@@ -212,6 +221,7 @@
             const userRef = doc(db, "users", user.uid);
             await updateDoc(userRef, { history: [] });
             allHistory = [];
+            localStorage.removeItem('ichigo-history');
             renderAll();
         }
     };
@@ -219,7 +229,7 @@
     window.shareStats = () => {
         const aTotal = document.getElementById('all-total').innerText;
         const rank = document.getElementById('total-rank').innerText;
-        const text = `【いちごよみ】 生涯累計：${aTotal} 🍓\n${rank}\n#今日イチ #いちごよみ`;
+        const text = `【いちごよみ - 観測記録】\n生涯累計：${aTotal} 🍓\n${rank}\n私のいちご生活が綴られています。🍓\n#今日イチ #いちごよみ #ねこたスタジオ`;
         const url = "https://jyonjyon-code.github.io/hirumeshi/ichigo.html";
         window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
     };
