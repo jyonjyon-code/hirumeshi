@@ -33,7 +33,6 @@
         .lucky-item { color: #e67e22; font-weight: bold; font-size: 0.95em; margin-top: 15px; background: #fff; border-radius: 10px; padding: 5px; }
         #hint { font-size: 14px; color: #888; margin-top: 10px; }
 
-        /* ナビゲーション */
         .studio-nav { margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; }
         .btn-back { background: #888; color: white; border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; font-size: 14px; margin-bottom: 10px; width: 100%; box-sizing: border-box; }
         .sns-group { display: flex; gap: 10px; }
@@ -84,7 +83,7 @@
 
 <script>
     const RAKUTEN_AFID = "51366796.8818598a.51366797.ddbb51d0"; 
-    const APP_URL = "https://jyonjyon-code.github.io/hirumeshi/";
+    const APP_URL = "https://necotastudio.com/app.html"; 
     let currentMode = 'normal';
 
     const normalMenus = [
@@ -93,22 +92,31 @@
         { luck: "大吉", food: "肉汁あふれるハンバーグ", keyword: "ハンバーグ", desc: "鉄板の熱々を楽しんで！", add: "目玉焼き" },
         { luck: "大吉", food: "本格スパイスカレー", keyword: "カレー", desc: "五感を刺激して午後もシャキッと！", add: "ナン" },
         { luck: "大吉", food: "揚げたて天丼", keyword: "天丼", desc: "大きなエビが運気を上げます。", add: "小うどん" },
+        { luck: "大吉", food: "特上うな重", keyword: "うなぎ", desc: "スタミナ全開！今日は特別な日ですね。", add: "肝吸い" },
         { luck: "中吉", food: "濃厚こってりラーメン", keyword: "ラーメン", desc: "スープが体に染み渡る一杯。", add: "味付け玉子" },
         { luck: "中吉", food: "とろとろ親子丼", keyword: "親子丼", desc: "出汁の旨味でホッとする時間を。", add: "お漬物" },
         { luck: "中吉", food: "パラパラ黄金チャーハン", keyword: "チャーハン", desc: "強火で炒めたプロの味を。", add: "焼き餃子" },
         { luck: "中吉", food: "本格ガパオライス", keyword: "ガパオライス", desc: "バジルの香りが食欲をそそります。", add: "目玉焼き追加" },
+        { luck: "中吉", food: "石焼ビビンバ", keyword: "ビビンバ", desc: "おこげの香ばしさがたまりません！", add: "わかめスープ" },
         { luck: "吉", food: "ジューシー唐揚げ定食", keyword: "唐揚げ", desc: "揚げたてにレモンを搾って！", add: "ポテトサラダ" },
         { luck: "吉", food: "生パスタのボロネーゼ", keyword: "ボロネーゼ", desc: "モチモチ食感がクセになります。", add: "バゲット" },
+        { luck: "吉", food: "ふわとろオムライス", keyword: "オムライス", desc: "卵の優しさに包まれてください。", add: "コンソメスープ" },
         { luck: "末吉", food: "サッパリ冷やしうどん", keyword: "うどん", desc: "コシのある麺で軽やかに。", add: "ちくわ天" },
-        { luck: "末吉", food: "具だくさんサンドイッチ", keyword: "サンドイッチ", desc: "片手で食べられる、午後への味方。", add: "野菜スープ" }
+        { luck: "末吉", food: "具だくさんサンドイッチ", keyword: "サンドイッチ", desc: "片手で食べられる、午後への味方。", add: "野菜スープ" },
+        { luck: "末吉", food: "ソース焼きそば", keyword: "焼きそば", desc: "屋台のような懐かしい味わい。", add: "紅生姜" }
     ];
 
     const conveniMenus = [
         { luck: "大大吉", food: "高級幕の内 ＆ デザート", keyword: "お取り寄せ スイーツ", desc: "コンビニ界の王族のようなセット。", add: "挽きたてコーヒー" },
-        { luck: "大吉", food: "カツカレー", keyword: "レトルト カツカレー", desc: "勝負の日はカツで決まり！", add: "飲むヨーグルト" },
+        { luck: "大吉", food: "ガッツリ！カツカレー", keyword: "レトルト カツカレー", desc: "勝負の日はカツで決まり！", add: "飲むヨーグルト" },
+        { luck: "大吉", food: "二郎系まぜそば", keyword: "コンビニ ラーメン", desc: "コンビニでこのパンチ力。最高です。", add: "生卵" },
         { luck: "中吉", food: "明太クリームパスタ", keyword: "明太パスタソース", desc: "濃厚さと満足感を両立！", add: "サラダチキン" },
+        { luck: "中吉", food: "ネギ塩牛タン弁当", keyword: "牛タン", desc: "香ばしい香りが食欲をブースト！", add: "麦茶" },
+        { luck: "中吉", food: "具たっぷり海鮮ドリア", keyword: "ドリア", desc: "とろーりチーズで心も温まる。", add: "コールスロー" },
         { luck: "吉", food: "おにぎりとカップ味噌汁", keyword: "高級 味噌汁 セット", desc: "シンプルイズベスト！", add: "半熟ゆで卵" },
-        { luck: "末吉", food: "新作カップヌードル", keyword: "カップラーメン 詰め合わせ", desc: "新商品はとりあえず試すのが吉！", add: "食後のアイス" }
+        { luck: "吉", food: "旨辛担々麺", keyword: "担々麺 カップ", desc: "刺激が欲しいあなたの午後に。", add: "おにぎり（白飯）" },
+        { luck: "末吉", food: "新作カップヌードル", keyword: "カップラーメン 詰め合わせ", desc: "新商品はとりあえず試すのが吉！", add: "食後のアイス" },
+        { luck: "末吉", food: "冷製パスタ ＆ スープ", keyword: "冷製パスタ", desc: "オシャレに軽く済ませたい時に。", add: "杏仁豆腐" }
     ];
 
     function setMode(mode) {
@@ -134,8 +142,13 @@
             document.getElementById('desc').innerText = res.desc;
             document.getElementById('add-on').innerText = res.add;
             
-            // --- Xシェアリンクの作成 ---
-            const tweetText = encodeURIComponent(`今日のおみくじの結果は…\n${luckLabel}\nランチは「${res.food}」に決定！\nラッキーアイテム: ${res.add}\n\n#ひるめしえらんで #ねこたスタジオ\n`);
+            // --- Xシェアリンクの作成（改行とURLを修正） ---
+            const tweetText = encodeURIComponent(
+                `今日のおみくじの結果は…\n` +
+                `${luckLabel}ランチは「${res.food}」に決定！\n\n` + 
+                `✨ラッキーアイテム: ${res.add}\n\n` +
+                `#ひるめしえらんで #ねこたスタジオ`
+            );
             const tweetUrl = `https://twitter.com/intent/tweet?text=${tweetText}&url=${encodeURIComponent(APP_URL)}`;
             document.getElementById('x-share-btn').href = tweetUrl;
 
@@ -163,5 +176,6 @@
         document.getElementById('hint').innerText = "タップして おみくじを ふる！";
     }
 </script>
+
 </body>
 </html>
