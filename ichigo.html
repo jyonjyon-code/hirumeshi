@@ -135,7 +135,7 @@
             <a id="rakuten-url" href="" class="rakuten-link" target="_blank"></a>
         </div>
         <button onclick="shareOnX()" class="btn-share">
-            <i class="fa-brands fa-x-twitter"></i> ランクを報告する
+            <i class="fa-brands fa-x-twitter"></i> 結果を報告する
         </button>
     </div>
 
@@ -171,28 +171,15 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
     const provider = new GoogleAuthProvider();
-
-    // Android/モバイル向け設定：アカウント選択を強制し、リダイレクト後に確実に情報を引き継ぐ
     provider.setCustomParameters({ prompt: 'select_account' });
 
     const loginBtn = document.getElementById('login-btn');
     const userDisplay = document.getElementById('user-display');
 
-    // ログインボタンの処理（リダイレクト方式）
     loginBtn.onclick = () => signInWithRedirect(auth, provider);
 
-    // 【重要】リダイレクトから戻ってきた結果を明示的に受け取る処理
-    getRedirectResult(auth)
-        .then((result) => {
-            if (result?.user) {
-                console.log("Welcome:", result.user.displayName);
-            }
-        })
-        .catch((error) => {
-            console.error("Auth Error:", error.code, error.message);
-        });
+    getRedirectResult(auth).catch((error) => console.error("Auth Error:", error));
 
-    // 認証状態の監視（お迎え処理）
     onAuthStateChanged(auth, (user) => {
         if (user) {
             loginBtn.style.display = 'none';
@@ -261,9 +248,7 @@
         document.getElementById('rakuten-url').innerText = isGold ? "✨ 最高級苺を楽天で召喚 ✨" : "🍓 楽天でいちごを補給 🍓";
         
         const searchKeyword = isGold ? "あまおう ギフト" : "いちご";
-        const encodedKeyword = encodeURIComponent(searchKeyword);
-        
-        document.getElementById('rakuten-url').href = `https://hb.afl.rakuten.co.jp/hgc/${RAKUTEN_AFID}/?pc=${encodeURIComponent('https://search.rakuten.co.jp/search/mall/' + encodedKeyword + '/')}`;
+        document.getElementById('rakuten-url').href = `https://hb.afl.rakuten.co.jp/hgc/${RAKUTEN_AFID}/?pc=${encodeURIComponent('https://search.rakuten.co.jp/search/mall/' + encodeURIComponent(searchKeyword) + '/')}`;
         
         document.getElementById('judgment-area').style.display = 'block';
         rBox.style.display = 'block';
@@ -275,8 +260,8 @@
     window.shareOnX = () => {
         const shogo = document.getElementById('shogo-text').innerText;
         const comment = document.getElementById('comment-text').innerText.split('\n')[1]; 
-        const url = "https://jyonjyon-code.github.io/hirumeshi/ichigo.html";
-        const text = `【今日イチ】\n私の称号は${shogo}！\n${comment}\nきみは今日いちごを食べたか？🍓\n#今日イチ #ねこたスタジオ`;
+        const url = "https://necotastudio.com/ichigo.html";
+        const text = `きみは今日いちごを食べたか？🍓\n\n【今日イチ判定】\n称号：${shogo}\n${comment}\n\n#今日イチ #ねこたスタジオ`;
         window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
     };
 
