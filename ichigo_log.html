@@ -95,7 +95,7 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithRedirect, getRedirectResult } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -115,16 +115,17 @@
     let currentViewDate = new Date();
     let allHistory = [];
 
+    // リダイレクト後の結果受け取り
+    getRedirectResult(auth).catch((e) => console.error("Auth Error:", e));
+
     onAuthStateChanged(auth, async (user) => {
         if (user) {
             await fetchData(user);
         } else {
             document.getElementById('loading-msg').innerHTML = 
                 `ログインが必要です🍓<br><button id="retry-login">再ログインして同期</button>`;
-            document.getElementById('retry-login').onclick = async () => {
-                try {
-                    await signInWithPopup(auth, provider);
-                } catch (e) { console.error(e); }
+            document.getElementById('retry-login').onclick = () => {
+                signInWithRedirect(auth, provider);
             };
         }
     });
