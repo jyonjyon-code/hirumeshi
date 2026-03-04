@@ -49,6 +49,7 @@
         .btn-insta { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
         .btn-delete-all { color: #cc0000; font-size: 11px; background: none; border: none; text-decoration: underline; cursor: pointer; float: right; }
         #loading-msg { font-size: 12px; color: #ff4d6d; font-weight: bold; margin: 10px 0; }
+        #retry-login { margin-top:10px; padding:8px 15px; border-radius:12px; border:1px solid #ff4d6d; background:white; color:#ff4d6d; font-weight:bold; cursor:pointer; font-family: inherit; }
     </style>
 </head>
 <body>
@@ -94,7 +95,7 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -109,6 +110,7 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
+    const provider = new GoogleAuthProvider();
 
     let currentViewDate = new Date();
     let allHistory = [];
@@ -117,7 +119,13 @@
         if (user) {
             await fetchData(user);
         } else {
-            document.getElementById('loading-msg').innerText = "ログインが必要です";
+            document.getElementById('loading-msg').innerHTML = 
+                `ログインが必要です🍓<br><button id="retry-login">再ログインして同期</button>`;
+            document.getElementById('retry-login').onclick = async () => {
+                try {
+                    await signInWithPopup(auth, provider);
+                } catch (e) { console.error(e); }
+            };
         }
     });
 
@@ -129,7 +137,10 @@
                 allHistory = userSnap.data().history;
             }
             renderAll();
-        } catch(e) { console.error(e); }
+        } catch(e) { 
+            console.error(e); 
+            document.getElementById('loading-msg').innerText = "読み込みに失敗しました。";
+        }
     }
 
     function renderAll() {
@@ -154,11 +165,9 @@
         document.getElementById('all-total').innerText = aTotal.toFixed(1);
         document.getElementById('loading-msg').style.display = 'none';
         
-        // 累計ランク
         let rank = aTotal >= 300 ? "🍓 いちごの神様" : aTotal >= 50 ? "いちご貴族" : aTotal >= 10 ? "いちご国民" : "いちご市民";
         document.getElementById('total-rank').innerText = "現在の属性: " + rank;
 
-        // 【追加】ご褒美いちご（今月30🍓以上で表示）
         const rewardArea = document.getElementById('reward-area');
         if (mTotal >= 30) {
             rewardArea.style.display = 'block';
@@ -168,7 +177,6 @@
             rewardArea.style.display = 'none';
         }
 
-        // カレンダー生成
         const firstDay = new Date(year, month, 1).getDay();
         const lastDate = new Date(year, month + 1, 0).getDate();
         let html = '';
@@ -187,7 +195,6 @@
         document.getElementById('calendar-grid').innerHTML = html;
         document.getElementById('calendar-title').innerText = `${year}年 ${month + 1}月 いちごよみ`;
         
-        // ログリスト
         const sorted = [...allHistory].sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
         document.getElementById('history-list').innerHTML = sorted.map(h => {
             const d = new Date(h.timestamp);
@@ -207,6 +214,7 @@
     window.deleteEntry = async (ts) => {
         if(!confirm("削除しますか？")) return;
         const user = auth.currentUser;
+        if(!user) return;
         allHistory = allHistory.filter(h => h.timestamp !== ts);
         await updateDoc(doc(db, "users", user.uid), { history: allHistory });
         renderAll();
@@ -215,6 +223,7 @@
     window.clearHistory = async () => {
         if(!confirm("全て消去しますか？")) return;
         const user = auth.currentUser;
+        if(!user) return;
         allHistory = [];
         await updateDoc(doc(db, "users", user.uid), { history: [] });
         renderAll();
