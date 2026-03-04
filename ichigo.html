@@ -70,8 +70,8 @@
 <body>
 
 <div id="app-guide">
-    <i class="fa-solid fa-circle-info"></i> <strong>SNS内ブラウザをご利用中の方へ</strong><br>
-    記録を同期するために、右上のメニューから<strong>「ブラウザで開く」</strong>を選んでください🍓
+    <i class="fa-solid fa-circle-info"></i> <strong>ログインでお困りの方へ</strong><br>
+    SNS内ブラウザをお使いの場合は、右上のメニューから<strong>「ブラウザで開く」</strong>を選択してください🍓
 </div>
 
 <div class="card">
@@ -155,7 +155,7 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getAuth, signInWithRedirect, getRedirectResult, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getFirestore, doc, setDoc, getDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -171,24 +171,20 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
     const provider = new GoogleAuthProvider();
-    provider.setCustomParameters({ prompt: 'select_account' });
 
     const loginBtn = document.getElementById('login-btn');
     const userDisplay = document.getElementById('user-display');
 
-    // ログイン処理（ポップアップ方式）
-    loginBtn.onclick = async () => {
-        try {
-            await signInWithPopup(auth, provider);
-        } catch (error) {
-            console.error("Auth Error:", error);
-            if (error.code === 'auth/popup-blocked') {
-                alert("ポップアップがブロックされました🍓 標準ブラウザで開くか、設定を確認してください。");
-            }
-        }
+    // ログイン処理（リダイレクト方式に変更：ポップアップブロックを回避）
+    loginBtn.onclick = () => {
+        signInWithRedirect(auth, provider);
     };
 
-    // 認証状態の監視
+    // リダイレクト後の結果受け取り
+    getRedirectResult(auth).catch((error) => {
+        console.error("Auth Error:", error);
+    });
+
     onAuthStateChanged(auth, (user) => {
         if (user) {
             loginBtn.style.display = 'none';
