@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <title>ゆうはんなにしよ | ねこたスタジオ</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -28,6 +29,7 @@
         .btn-rakuten { background: #bf0000; font-size: 14px; }
         .btn-search { background: #3498db; font-size: 15px; }
         .btn-retry { background: #95a5a6; font-size: 14px; padding: 10px; margin-top: 20px; }
+        .btn-x { background: #000; }
         
         .studio-nav { margin-top: 25px; border-top: 1px solid #ddd; padding-top: 20px; }
         .btn-back { color: #888; text-decoration: none; font-size: 13px; display: inline-block; margin-bottom: 15px; font-weight: bold; }
@@ -86,7 +88,8 @@
 
 <script>
     const RAKUTEN_AFID = "51366796.8818598a.51366797.ddbb51d0"; 
-    const APP_URL = "https://jyonjyon-code.github.io/hirumeshi/yuhan.html"; 
+    // ★独自ドメインに変更
+    const APP_URL = "https://necotastudio.com/yuhan.html"; 
     let currentMode = 'cook';
     const emojis = ["🍳", "🍱", "🍕", "🍜", "🍛", "🥘", "🍖", "🥗", "🍣", "🍔", "🍝", "🥟"];
     
@@ -95,25 +98,32 @@
             { name: "ハンバーグ", keyword: "ハンバーグ", desc: "ふっくらジューシーに<br>焼いちゃおう！" },
             { name: "生姜焼き", keyword: "生姜焼き", desc: "ご飯がすすむ<br>最強の定番メニュー！" },
             { name: "麻婆豆腐", keyword: "麻婆豆腐", desc: "ピリ辛ミンチで<br>スタミナアップ！" },
-            { name: "パスタ", keyword: "パスタ", desc: "冷蔵庫の余り物で<br>おしゃれに仕上げよう。" },
+            { name: "カルボナーラ", keyword: "カルボナーラ", desc: "卵とチーズのコクで<br>リッチな気分に。" },
             { name: "オムライス", keyword: "オムライス", desc: "ケチャップで可愛く<br>メッセージを書く？" },
             { name: "親子丼", keyword: "親子丼", desc: "とろとろ卵と鶏肉の<br>優しいハーモニー。" },
-            { name: "チャーハン", keyword: "チャーハン", desc: "強火で一気に！<br>パラパラを目指して。" }
+            { name: "チャーハン", keyword: "チャーハン", desc: "強火で一気に！<br>パラパラを目指して。" },
+            { name: "お好み焼き", keyword: "お好み焼き", desc: "キャベツたっぷりで<br>ヘルシー＆お腹いっぱいに！" },
+            { name: "回鍋肉", keyword: "回鍋肉", desc: "甘辛い味噌で<br>野菜もモリモリ食べよう！" }
         ],
         buy: [
-            { name: "お惣菜盛り合わせ", keyword: "スーパー", desc: "スーパーの特売品を<br>賢くゲットしよう！" },
-            { name: "デリバリーピザ", keyword: "ピザ", desc: "たまには楽して<br>おうちパーティー気分。" },
+            { name: "お惣菜盛り合わせ", keyword: "スーパー お惣菜", desc: "スーパーの特売品を<br>賢くゲットしよう！" },
+            { name: "デリバリーピザ", keyword: "ピザ 宅配", desc: "たまには楽して<br>おうちパーティー気分。" },
             { name: "お寿司パック", keyword: "スーパー 寿司", desc: "今日もお疲れ様。<br>ご褒美にお寿司はどう？" },
-            { name: "冷凍餃子", keyword: "スーパー 餃子", desc: "今の冷凍食品は<br>プロ級の美味しさ！" },
-            { name: "コンビニ弁当", keyword: "コンビニ", desc: "手軽さNo.1！<br>新作があるかチェック。" },
-            { name: "ほか弁", keyword: "弁当屋", desc: "注文してから作る<br>温かさが嬉しい。" }
+            { name: "冷凍餃子", keyword: "冷凍 餃子", desc: "今の冷凍食品は<br>プロ級の美味しさ！" },
+            { name: "コンビニ弁当", keyword: "コンビニ 弁当", desc: "手軽さNo.1！<br>新作があるかチェック。" },
+            { name: "ほか弁", keyword: "弁当屋", desc: "注文してから作る<br>温かさが嬉しい。" },
+            { name: "フライドチキン", keyword: "ケンタッキー", desc: "無性に食べたくなる！<br>今夜はジャンキーに。" },
+            { name: "牛丼テイクアウト", keyword: "牛丼", desc: "早くて旨い！<br>つゆだくにする？" }
         ],
         out: [
             { name: "焼肉", keyword: "焼肉", desc: "パワー全開！<br>お肉を食べて元気になろう。" },
             { name: "ラーメン", keyword: "ラーメン", desc: "こだわりの一杯を<br>探しに行こう！" },
             { name: "ファミレス", keyword: "ファミレス", desc: "メニューが豊富！<br>今の気分で選んじゃおう。" },
             { name: "イタリアン", keyword: "イタリアン", desc: "おしゃれな空間で<br>ゆっくりディナー。" },
-            { name: "回転寿司", keyword: "回転寿司", desc: "好きなネタを<br>好きなだけ楽しもう！" }
+            { name: "回転寿司", keyword: "回転寿司", desc: "好きなネタを<br>好きなだけ楽しもう！" },
+            { name: "しゃぶしゃぶ", keyword: "しゃぶしゃぶ", desc: "お肉も野菜もたっぷり！<br>ヘルシーに大満足。" },
+            { name: "居酒屋ごはん", keyword: "居酒屋", desc: "おつまみ系を並べて<br>楽しく夕飯タイム！" },
+            { name: "とんかつ屋", keyword: "とんかつ", desc: "サクサクの衣と<br>ジューシーな豚肉！" }
         ]
     };
 
@@ -169,8 +179,15 @@
         rakutenLink.innerText = `🎁 ${res.name} を楽天で探す`;
 
         const modeText = currentMode === 'cook' ? '自炊' : currentMode === 'buy' ? '買い出し' : '外食';
-        const tweetText = encodeURIComponent(`今夜の夕食は…\n【 ${res.name} 】に決定！\n(${modeText}モード)\n\n`);
-        document.getElementById('x-share-btn').href = `https://twitter.com/intent/tweet?text=${tweetText}&url=${encodeURIComponent(APP_URL)}&hashtags=ゆうはんなにしよ,ねこたスタジオ`;
+        
+        // ★Xシェアテキストの改行とフォーマットを修正
+        const tweetText = encodeURIComponent(
+            `今夜の夕食は…\n` +
+            `【 ${res.name} 】に決定！\n\n` +
+            `（${modeText}モードで選びました🍴）\n\n` +
+            `#ゆうはんなにしよ #ねこたスタジオ`
+        );
+        document.getElementById('x-share-btn').href = `https://twitter.com/intent/tweet?text=${tweetText}&url=${encodeURIComponent(APP_URL)}`;
     }
 
     function reset() {
