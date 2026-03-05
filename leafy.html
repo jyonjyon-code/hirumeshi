@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>はっぱよみ | necotastudio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary-green: #4CAF50;
+            --dark-green: #2E7D32;
+            --wood-brown: #5D4037;
+            --paper-white: #F5F5DC;
+            --rare-c: #9e9e9e; --rare-u: #2196f3; --rare-r: #9c27b0; --rare-e: #ff9800; --rare-l: #d4af37;
+        }
+        body { font-family: 'Zen Maru Gothic', sans-serif; background-color: var(--paper-white); color: var(--wood-brown); margin: 0; padding-bottom: 80px; display: flex; flex-direction: column; align-items: center; overflow-x: hidden; }
+        header { background: var(--primary-green); color: white; width: 100%; padding: 15px 0; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: relative; z-index: 10; }
+        
+        .back-home { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: white; text-decoration: none; font-size: 0.8rem; border: 1px solid white; padding: 6px 12px; border-radius: 20px; font-weight: bold; background: rgba(0,0,0,0.2); cursor: pointer; display: flex; align-items: center; gap: 5px; }
+        
+        .container { width: 95%; max-width: 500px; margin: 10px 0; box-sizing: border-box; }
+        .status-box { background: white; padding: 20px; border-radius: 25px; text-align: center; border: 2px solid #ddd; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .leaf-display { font-size: 2.5rem; font-weight: 900; color: var(--dark-green); margin: 10px 0; }
+        
+        .action-btns { display: flex; gap: 10px; margin-top: 10px; }
+        .go-library { flex: 2; padding: 15px; background: var(--wood-brown); color: white; border-radius: 15px; border: none; font-weight: bold; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .go-calendar { flex: 1; padding: 15px; background: var(--primary-green); color: white; border-radius: 15px; border: none; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+        .login-btn-style { background: #4285F4; color: white; border: none; padding: 12px; border-radius: 12px; font-weight: bold; width: 100%; cursor: pointer; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+
+        .log-container { background: white; border-radius: 20px; border: 1px solid #ddd; padding: 10px; margin-top: 15px; max-height: 200px; overflow-y: auto; text-align: left; }
+        .log-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-bottom: 1px solid #f9f9f9; font-size: 0.9rem; }
+
+        .input-card { background: white; padding: 20px; border-radius: 25px; border: 3px solid var(--primary-green); position: relative; }
+        .m-btn { flex: 1; padding: 10px; border: 2px solid var(--primary-green); background: white; border-radius: 12px; cursor: pointer; font-weight: bold; font-family: inherit; }
+        .m-btn.active { background: var(--primary-green); color: white; }
+        
+        #calendar-page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--paper-white); z-index: 1100; display: none; flex-direction: column; overflow-y: auto; align-items: center; padding-bottom: 30px; }
+        .cal-nav { display: flex; align-items: center; justify-content: space-between; width: 90%; margin: 20px 0; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; background: white; padding: 10px; border-radius: 20px; border: 2px solid var(--primary-green); width: 90%; max-width: 400px; }
+        .cal-day { height: 60px; background: #f9f9f9; border-radius: 8px; font-size: 10px; display: flex; flex-direction: column; align-items: center; padding-top: 5px; position: relative; }
+        .cal-header { font-weight: bold; color: var(--dark-green); padding: 5px 0; font-size: 12px; text-align: center; }
+        .leaf-dot { color: var(--primary-green); font-size: 14px; margin-top: 2px; }
+        .cal-score { font-size: 9px; font-weight: 900; color: var(--dark-green); }
+
+        footer { margin-top: 30px; padding: 20px; text-align: center; width: 100%; border-top: 1px solid #ddd; background: #fff; }
+        .footer-home-btn { background: var(--wood-brown); color: white; border: none; padding: 10px 25px; border-radius: 25px; font-weight: bold; cursor: pointer; margin-bottom: 10px; font-size: 0.9rem; }
+        .copyright { font-size: 0.8rem; color: #999; }
+
+        #library-page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #3e2723; z-index: 1000; display: none; flex-direction: column; overflow-y: auto; }
+        .library-header { background: #2d1b18; color: #d7ccc8; padding: 20px; text-align: center; position: sticky; top: 0; z-index: 11; display: flex; justify-content: space-between; align-items: center; }
+        .shelf-container { padding: 20px; display: flex; flex-direction: column; gap: 30px; align-items: center; }
+        .shelf-row { background: #5d4037; width: 100%; max-width: 600px; padding: 15px 10px 5px; border-radius: 4px; border-bottom: 12px solid #2d1b18; display: flex; flex-wrap: wrap; gap: 8px; box-shadow: 0 10px 20px rgba(0,0,0,0.5); box-sizing: border-box; }
+        .book-spine { width: 22px; height: 80px; border-radius: 2px; cursor: pointer; transition: 0.2s; border-left: 3px solid rgba(255,255,255,0.2); }
+        .book-spine:hover { transform: translateY(-15px); }
+
+        .overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index: 2000; display:none; }
+        #panel { position: fixed; top:50%; left:50%; transform:translate(-50%,-50%); width:85%; max-width:400px; background:white; border-radius:30px; padding:30px; z-index: 2001; display:none; text-align:center; border: 6px solid var(--primary-green); }
+        .rakuten-btn { background: #bf0000; color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; width: 100%; cursor: pointer; margin-top: 15px; font-size: 1rem; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="back-home" onclick="location.href='index.html'"><i class="fas fa-home"></i> ホーム</div>
+    <h1 style="margin:0; font-size: 1.2rem;">はっぱよみ</h1>
+</header>
+
+<div class="container status-box">
+    <div id="user-display" style="font-size: 14px; font-weight: bold; color: #444; margin-bottom: 8px;">読み込み中...</div>
+    <div class="leaf-display">🍃 <span id="leaf-total">0</span> <small style="font-size: 1rem;">枚</small></div>
+    
+    <div id="logged-in-actions" style="display:none;">
+        <div class="action-btns">
+            <button class="go-library" onclick="openLibrary()"><i class="fas fa-book"></i> 図書室</button>
+            <button class="go-calendar" onclick="openCalendar()"><i class="fas fa-calendar-alt"></i> よみ</button>
+        </div>
+        <button onclick="shareOnX()" style="background:#000; color:white; border:none; width:100%; padding:10px; border-radius:12px; margin-top:10px; font-weight:bold; cursor:pointer;">
+            <i class="fab fa-x-twitter"></i> 収穫を報告
+        </button>
+    </div>
+    <button id="login-btn" class="login-btn-style" style="display:none;" onclick="login()"><i class="fab fa-google"></i> Googleでログイン</button>
+</div>
+
+<div class="container input-card">
+    <div style="display:flex; gap:8px; margin-bottom:15px;">
+        <button id="m-veg" class="m-btn active" onclick="switchMode('veg')">🥬 種類</button>
+        <button id="m-dish" class="m-btn" onclick="switchMode('dish')">🍳 料理</button>
+    </div>
+    <select id="cat-select" style="width:100%; padding:12px; border-radius:10px; margin-bottom:10px; border:1px solid #ddd;" onchange="updateItemList()"></select>
+    <select id="item-select" style="width:100%; padding:12px; border-radius:10px; margin-bottom:10px; border:1px solid #ddd;"></select>
+    
+    <div style="display: flex; align-items: center; justify-content: space-between; background: #f0f0f0; padding: 10px 20px; border-radius: 15px;">
+        <div style="text-align: left;">
+            <div style="font-size: 0.7rem; color: #999;">今日の分</div>
+            <div id="daily-count-txt" style="font-size: 1.5rem; font-weight: 900;">0</div>
+        </div>
+        <button onclick="addEntry()" style="background: var(--primary-green); color: white; border: none; width: 50px; height: 50px; border-radius: 50%; font-size: 1.5rem; cursor: pointer;">
+            <i class="fas fa-plus"></i>
+        </button>
+    </div>
+
+    <div id="log-list" class="log-container"></div>
+</div>
+
+<div class="container">
+    <h3 style="border-left: 5px solid var(--primary-green); padding-left: 10px;">交換所 (Store)</h3>
+    <div id="store-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;"></div>
+</div>
+
+<footer>
+    <button class="footer-home-btn" onclick="location.href='index.html'"><i class="fas fa-home"></i> ホームへ戻る</button>
+    <div class="copyright">© necotastudio</div>
+</footer>
+
+<div id="library-page">
+    <div class="library-header">
+        <button onclick="closeLibrary()" style="background:none; border:1px solid #d7ccc8; color:#d7ccc8; padding:5px 15px; border-radius:20px;">閉じる</button>
+        <span style="font-weight:bold; font-size:1.2rem; font-family: serif;">はっぱよみ 図書室</span>
+        <span>所蔵: <span id="lib-book-count">0</span>冊</span>
+    </div>
+    <div class="shelf-container" id="shelf-rows-container"></div>
+</div>
+
+<div id="calendar-page">
+    <header style="margin-bottom:0;">
+        <div class="back-home" onclick="closeCalendar()"><i class="fas fa-chevron-left"></i> 戻る</div>
+        <h1 style="margin:0; font-size: 1.2rem;">はっぱよみ 履歴</h1>
+    </header>
+    <div class="cal-nav">
+        <button class="m-btn" style="padding:5px 10px;" onclick="changeMonth(-1)">◀ 前月</button>
+        <b id="cal-title"></b>
+        <button class="m-btn" style="padding:5px 10px;" onclick="changeMonth(1)">翌月 ▶</button>
+    </div>
+    <div class="calendar-grid" id="calendar-grid"></div>
+</div>
+
+<div class="overlay" id="overlay" onclick="closePanel()"></div>
+<div id="panel"><div id="panel-content"></div><button class="m-btn" style="margin-top:20px;" onclick="closePanel()">閉じる</button></div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = { apiKey: "AIzaSyA7pcr0G4qEx0yLNWueZPdaeQoEBjFuoic", authDomain: "necotastudio-app.firebaseapp.com", projectId: "necotastudio-app", storageBucket: "necotastudio-app.firebasestorage.app", messagingSenderId: "1093173509944", appId: "1:1093173509944:web:5340935ddffdd49628cbcd" };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const provider = new GoogleAuthProvider();
+
+    const RAKUTEN_AFID = "51366796.8818598a.51366797.ddbb51d0";
+    const vData = { "定番葉物": ["キャベツ", "レタス", "白菜", "ほうれん草", "小松菜", "チンゲン菜"], "香味ハーブ": ["大葉", "茗荷", "ニラ", "パクチー", "バジル", "パセリ", "ルッコラ"], "サラダ葉": ["ケール", "水菜", "ベビーリーフ", "トレビス", "サニーレタス"], "その他": ["明日葉", "モロヘイヤ", "豆苗", "春菊", "セロリ"] };
+    const dData = { "和風": { "お浸し": 2, "胡麻和え": 2, "浅漬け": 2, "天ぷら": 3, "野菜炒め": 3, "白和え": 3, "筑前煮": 3, "冷奴の大葉のせ": 2, "茗荷の甘酢漬け": 2 }, "洋風": { "サラダ": 2, "ロールキャベツ": 3, "バジルパスタ": 2, "ポトフ": 3, "ほうれん草ソテー": 2, "コールスロー": 2, "ケールチップス": 3, "ラタトゥイユ": 4, "バーニャカウダ": 4 }, "中華・エスニック": { "青椒肉絲": 3, "回鍋肉": 3, "パクチーサラダ": 3, "空芯菜炒め": 3, "餃子（ニラたっぷり）": 4, "八宝菜": 4, "ガパオライス": 3, "生春巻き": 3 }, "スープ・飲み物": { "青汁": 1, "スムージー": 2, "野菜スープ": 2, "ミネストローネ": 3, "味噌汁（葉物入り）": 2, "ポタージュ": 3 } };
+    const rarities = { C: { color: "#9e9e9e", price: 20 }, U: { color: "#2196f3", price: 100 }, R: { color: "#9c27b0", price: 300 }, E: { color: "#ff9800", price: 800 }, L: { color: "#d4af37", price: 2500 } };
+    const bookMaster = [ { id: 1, title: "キャベツと鬼退治の旅", rare: "C", desc: "キャベツから生まれた少年が、お供を連れて鬼ヶ島を目指す昔話風ファンタジー。" }, { id: 2, title: "森の魔法使いと緑の杖", rare: "U", desc: "見習い魔法使いが、ほうれん草の杖で村を救う感動の物語。" }, { id: 3, title: "迷宮のレタス姫", rare: "R", desc: "深い地下迷宮に囚われた姫が、レタスを育てながら脱出を試みるサバイバル譚。" }, { id: 4, title: "銀河へ飛ぶハーブ船", rare: "E", desc: "宇宙の香りを守るため、パクチー号が星々を巡るSFアドベンチャー。" }, { id: 5, title: "翡翠の司書と禁断の葉", rare: "L", desc: "necotastudio描き下ろし。図書室の主が語る、世界の真実と緑の魔導書。" }, { id: 6, title: "小松菜の騎士道", rare: "C", desc: "鉄分豊富な鎧を纏った騎士が、平和のために戦う勇気ある物語。" }, { id: 7, title: "バジルと秘密の調味料", rare: "U", desc: "料理の味を劇的に変える伝説のハーブを探す、美食の冒険。" }, { id: 8, title: "白菜の降る night に", rare: "R", desc: "雪の代わりに白菜が降る村で起きた、冬の奇跡の物語。" }, { id: 9, title: "ケールの巨人と空の庭", rare: "E", desc: "雲の上にある巨大なケールの庭園を守る、天空の守護者の記録。" }, { id: 10, title: "伝説の野菜使い・第一巻", rare: "L", desc: "古えより伝わる、野菜を操る戦士たちの歴史を記した至高の一冊。" } ];
+
+    let myLeaves = null;
+    let myBooks = [];
+    let fullHistory = [];
+    let dailyLog = [];
+    let currentCalDate = new Date();
+    let currentMode = 'veg'; // 追記
+    const todayStr = new Date().toLocaleDateString("ja-JP");
+
+    // 🍓 修正: ポップアップ方式に
+    window.login = async () => {
+        try {
+            await signInWithPopup(auth, provider);
+        } catch (e) {
+            console.error(e);
+            alert("ログインに失敗しました。ポップアップを許可してください。");
+        }
+    };
+    
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            document.getElementById('login-btn').style.display = 'none';
+            document.getElementById('logged-in-actions').style.display = 'block';
+            document.getElementById('user-display').innerText = `🌿 ${user.displayName} さん`;
+            await loadData(user.uid);
+        } else {
+            myLeaves = 0;
+            document.getElementById('login-btn').style.display = 'flex';
+            document.getElementById('logged-in-actions').style.display = 'none';
+            document.getElementById('user-display').innerText = "ログインして保存";
+            updateUI();
+        }
+    });
+
+    async function loadData(uid) {
+        const docSnap = await getDoc(doc(db, "leafy_library", uid));
+        if (docSnap.exists()) {
+            const d = docSnap.data();
+            myLeaves = d.leaves ?? 0;
+            myBooks = d.books || [];
+            fullHistory = d.fullHistory || [];
+            dailyLog = fullHistory.filter(h => new Date(h.timestamp).toLocaleDateString("ja-JP") === todayStr);
+        } else {
+            myLeaves = 0;
+            fullHistory = [];
+        }
+        updateUI();
+    }
+
+    async function sync(newEntry = null) {
+        const user = auth.currentUser;
+        if (!user || myLeaves === null) return;
+        if (newEntry) {
+            await updateDoc(doc(db, "leafy_library", user.uid), {
+                leaves: myLeaves,
+                fullHistory: arrayUnion(newEntry)
+            });
+        } else {
+            await setDoc(doc(db, "leafy_library", user.uid), { leaves: myLeaves, books: myBooks, fullHistory: fullHistory }, { merge: true });
+        }
+    }
+
+    window.addEntry = async () => {
+        if (myLeaves === null) return;
+        const itemName = document.getElementById('item-select').value;
+        const cat = document.getElementById('cat-select').value;
+        let points = (currentMode === 'dish') ? (dData[cat][itemName] || 2) : 1;
+        
+        const currentDailyTotal = dailyLog.reduce((sum, log) => sum + log.val, 0);
+        if (currentDailyTotal + points > 50) { alert("1日の上限は50枚です🌿"); return; }
+        
+        const entry = { timestamp: new Date().toISOString(), name: itemName, val: points };
+        fullHistory.push(entry);
+        dailyLog.unshift(entry);
+        myLeaves += points;
+        updateUI();
+        await sync(entry);
+    };
+
+    function updateUI() {
+        document.getElementById('leaf-total').innerText = (myLeaves === null) ? "..." : myLeaves;
+        document.getElementById('daily-count-txt').innerText = dailyLog.reduce((sum, log) => sum + log.val, 0);
+        document.getElementById('lib-book-count').innerText = myBooks.length;
+        renderLog();
+        renderStore();
+    }
+
+    function renderLog() {
+        const list = document.getElementById('log-list');
+        if (dailyLog.length === 0) { list.innerHTML = '<p style="font-size: 0.7rem; color: #ccc; text-align: center;">今日のログはありません</p>'; return; }
+        list.innerHTML = dailyLog.map(log => `
+            <div class="log-item">
+                <span>${log.val >= 2 ? '🍳' : '🌿'} ${log.name}</span>
+                <span style="font-weight:bold;">+${log.val}</span>
+            </div>
+        `).join('');
+    }
+
+    window.shareOnX = () => {
+        const dailyCount = dailyLog.reduce((sum, log) => sum + log.val, 0);
+        // 🍓 修正: URLを .com 版に
+        const url = "https://necotastudio.com/leafy.html";
+        const text = `今日の収穫は【葉っぱ ${dailyCount} 枚】！🍃\nコツコツ野菜を食べて、図書室の蔵書を増やしています。📚\n#はっぱよみ #necotastudio`;
+        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
+    };
+
+    window.openCalendar = () => { renderCalendar(); document.getElementById('calendar-page').style.display = 'flex'; };
+    window.closeCalendar = () => { document.getElementById('calendar-page').style.display = 'none'; };
+
+    function renderCalendar() {
+        const year = currentCalDate.getFullYear();
+        const month = currentCalDate.getMonth();
+        document.getElementById('cal-title').innerText = `${year}年 ${month + 1}月`;
+        
+        const dailyTotals = {};
+        fullHistory.forEach(h => {
+            const d = new Date(h.timestamp);
+            const key = `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+            dailyTotals[key] = (dailyTotals[key] || 0) + h.val;
+        });
+
+        const firstDay = new Date(year, month, 1).getDay();
+        const lastDate = new Date(year, month + 1, 0).getDate();
+        let html = '';
+        ['日','月','火','水','木','金','土'].forEach(d => html += `<div class="cal-header">${d}</div>`);
+        for(let i=0; i<firstDay; i++) html += '<div></div>';
+        for(let d=1; d<=lastDate; d++) {
+            const key = `${year}-${month+1}-${d}`;
+            const score = dailyTotals[key] || 0;
+            html += `<div class="cal-day">
+                ${d}
+                ${score > 0 ? `<i class="fas fa-leaf leaf-dot"></i><span class="cal-score">${score}</span>` : ''}
+            </div>`;
+        }
+        document.getElementById('calendar-grid').innerHTML = html;
+    }
+
+    window.changeMonth = (delta) => { currentCalDate.setMonth(currentCalDate.getMonth() + delta); renderCalendar(); };
+
+    window.openLibrary = () => { renderLibrary(); document.getElementById('library-page').style.display = 'flex'; };
+    window.closeLibrary = () => { document.getElementById('library-page').style.display = 'none'; };
+    window.renderLibrary = () => {
+        const container = document.getElementById('shelf-rows-container');
+        container.innerHTML = "";
+        let row = document.createElement('div'); row.className = 'shelf-row';
+        myBooks.forEach((bid, index) => {
+            if (index > 0 && index % 12 === 0) { container.appendChild(row); row = document.createElement('div'); row.className = 'shelf-row'; }
+            const b = bookMaster.find(x => x.id === bid);
+            if (!b) return;
+            const spine = document.createElement('div');
+            spine.className = `book-spine`;
+            spine.style.backgroundColor = rarities[b.rare].color;
+            spine.onclick = () => showPanel(b.id, 'book');
+            row.appendChild(spine);
+        });
+        container.appendChild(row);
+    };
+
+    window.renderStore = () => {
+        const grid = document.getElementById('store-grid'); grid.innerHTML = "";
+        bookMaster.forEach(b => {
+            const r = rarities[b.rare];
+            const isBought = myBooks.includes(b.id);
+            const canBuy = myLeaves !== null && myLeaves >= r.price;
+            grid.innerHTML += `<div style="background:white; padding:10px; border-radius:15px; border:2px solid ${r.color}; text-align:center;">
+                <span style="font-size:10px; background:${r.color}; color:white; padding:2px 5px; border-radius:5px;">${b.rare}</span><br>
+                <b style="font-size:0.8rem;">${b.title}</b><br>
+                <span style="color:red; font-weight:bold;">${r.price}枚</span><br>
+                <button onclick="buyBook(${b.id})" style="width:100%; border:none; border-radius:5px; padding:8px; margin-top:5px; background:${canBuy?r.color:'#ccc'}; color:white;" ${isBought||!canBuy?'disabled':''}>${isBought?'所蔵済':'購入'}</button>
+            </div>`;
+        });
+    };
+
+    window.buyBook = async (id) => {
+        const b = bookMaster.find(x => x.id === id);
+        if(myLeaves >= rarities[b.rare].price) {
+            myLeaves -= rarities[b.rare].price;
+            myBooks.push(id);
+            updateUI();
+            await sync();
+        }
+    };
+
+    window.switchMode = (m) => {
+        currentMode = m;
+        document.getElementById('m-veg').className = m==='veg' ? 'm-btn active' : 'm-btn';
+        document.getElementById('m-dish').className = m==='dish' ? 'm-btn active' : 'm-btn';
+        const catS = document.getElementById('cat-select'); catS.innerHTML = "";
+        if (m === 'veg') { Object.keys(vData).forEach(c => catS.add(new Option(c, c))); }
+        else { Object.keys(dData).forEach(c => catS.add(new Option(c, c))); }
+        updateItemList();
+    };
+
+    window.updateItemList = () => {
+        const cat = document.getElementById('cat-select').value;
+        const itemS = document.getElementById('item-select'); itemS.innerHTML = "";
+        if (currentMode === 'veg') { vData[cat].forEach(i => itemS.add(new Option(i, i))); }
+        else { Object.keys(dData[cat]).forEach(i => { const pts = dData[cat][i]; itemS.add(new Option(`${i} (+${pts})`, i)); }); }
+    };
+
+    window.showPanel = (id, type) => {
+        let b = bookMaster.find(x => x.id === id);
+        const rakutenUrl = `https://hb.afl.rakuten.co.jp/hgc/${RAKUTEN_AFID}/?pc=${encodeURIComponent('https://search.rakuten.co.jp/search/mall/' + b.title + '/')}`;
+        const html = `<h2 style="color:var(--dark-green);">『${b.title}』</h2><p>${b.desc}</p>
+                      <button class="rakuten-btn" onclick="window.open('${rakutenUrl}')">楽天で探す</button>`;
+        document.getElementById('panel-content').innerHTML = html;
+        document.getElementById('panel').style.display = 'block';
+        document.getElementById('overlay').style.display = 'block';
+    };
+
+    window.closePanel = () => { document.getElementById('panel').style.display = 'none'; document.getElementById('overlay').style.display = 'none'; };
+
+    switchMode('veg');
+</script>
+</body>
+</html>
