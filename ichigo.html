@@ -155,7 +155,8 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, signInWithRedirect, getRedirectResult, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    // 🍓 修正：signInWithPopup を使用するように変更
+    import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getFirestore, doc, setDoc, getDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -175,15 +176,19 @@
     const loginBtn = document.getElementById('login-btn');
     const userDisplay = document.getElementById('user-display');
 
-    // ログイン処理（リダイレクト方式に変更：ポップアップブロックを回避）
-    loginBtn.onclick = () => {
-        signInWithRedirect(auth, provider);
+    // 🍓 修正：リダイレクト方式からポップアップ方式に変更
+    loginBtn.onclick = async () => {
+        try {
+            await signInWithPopup(auth, provider);
+        } catch (error) {
+            console.error("Auth Error:", error.code);
+            if (error.code === 'auth/popup-blocked') {
+                alert("ポップアップがブロックされました。ブラウザの設定で許可してください🍓");
+            } else {
+                alert("ログインに失敗しました。時間をおいて再度お試しください。");
+            }
+        }
     };
-
-    // リダイレクト後の結果受け取り
-    getRedirectResult(auth).catch((error) => {
-        console.error("Auth Error:", error);
-    });
 
     onAuthStateChanged(auth, (user) => {
         if (user) {
