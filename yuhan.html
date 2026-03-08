@@ -30,7 +30,8 @@
         #hint { font-size: 13px; color: #7f8c8d; margin-top: 12px; line-height: 1.5; }
         #food-desc { font-size: 14px; color: #555; margin-bottom: 15px; line-height: 1.6; }
         .promo-tag { font-size: 10px; color: #999; margin: 20px 0 -10px 0; text-align: center; }
-        .uber-note { font-size: 9px; color: #aaa; margin-top: 5px; line-height: 1.3; }
+        /* 注釈エリアのスタイル調整 */
+        .ad-note { font-size: 9px; color: #aaa; margin-top: 10px; line-height: 1.4; text-align: left; background: #fff; padding: 8px; border-radius: 8px; border: 1px solid #eee; }
     </style>
 </head>
 <body>
@@ -57,19 +58,24 @@
         
         <a id="action-link" class="btn btn-search" target="_blank" rel="noopener noreferrer"></a>
 
-        <div id="uber-section" style="display: none;">
-            <p class="promo-tag">本ページはプロモーションです</p>
-            <a id="uber-link" href="https://www.ubereats.com/jp" class="btn btn-uber" target="_blank" rel="nofollow noopener">
-                <i class="fas fa-motorcycle"></i> Uber Eats(ウーバーイーツ)
-            </a>
-            <p class="uber-note">
-                Uber Eats(ウーバーイーツ)なら、レストランから配達パートナーがお届けします。配送手数料等、詳細はカート内でご確認ください。
-            </p>
-        </div>
+        <div id="ad-section">
+            <p class="promo-tag">本ページはプロモーションが含まれています</p>
+            
+            <div id="uber-content" style="display: none;">
+                <a id="uber-link" href="https://www.ubereats.com/jp" class="btn btn-uber" target="_blank" rel="nofollow noopener">
+                    <i class="fas fa-motorcycle"></i> Uber Eats(ウーバーイーツ)
+                </a>
+            </div>
 
-        <a id="oisix-link" class="btn btn-oisix" target="_blank" rel="nofollow sponsored noopener" style="display: none;">
-            <i class="fa-solid fa-leaf"></i> 買い物不要！Oisixでお試し
-        </a>
+            <a id="oisix-link" class="btn btn-oisix" target="_blank" rel="nofollow sponsored noopener" style="display: none;">
+                <i class="fa-solid fa-leaf"></i> 買い物不要！Oisixでお試し
+            </a>
+
+            <div class="ad-note">
+                ※コンテンツ内容は「ねこたスタジオ」の独自判断に基づき制作されています。<br>
+                ※Uber Eats(ウーバーイーツ)をご利用の際は配送手数料等が別途発生します。詳細はカート内でご確認ください。商品はレストランから配達パートナーがお届けします。
+            </div>
+        </div>
 
         <button class="btn btn-retry" onclick="reset()">
             <i class="fas fa-redo"></i> もういちど引く
@@ -163,7 +169,7 @@
 
         const actionLink = document.getElementById('action-link');
         const oisixLink = document.getElementById('oisix-link');
-        const uberSection = document.getElementById('uber-section');
+        const uberContent = document.getElementById('uber-content');
         const uberLink = document.getElementById('uber-link');
         
         if (currentMode === 'cook') {
@@ -171,13 +177,13 @@
             actionLink.href = "https://www.google.com/search?q=" + encodeURIComponent(res.name + " レシピ");
             oisixLink.style.display = 'inline-block';
             oisixLink.href = OISIX_URL;
-            uberSection.style.display = 'none';
+            uberContent.style.display = 'none';
         } else {
             const mapKeyword = currentMode === 'buy' ? res.keyword : res.name;
             actionLink.innerHTML = currentMode === 'buy' ? '<i class="fas fa-shopping-cart"></i> 近くの買えるお店を探す' : '<i class="fas fa-map-marker-alt"></i> 近くの食べられるお店';
             actionLink.href = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(mapKeyword);
             oisixLink.style.display = 'none';
-            uberSection.style.display = 'block';
+            uberContent.style.display = 'block';
             uberLink.href = `https://www.ubereats.com/jp/search?q=${encodeURIComponent(res.name)}`;
         }
 
