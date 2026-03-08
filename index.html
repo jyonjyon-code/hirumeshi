@@ -8,16 +8,13 @@
       gtag('js', new Date());
       gtag('config', 'G-6LK2VK60B1');
     </script>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="apple-touch-icon" href="nekota.png">
     <meta name="apple-mobile-web-app-title" content="ねこたスタジオ">
-    
     <title>アプリ御品書き | ねこたスタジオ</title>
     <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
     <style>
         :root {
             --main-red: #d9534f;
@@ -31,40 +28,14 @@
         header { padding: 40px 20px; background: white; border-bottom: 5px solid var(--main-red); }
         header h1 { font-size: 2.2rem; color: var(--main-red); margin: 0; font-weight: 900; }
         .news-bar { background: #333; color: #fff; padding: 5px 0; font-size: 14px; }
-        
         .counter-section { margin: 25px 0; }
-        .counter-img { 
-            background: #000; 
-            color: #39ff14; 
-            padding: 8px 18px; 
-            border-radius: 6px; 
-            font-size: 28px;
-            display: inline-block; 
-            border: 3px inset #444; 
-            letter-spacing: 3px;
-            font-family: 'Courier New', Courier, monospace;
-            text-shadow: 0 0 8px #39ff14;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-            vertical-align: middle;
-        }
+        .counter-img { background: #000; color: #39ff14; padding: 8px 18px; border-radius: 6px; font-size: 28px; display: inline-block; border: 3px inset #444; letter-spacing: 3px; font-family: 'Courier New', Courier, monospace; text-shadow: 0 0 8px #39ff14; box-shadow: 0 2px 10px rgba(0,0,0,0.3); vertical-align: middle; }
         .counter-text { font-size: 14px; color: #666; margin-top: 8px; font-weight: bold; }
-        
-        #kiriban-celebration {
-            display: none;
-            background: #fff;
-            border: 4px dotted var(--ichigo-pink);
-            padding: 20px;
-            margin: 20px auto;
-            max-width: 400px;
-            width: 85%;
-            border-radius: 25px;
-            animation: pop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
+        #kiriban-celebration { display: none; background: #fff; border: 4px dotted var(--ichigo-pink); padding: 20px; margin: 20px auto; max-width: 400px; width: 85%; border-radius: 25px; animation: pop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         @keyframes pop { 0% { transform: scale(0.3); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
         .celebration-btn { display: inline-block; margin: 8px 4px; padding: 10px 20px; border-radius: 50px; color: white; text-decoration: none; font-weight: bold; font-size: 14px; transition: 0.2s; }
         .btn-x-celeb { background: #000; }
         .btn-insta-celeb { background: var(--insta-gradient); }
-
         .container { max-width: 1000px; margin: 20px auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; padding: 0 20px; }
         .app-card { background: white; border-radius: 25px; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.06); transition: 0.3s; border: 1px solid #eee; display: flex; flex-direction: column; }
         .app-card:hover { transform: translateY(-8px); }
@@ -76,85 +47,57 @@
         .btn-group { padding: 0 20px 20px; }
         .btn { display: block; padding: 14px; border-radius: 50px; text-decoration: none; font-weight: bold; text-align: center; font-size: 16px; transition: 0.2s; }
         .btn-play { background: var(--main-red); color: white; box-shadow: 0 4px 0 #b52b27; }
-        .btn-play:active { transform: translateY(2px); box-shadow: none; }
-        
         .kiriban-box { background: #fffbe6; border: 2px double #f0ad4e; padding: 15px; margin: 20px auto; max-width: 500px; width: 85%; font-size: 13px; line-height: 1.6; border-radius: 15px; }
         footer { background: white; padding: 40px 20px; border-top: 1px solid #eee; margin-top: 40px; }
         .sns-links a { font-size: 28px; margin: 0 15px; text-decoration: none; display: inline-block; transition: 0.2s; }
-        .sns-links a:hover { transform: scale(1.1); }
     </style>
 </head>
 <body>
-
 <header>
     <h1>アプリの御品書き</h1>
     <p style="font-weight: bold; color: #888;">～ ねこたスタジオ ～</p>
 </header>
-
 <div class="news-bar">
     <marquee scrollamount="5">【NEWS】新作アプリ「Leafy Library」リリース🌿 公式Instagram(@necotastudio)もフォローしてね🐱</marquee>
 </div>
-
 <div class="counter-section">
-    <p class="counter-text">
-        あなたは 
-        <span class="counter-img" id="current-count">00000000</span> 
-        人目の訪問者です🐱
-    </p>
+    <p class="counter-text">あなたは <span class="counter-img" id="current-count">00000000</span> 人目の訪問者です🐱</p>
 </div>
-
 <div id="kiriban-celebration">
     <h2 style="color: var(--ichigo-pink); margin: 0;">🎉 キリ番おめでとう！ 🎉</h2>
     <p id="kiriban-msg" style="font-size: 15px; margin: 12px 0; font-weight: 900; color: #333;"></p>
-    <p style="font-size: 12px; color: #666;">キリ番報告をしてね！中の人が喜びます🐱</p>
-    <a href="#" id="share-x" class="celebration-btn btn-x-celeb" target="_blank"><i class="fa-brands fa-x-twitter"></i> Xで報告</a>
-    <a href="https://www.instagram.com/necotastudio" class="celebration-btn btn-insta-celeb" target="_blank"><i class="fa-brands fa-instagram"></i> Instagramへ</a>
+    <a href="#" id="share-x" class="celebration-btn btn-x-celeb" target="_blank">Xで報告</a>
+    <a href="https://www.instagram.com/necotastudio" class="celebration-btn btn-insta-celeb" target="_blank">Instagramへ</a>
 </div>
-
 <div class="container">
     <div class="app-card">
         <div class="app-icon-wrap"><img src="icon.png" class="app-icon-img" onerror="this.src='https://via.placeholder.com/100?text=🍱'"></div>
         <div class="app-info">
             <h2>ひるめしえらんで</h2>
-            <p>今日のランチをおみくじで決定！<br>フードデリバリー検索やお取り寄せも。</p>
+            <p>今日のランチをおみくじで決定！<br>マップ検索やフードデリバリーも。</p>
         </div>
         <div class="btn-group"><a href="app.html" class="btn btn-play">あそぶ</a></div>
     </div>
-
     <div class="app-card">
         <div class="app-icon-wrap" style="background: #fff9f0;"><img src="myicon.png" class="app-icon-img" onerror="this.src='https://via.placeholder.com/100?text=🍳'"></div>
         <div class="app-info">
             <h2>ゆうはんなにしよ</h2>
-            <p>今の気分に合わせて夕飯スロット！<br>自炊・外食・デリバリーから選べるよ。</p>
+            <p>今の気分に合わせて夕飯スロット！<br>自炊・買ってくる・外食から選べるよ。</p>
         </div>
         <div class="btn-group"><a href="yuhan.html" class="btn btn-play" style="background: var(--yuhan-orange); box-shadow: 0 4px 0 #d35400;">あそぶ</a></div>
     </div>
-
     <div class="app-card" style="border-top: 5px solid var(--ichigo-pink);">
         <div class="app-icon-wrap" style="background: #fff5f6;"><img src="icon-ichigo.png" class="app-icon-img" onerror="this.src='https://via.placeholder.com/100?text=🍓'"></div>
-        <div class="app-info">
-            <h2>今日イチ</h2>
-            <p>きみは今日いちごを食べたか？<br>楽しく摂取量を記録するいちごログ。</p>
-        </div>
+        <div class="app-info"><h2>今日イチ</h2><p>きみは今日いちごを食べたか？<br>楽しく摂取量を記録するいちごログ。</p></div>
         <div class="btn-group"><a href="ichigo.html" class="btn btn-play" style="background: var(--ichigo-pink); box-shadow: 0 4px 0 #d0304a;">あそぶ</a></div>
     </div>
-
     <div class="app-card" style="border-top: 5px solid var(--leaf-green);">
         <div class="app-icon-wrap" style="background: #f0fff0;"><img src="hamono.png" class="app-icon-img" onerror="this.src='https://via.placeholder.com/100?text=🌿'"></div>
-        <div class="app-info">
-            <h2>Leafy Library</h2>
-            <p>食べた野菜を「本」に変えて育てる、<br>あなただけのデジタル野菜図書館。</p>
-        </div>
+        <div class="app-info"><h2>Leafy Library</h2><p>食べた野菜を「本」に変えて育てる、<br>あなただけのデジタル野菜図書館。</p></div>
         <div class="btn-group"><a href="leafy.html" class="btn btn-play" style="background: var(--leaf-green); box-shadow: 0 4px 0 #3d8b40;">図書館へ</a></div>
     </div>
 </div>
-
-<div class="kiriban-box">
-    <strong>✨ 狙え！キリ番リスト ✨</strong><br>
-    【100 / 222 / 333 / 500 / 777 / 888 / 1000】<br>
-    キリ番を踏んだ方は報告お待ちしております🐱
-</div>
-
+<div class="kiriban-box"><strong>✨ 狙え！キリ番リスト ✨</strong><br>【100 / 222 / 333 / 500 / 777 / 888 / 1000】</div>
 <footer>
     <div class="sns-links">
         <a href="https://x.com/necotatu2" target="_blank"><i class="fa-brands fa-x-twitter" style="color:#333"></i></a>
@@ -162,27 +105,14 @@
     </div>
     <p style="margin-top: 20px; font-size: 12px; color: #999;">&copy; 2026 ねこたスタジオ</p>
 </footer>
-
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getFirestore, doc, updateDoc, increment, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyC4rb66A7CFgOOiXkPXoPKdUk3BVH42g28",
-    authDomain: "necotastudio-counter.firebaseapp.com",
-    projectId: "necotastudio-counter",
-    storageBucket: "necotastudio-counter.firebasestorage.app",
-    messagingSenderId: "28403673696",
-    appId: "1:28403673696:web:e5ebccac51207dc588f105",
-    measurementId: "G-0GV9MDP7M9"
-  };
-
+  const firebaseConfig = { apiKey: "AIzaSyC4rb66A7CFgOOiXkPXoPKdUk3BVH42g28", authDomain: "necotastudio-counter.firebaseapp.com", projectId: "necotastudio-counter", storageBucket: "necotastudio-counter.firebasestorage.app", messagingSenderId: "28403673696", appId: "1:28403673696:web:e5ebccac51207dc588f105", measurementId: "G-0GV9MDP7M9" };
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
   const counterRef = doc(db, "counters", "studio-visitor");
-
   const kiribanList = [1, 7, 10, 50, 77, 100, 111, 222, 333, 444, 500, 555, 666, 777, 888, 999, 1000];
-
   async function updateCounter() {
     const counterEl = document.getElementById('current-count');
     try {
@@ -191,23 +121,16 @@
       if (snap.exists()) {
         const total = snap.data().count;
         counterEl.innerText = String(total).padStart(8, '0');
-
         if (kiribanList.includes(total)) {
           const celebPanel = document.getElementById('kiriban-celebration');
           const msgEl = document.getElementById('kiriban-msg');
-          const xBtn = document.getElementById('share-x');
-          
           msgEl.innerText = `あなたは【 ${total} 】番目の訪問者です！`;
           celebPanel.style.display = 'block';
           const shareText = encodeURIComponent(`🎉ねこたスタジオで【${total}】番目のキリ番を踏みました！🎉\n@necotatu2\nhttps://necotastudio.com/`);
-          xBtn.href = `https://twitter.com/intent/tweet?text=${shareText}`;
-          celebPanel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          document.getElementById('share-x').href = `https://twitter.com/intent/tweet?text=${shareText}`;
         }
       }
-    } catch (e) {
-      console.error(e);
-      counterEl.innerText = "ERROR!!";
-    }
+    } catch (e) { counterEl.innerText = "ERROR!!"; }
   }
   window.addEventListener('load', updateCounter);
 </script>
