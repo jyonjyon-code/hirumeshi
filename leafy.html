@@ -24,7 +24,6 @@
         
         .action-btns { display: flex; gap: 10px; margin-top: 10px; }
         .go-library { flex: 2; padding: 15px; background: var(--wood-brown); color: white; border-radius: 15px; border: none; font-weight: bold; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        /* ボタン名を「はっぱよみ」に変更 */
         .go-calendar { flex: 1; padding: 15px; background: var(--primary-green); color: white; border-radius: 15px; border: none; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
         .login-btn-style { background: #4285F4; color: white; border: none; padding: 12px; border-radius: 12px; font-weight: bold; width: 100%; cursor: pointer; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; }
@@ -36,6 +35,8 @@
         .m-btn { flex: 1; padding: 10px; border: 2px solid var(--primary-green); background: white; border-radius: 12px; cursor: pointer; font-weight: bold; font-family: inherit; }
         .m-btn.active { background: var(--primary-green); color: white; }
         
+        .radish-btn-top { background: #ff9800; color: white; border: none; padding: 12px; border-radius: 12px; font-weight: bold; width: 100%; cursor: pointer; margin-top: 12px; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; }
+
         #calendar-page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--paper-white); z-index: 1100; display: none; flex-direction: column; overflow-y: auto; align-items: center; padding-bottom: 30px; }
         .cal-nav { display: flex; align-items: center; justify-content: space-between; width: 90%; margin: 20px 0; }
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; background: white; padding: 10px; border-radius: 20px; border: 2px solid var(--primary-green); width: 90%; max-width: 400px; }
@@ -62,7 +63,6 @@
         #panel { position: fixed; top:50%; left:50%; transform:translate(-50%,-50%); width:85%; max-width:400px; background:white; border-radius:30px; padding:30px; z-index: 2001; display:none; text-align:center; border: 6px solid var(--primary-green); }
         
         .rakuten-btn { background: #bf0000; color: white; border: none; padding: 14px; border-radius: 12px; font-weight: bold; width: 100%; cursor: pointer; margin-top: 10px; font-size: 0.9rem; }
-        .radish-btn { background: #ff9800; color: white; border: none; padding: 14px; border-radius: 12px; font-weight: bold; width: 100%; cursor: pointer; margin-top: 10px; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; gap: 8px; }
     </style>
 </head>
 <body>
@@ -108,6 +108,10 @@
             <i class="fas fa-plus"></i>
         </button>
     </div>
+
+    <a href="https://px.a8.net/svt/ejp?a8mat=4AZBO2+81Y4DU+1YGO+1ZGNQR" target="_blank" class="radish-btn-top">
+        <i class="fas fa-leaf"></i> 新鮮な葉っぱを仕入れる (お試しセット)
+    </a>
 
     <div id="log-list" class="log-container"></div>
 </div>
@@ -162,12 +166,23 @@
     const provider = new GoogleAuthProvider();
 
     const RAKUTEN_AFID = "51366796.8818598a.51366797.ddbb51d0";
-    const RADISH_URL = "https://px.a8.net/svt/ejp?a8mat=4AZBO2+81Y4DU+1YGO+1ZGNQR"; 
 
     const vData = { "定番葉物": ["キャベツ", "レタス", "白菜", "ほうれん草", "小松菜", "チンゲン菜"], "香味ハーブ": ["大葉", "茗荷", "ニラ", "パクチー", "バジル", "パセリ", "ルッコラ"], "サラダ葉": ["ケール", "水菜", "ベビーリーフ", "トレビス", "サニーレタス"], "その他": ["明日葉", "モロヘイヤ", "豆苗", "春菊", "セロリ"] };
     const dData = { "和風": { "お浸し": 2, "胡麻和え": 2, "浅漬け": 2, "天ぷら": 3, "野菜炒め": 3, "白和え": 3, "筑前煮": 3, "冷奴の大葉のせ": 2, "茗荷の甘酢漬け": 2 }, "洋風": { "サラダ": 2, "ロールキャベツ": 3, "バジルパスタ": 2, "ポトフ": 3, "ほうれん草ソテー": 2, "コールスロー": 2, "ケールチップス": 3, "ラタトゥイユ": 4, "バーニャカウダ": 4 }, "中華・エスニック": { "青椒肉絲": 3, "回鍋肉": 3, "パクチーサラダ": 3, "空芯菜炒め": 3, "餃子（ニラたっぷり）": 4, "八宝菜": 4, "ガパオライス": 3, "生春巻き": 3 }, "スープ・飲み物": { "青汁": 1, "スムージー": 2, "野菜スープ": 2, "ミネストローネ": 3, "味噌汁（葉物入り）": 2, "ポタージュ": 3 } };
     const rarities = { C: { color: "#9e9e9e", price: 20 }, U: { color: "#2196f3", price: 100 }, R: { color: "#9c27b0", price: 300 }, E: { color: "#ff9800", price: 800 }, L: { color: "#d4af37", price: 2500 } };
-    const bookMaster = [ { id: 1, title: "キャベツと鬼退治の旅", rare: "C", desc: "キャベツから生まれた少年が、お供を連れて鬼ヶ島を目指す昔話風ファンタジー。" }, { id: 2, title: "森の魔法使いと緑の杖", rare: "U", desc: "見習い魔法使いが、ほうれん草の杖で村を救う感動の物語。" }, { id: 3, title: "迷宮のレタス姫", rare: "R", desc: "深い地下迷宮に囚われた姫が、レタスを育てながら脱出を試みるサバイバル譚。" }, { id: 4, title: "銀河へ飛ぶハーブ船", rare: "E", desc: "宇宙の香りを守るため、パクチー号が星々を巡るSFアドベンチャー。" }, { id: 5, title: "翡翠の司書と禁断の葉", rare: "L", desc: "necotastudio描き下ろし。図書室の主が語る、世界の真実と緑の魔導書。" }, { id: 6, title: "小松菜の騎士道", rare: "C", desc: "鉄分豊富な鎧を纏った騎士が、平和のために戦う勇気ある物語。" }, { id: 7, title: "バジルと秘密の調味料", rare: "U", desc: "料理の味を劇的に変える伝説のハーブを探す、美食の冒険。" }, { id: 8, title: "白菜の降る night に", rare: "R", desc: "雪の代わりに白菜が降る村で起きた、冬の奇跡の物語。" }, { id: 9, title: "ケールの巨人と空の庭", rare: "E", desc: "雲の上にある巨大なケールの庭園を守る、天空の守護者の記録。" }, { id: 10, title: "伝説の野菜使い・第一巻", rare: "L", desc: "古えより伝わる、野菜を操る戦士たちの歴史を記した至高の一冊。" } ];
+    
+    const bookMaster = [ 
+        { id: 1, title: "キャベツと鬼退治の旅", rare: "C", desc: "キャベツから生まれた少年が、お供を連れて鬼ヶ島を目指す昔話風ファンタジー。", kw: "キャベツ 昔話 絵本" }, 
+        { id: 2, title: "森の魔法使いと緑の杖", rare: "U", desc: "見習い魔法使いが、ほうれん草の杖で村を救う感動の物語。", kw: "ほうれん草 魔法 児童書" }, 
+        { id: 3, title: "迷宮のレタス姫", rare: "R", desc: "深い地下迷宮に囚われた姫が、レタスを育てながら脱出を試みるサバイバル譚。", kw: "レタス 栽培 本" }, 
+        { id: 4, title: "銀河へ飛ぶハーブ船", rare: "E", desc: "宇宙の香りを守るため、パクチー号が星々を巡るSFアドベンチャー。", kw: "ハーブ パクチー 育て方 本" }, 
+        { id: 5, title: "翡翠の司書と禁断の葉", rare: "L", desc: "necotastudio描き下ろし。図書室の主が語る、世界の真実と緑の魔導書。", kw: "図書館 司書 小説 おすすめ" }, 
+        { id: 6, title: "小松菜の騎士道", rare: "C", desc: "鉄分豊富な鎧を纏った騎士が、平和のために戦う勇気ある物語。", kw: "小松菜 レシピ本" }, 
+        { id: 7, title: "バジルと秘密の調味料", rare: "U", desc: "料理の味を劇的に変える伝説のハーブを探す、美食の冒険。", kw: "バジル 料理本 イタリアン" }, 
+        { id: 8, title: "白菜の降る night に", rare: "R", desc: "雪の代わりに白菜が降る村で起きた、冬の奇跡の物語。", kw: "白菜 料理 専門書" }, 
+        { id: 9, title: "ケールの巨人と空の庭", rare: "E", desc: "雲の上にある巨大なケールの庭園を守る、天空の守護者の記録。", kw: "ケール 青汁 健康本" }, 
+        { id: 10, title: "伝説の野菜使い・第一巻", rare: "L", desc: "古えより伝わる、野菜を操る戦士たちの歴史を記した至高の一冊。", kw: "伝説 野菜 歴史 本" } 
+    ];
 
     let myLeaves = null;
     let myBooks = [];
@@ -352,18 +367,15 @@
 
     window.showPanel = (id, type) => {
         let b = bookMaster.find(x => x.id === id);
-        const rakutenUrl = `https://hb.afl.rakuten.co.jp/hgc/${RAKUTEN_AFID}/?pc=${encodeURIComponent('https://search.rakuten.co.jp/search/mall/' + b.title + '/')}`;
+        const rakutenUrl = `https://hb.afl.rakuten.co.jp/hgc/${RAKUTEN_AFID}/?pc=${encodeURIComponent('https://search.rakuten.co.jp/search/mall/' + b.kw + '/')}`;
         
         const html = `
             <h2 style="color:var(--dark-green); margin-top:0;">『${b.title}』</h2>
             <p style="font-size:0.9rem; line-height:1.6; color:#555; text-align:left;">${b.desc}</p>
             <hr style="border:0; border-top:1px dashed #ddd; margin:15px 0;">
-            <p style="font-size:0.8rem; font-weight:bold; color:var(--dark-green);">＼ 本物の新鮮野菜を食べてみる？ ／</p>
-            <button class="radish-btn" onclick="window.open('${RADISH_URL}')">
-                🥕 らでぃっしゅぼーや お試しセット
-            </button>
+            <p style="font-size:0.8rem; font-weight:bold; color:var(--dark-green);">＼ モチーフ本・関連商品を探す ／</p>
             <button class="rakuten-btn" onclick="window.open('${rakutenUrl}')">
-                🎁 楽天で関連商品を探す
+                🎁 楽天で探す
             </button>
         `;
         document.getElementById('panel-content').innerHTML = html;
