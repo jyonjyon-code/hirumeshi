@@ -9,26 +9,44 @@
     <style>
         :root { --comic-yellow: #ffde00; --comic-red: #e60012; --comic-blue: #00acee; --black: #000; }
         body { background: #ddd; background-image: radial-gradient(var(--black) 10%, transparent 11%); background-size: 15px 15px; font-family: 'Noto Sans JP', sans-serif; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
-        .app-card { background: white; border: 6px solid var(--black); width: 100%; max-width: 450px; box-shadow: 12px 12px 0px var(--black); overflow: hidden; position: relative; }
+        .app-card { background: white; border: 6px solid var(--black); width: 100%; max-width: 450px; box-shadow: 12px 12px 0px var(--black); overflow: hidden; position: relative; min-height: 500px; }
+        
+        /* ログイン */
         #login-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; text-align: center; padding: 20px; box-sizing: border-box; }
+        
+        /* ヘッダー・共通 */
         .header { background: var(--comic-yellow); border-bottom: 6px solid var(--black); padding: 15px; display: flex; align-items: center; gap: 15px; }
         .user-icon { width: 65px; height: 65px; border: 4px solid var(--black); background: white; box-shadow: 4px 4px 0 var(--black); object-fit: cover; border-radius: 50%; }
         h1 { font-family: 'Bangers', cursive; font-size: 42px; color: var(--comic-red); -webkit-text-stroke: 1.5px var(--black); margin: 0; transform: rotate(-2deg); }
-        .engine-panel { background: #222; color: #00ff00; padding: 10px; font-family: 'Courier New', monospace; font-size: 13px; border-bottom: 6px solid var(--black); text-align: center; }
-        .status-bar { background: var(--black); color: white; padding: 12px 15px; display: flex; justify-content: space-between; font-size: 16px; font-weight: 900; }
-        #progress-container { height: 12px; background: #444; border-bottom: 4px solid var(--black); }
+
+        /* タブ切り替え */
+        .tab-menu { display: flex; background: var(--black); border-bottom: 4px solid var(--black); }
+        .tab-btn { flex: 1; padding: 12px; color: #666; background: #333; border: none; font-weight: 900; cursor: pointer; font-size: 14px; }
+        .tab-btn.active { background: white; color: var(--black); }
+
+        /* メインパネル */
+        .content-panel { display: none; padding: 20px; }
+        .content-panel.active { display: block; }
+        
+        .engine-panel { background: #222; color: #00ff00; padding: 10px; font-family: 'Courier New', monospace; font-size: 13px; border: 4px solid var(--black); text-align: center; margin-bottom: 10px; }
+        .status-bar { background: var(--black); color: white; padding: 12px 15px; display: flex; justify-content: space-between; font-size: 16px; font-weight: 900; margin-bottom: 10px; }
+        #progress-container { height: 12px; background: #444; border: 3px solid var(--black); margin-bottom: 20px; }
         #progress-fill { height: 100%; background: var(--comic-red); width: 0%; transition: width 0.8s; }
-        .panel { padding: 20px; }
-        .btn-map { background: var(--comic-blue); color: white; border: 4px solid var(--black); padding: 10px; width: 100%; font-weight: 900; cursor: pointer; box-shadow: 4px 4px 0 var(--black); margin-bottom: 15px; font-size: 14px; }
+
+        .btn-map { background: var(--comic-blue); color: white; border: 4px solid var(--black); padding: 10px; width: 100%; font-weight: 900; cursor: pointer; box-shadow: 4px 4px 0 var(--black); margin-bottom: 15px; }
         .input-row { display: flex; gap: 8px; align-items: center; margin-bottom: 15px; }
-        select, input { border: 4px solid var(--black); padding: 12px; font-size: 18px; font-weight: 900; outline: none; background: white; }
+        select, input { border: 4px solid var(--black); padding: 12px; font-size: 18px; font-weight: 900; outline: none; }
         select { flex: 2; background: #fffceb; }
         input[type="number"] { width: 80px; text-align: center; }
-        .btn-load { background: var(--comic-red); color: white; border: 4px solid var(--black); padding: 18px; font-family: 'Bangers', cursive; font-size: 32px; width: 100%; cursor: pointer; box-shadow: 6px 6px 0 var(--black); margin-bottom: 10px; }
-        .history-panel { border-top: 6px solid var(--black); background: #f0f0f0; padding: 15px; }
-        .history-title { font-weight: 900; font-size: 14px; margin-bottom: 8px; display: flex; justify-content: space-between; }
-        .history-list { font-size: 12px; font-family: monospace; max-height: 100px; overflow-y: auto; }
-        .history-item { border-bottom: 1px dashed #999; padding: 5px 0; display: flex; justify-content: space-between; }
+        .btn-load { background: var(--comic-red); color: white; border: 4px solid var(--black); padding: 18px; font-family: 'Bangers', cursive; font-size: 32px; width: 100%; cursor: pointer; box-shadow: 6px 6px 0 var(--black); }
+
+        /* 履歴パネル（カレンダー風リスト） */
+        .history-item { background: white; border: 3px solid var(--black); margin-bottom: 8px; padding: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 4px 4px 0 #ccc; }
+        .history-info { display: flex; flex-direction: column; font-size: 12px; }
+        .history-fruit { font-weight: 900; font-size: 15px; }
+        .delete-btn { background: #eee; border: 2px solid var(--black); padding: 4px 8px; cursor: pointer; font-weight: 900; color: var(--comic-red); }
+        .delete-btn:hover { background: var(--comic-red); color: white; }
+
         #alert-box { display: none; background: var(--comic-red); color: white; padding: 10px; border: 4px solid var(--black); font-weight: 900; text-align: center; margin-bottom: 15px; animation: blink 0.5s infinite; }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
     </style>
@@ -49,43 +67,51 @@
     <div class="header">
         <img id="user-img" src="juicy.png" alt="ICON" class="user-icon" onerror="this.src='https://placehold.jp/65x65.png'">
         <div>
-            <h1 id="user-name-display">JUICY RIDER</h1>
-            <div style="font-size: 11px; font-weight: 900;">WESTBOUND JOURNEY v2.0</div>
+            <h1>JUICY RIDER</h1>
+            <div id="user-name-display" style="font-size: 14px; font-weight: 900; color:var(--black)">GUEST RIDER</div>
         </div>
     </div>
-    <div class="engine-panel">
-        <span id="engine-name" style="font-size: 20px; color: var(--comic-yellow); display: block;">50cc MOPED</span>
-        <span id="engine-status">STATUS: STANDBY</span>
+
+    <div class="tab-menu">
+        <button class="tab-btn active" onclick="switchTab('main')">COCKPIT</button>
+        <button class="tab-btn" onclick="switchTab('history')">FUEL LOG</button>
     </div>
-    <div id="progress-container"><div id="progress-fill"></div></div>
-    <div class="status-bar">
-        <span>ODO: <span id="dist-val">0.0</span> km</span>
-        <span>TODAY: <span id="today-val">0</span> / 200g</span>
-    </div>
-    <div class="panel">
+
+    <div id="panel-main" class="content-panel active">
+        <div class="engine-panel">
+            <span id="engine-name" style="font-size: 20px; color: var(--comic-yellow); display: block;">50cc MOPED</span>
+            <span id="engine-status">STATUS: STANDBY</span>
+        </div>
+        <div class="status-bar">
+            <span>ODO: <span id="dist-val">0.0</span> km</span>
+            <span>TODAY: <span id="today-val">0</span> / 200g</span>
+        </div>
+        <div id="progress-container"><div id="progress-fill"></div></div>
+        
         <button class="btn-map" onclick="openMap()">🗺️ 現在地をGoogleマップで確認</button>
         <div id="alert-box">⚠️ OVER-EATING WARNING!</div>
+        
         <div class="input-row">
             <select id="fruit-select" onchange="updateUnitUI()">
-                <option value="オレンジ">オレンジ (150g)</option>
-                <option value="リンゴ">リンゴ (300g)</option>
-                <option value="ドラゴンフルーツ">ドラゴンフルーツ (400g)</option>
-                <option value="ドリアン">ドリアン (300g)</option>
-                <option value="マンゴスチン">マンゴスチン (50g)</option>
-                <option value="100%ジュース">100%ジュース (ml)</option>
+                <option value="オレンジ">オレンジ</option>
+                <option value="リンゴ">リンゴ</option>
+                <option value="ドラゴンフルーツ">ドラゴンフルーツ</option>
+                <option value="ドリアン">ドリアン</option>
+                <option value="マンゴスチン">マンゴスチン</option>
+                <option value="100%ジュース">100%ジュース</option>
             </select>
             <input type="number" id="amount-in" value="1.0" step="0.1" min="0.1">
             <span id="unit-label" style="font-weight: 900; min-width: 30px;">個</span>
         </div>
         <button class="btn-load" onclick="handleLoad()">LOAD GASOLINE!</button>
-        <button style="width:100%; border:none; background:none; text-decoration:underline; font-size:12px; cursor:pointer;" onclick="undoLast()">直前の記録を消す(UNDO)</button>
     </div>
-    <div class="history-panel">
-        <div class="history-title">
-            <span>⛽️ 給油表 (HISTORY)</span>
-            <span id="save-status" style="font-size:10px; color:#666;">Ready</span>
+
+    <div id="panel-history" class="content-panel">
+        <div style="font-weight: 900; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+            <span>⛽️ 最近の給油履歴</span>
+            <span id="save-status" style="font-size: 10px; font-weight: normal;">Ready</span>
         </div>
-        <div id="history-list" class="history-list"></div>
+        <div id="history-list"></div>
     </div>
 </div>
 
@@ -119,18 +145,20 @@
         "100%ジュース": { weight: 1, rare: 1.0, isLiquid: true }
     };
 
-    // ★修正：グローバル（window）に登録して、外側のHTMLから見えるようにする
+    window.switchTab = (tab) => {
+        document.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(`panel-${tab}`).classList.add('active');
+        event.currentTarget.classList.add('active');
+    };
+
     window.handleCredentialResponse = async (response) => {
-        console.log("Login Success!"); // 動作確認用ログ
         const payload = JSON.parse(atob(response.credential.split('.')[1]));
         currentUid = payload.sub; 
-        document.getElementById('user-name-display').innerText = payload.given_name.toUpperCase();
+        document.getElementById('user-name-display').innerText = payload.name.toUpperCase();
         document.getElementById('user-img').src = payload.picture;
-        
-        // 画面を切り替える（オーバーレイを消す）
         document.getElementById('login-overlay').style.display = 'none';
         
-        // Firebaseからデータ復元
         const docSnap = await getDoc(doc(db, "juicy_rider", currentUid));
         if (docSnap.exists()) {
             const cloudData = docSnap.data();
@@ -138,9 +166,7 @@
             history = cloudData.history || history;
             if(cloudData.lastDate === new Date().toLocaleDateString()) {
                 todayGrams = cloudData.today || todayGrams;
-            } else {
-                todayGrams = 0;
-            }
+            } else { todayGrams = 0; }
         }
         updateUI();
     };
@@ -162,11 +188,34 @@
         const addKM = (grams * data.rare / 10) * boost;
         totalDist += addKM;
 
-        history.unshift({ time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), name: name, amount: amount, unit: data.isLiquid ? "ml" : "個", km: addKM.toFixed(1) });
-        if(history.length > 20) history.pop();
+        // 個別削除用にID（タイムスタンプ）を付与
+        history.unshift({ 
+            id: Date.now(),
+            date: new Date().toLocaleDateString(),
+            time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), 
+            name: name, amount: amount, grams: grams,
+            unit: data.isLiquid ? "ml" : "個", km: addKM.toFixed(1) 
+        });
+        if(history.length > 30) history.pop();
 
         updateUI();
         saveAll();
+    };
+
+    window.deleteItem = (id) => {
+        if(!confirm("この記録を削除しますか？（走行距離も減少します）")) return;
+        const index = history.findIndex(item => item.id === id);
+        if (index > -1) {
+            const item = history[index];
+            totalDist = Math.max(0, totalDist - parseFloat(item.km));
+            // 今日の分ならグラム数も引く
+            if(item.date === new Date().toLocaleDateString()) {
+                todayGrams = Math.max(0, todayGrams - item.grams);
+            }
+            history.splice(index, 1);
+            updateUI();
+            saveAll();
+        }
     };
 
     function updateUI() {
@@ -177,8 +226,18 @@
         const engineName = totalDist >= 200 ? "1200cc MONSTER" : (totalDist >= 50 ? "250cc STREET" : "50cc MOPED");
         document.getElementById('engine-name').innerText = engineName;
         document.getElementById('progress-fill').style.width = Math.min((totalDist / 500) * 100, 100) + "%";
+
         document.getElementById('history-list').innerHTML = history.map(item => `
-            <div class="history-item"><span>[${item.time}] ${item.name}</span><span style="color:var(--comic-red); font-weight:bold;">+${item.km}km</span></div>
+            <div class="history-item">
+                <div class="history-info">
+                    <span style="color:#666">${item.date} ${item.time}</span>
+                    <span class="history-fruit">${item.name} ${item.amount}${item.unit}</span>
+                </div>
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <span style="color:var(--comic-red); font-weight:bold;">+${item.km}km</span>
+                    <button class="delete-btn" onclick="deleteItem(${item.id})">×</button>
+                </div>
+            </div>
         `).join('');
     }
 
@@ -186,7 +245,6 @@
         localStorage.setItem('juicy_odo', totalDist);
         localStorage.setItem('juicy_today', todayGrams);
         localStorage.setItem('juicy_history', JSON.stringify(history));
-        
         if (currentUid) {
             document.getElementById('save-status').innerText = "Saving...";
             await setDoc(doc(db, "juicy_rider", currentUid), {
@@ -198,22 +256,10 @@
 
     window.openMap = () => {
         const baseLat = 35.6839;
-        const baseLng = 139.7744;
-        const currentLng = baseLng - (totalDist / 90); 
+        const currentLng = 139.7744 - (totalDist / 90); 
         window.open(`https://www.google.com/maps?q=${baseLat},${currentLng}`, '_blank');
     };
 
-    window.undoLast = () => {
-        if (history.length > 0 && confirm("取り消しますか？")) {
-            const last = history.shift();
-            totalDist = Math.max(0, totalDist - parseFloat(last.km));
-            todayGrams = Math.max(0, todayGrams - 100);
-            saveAll();
-            updateUI();
-        }
-    };
-
-    // 初期表示
     updateUI();
 </script>
 </body>
