@@ -2,9 +2,10 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JUICY RIDER | ねこたスタジオ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>JUICY RIDER | necotastudio</title>
     <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Noto+Sans+JP:wght@900&display=swap" rel="stylesheet">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
         :root {
             --comic-yellow: #ffde00; --comic-red: #e60012; --comic-blue: #00acee; --black: #000;
@@ -12,79 +13,101 @@
         body {
             background: #ddd; background-image: radial-gradient(var(--black) 10%, transparent 11%);
             background-size: 15px 15px; font-family: 'Noto Sans JP', sans-serif; margin: 0; padding: 10px;
+            display: flex; flex-direction: column; align-items: center;
         }
         .app-card {
-            background: white; border: 6px solid var(--black); max-width: 500px; margin: 0 auto;
-            box-shadow: 15px 15px 0px var(--black); overflow: hidden; position: relative;
+            background: white; border: 6px solid var(--black); width: 100%; max-width: 450px;
+            box-shadow: 12px 12px 0px var(--black); overflow: hidden; position: relative;
         }
-        /* ヘッダー */
+        /* ログイン画面 */
+        #login-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); z-index: 1000;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: white; text-align: center; padding: 20px; box-sizing: border-box;
+        }
         .header {
             background: var(--comic-yellow); border-bottom: 6px solid var(--black);
             padding: 15px; display: flex; align-items: center; gap: 15px;
         }
         .user-icon {
-            width: 80px; height: 80px; border: 4px solid var(--black);
+            width: 65px; height: 65px; border: 4px solid var(--black);
             background: white; box-shadow: 4px 4px 0 var(--black); object-fit: cover;
         }
         h1 {
-            font-family: 'Bangers', cursive; font-size: 45px; color: var(--comic-red);
+            font-family: 'Bangers', cursive; font-size: 42px; color: var(--comic-red);
             -webkit-text-stroke: 1.5px var(--black); margin: 0; transform: rotate(-2deg);
         }
-        /* エンジン表示 */
         .engine-panel {
             background: #222; color: #00ff00; padding: 10px;
-            font-family: 'Courier New', monospace; font-size: 12px;
+            font-family: 'Courier New', monospace; font-size: 13px;
             border-bottom: 6px solid var(--black); text-align: center;
         }
-        #engine-name { font-weight: bold; font-size: 18px; color: var(--comic-yellow); display: block; }
-
-        /* 走行ステータス */
         .status-bar {
-            background: var(--black); color: white; padding: 10px 15px;
-            display: flex; justify-content: space-between; font-size: 14px; font-weight: 900;
+            background: var(--black); color: white; padding: 12px 15px;
+            display: flex; justify-content: space-between; font-size: 16px; font-weight: 900;
         }
-        #progress-container { height: 10px; background: #444; }
-        #progress-fill { height: 100%; background: var(--comic-red); width: 0%; transition: width 0.5s; }
-
-        /* 入力セクション */
+        #progress-container { height: 12px; background: #444; border-bottom: 4px solid var(--black); }
+        #progress-fill { height: 100%; background: var(--comic-red); width: 0%; transition: width 0.8s; }
+        
         .panel { padding: 20px; }
-        .input-group { display: flex; flex-direction: column; gap: 10px; }
-        .row { display: flex; gap: 8px; }
-        input { border: 4px solid var(--black); padding: 12px; font-size: 18px; font-weight: 900; outline: none; flex: 1; }
+        .btn-map {
+            background: var(--comic-blue); color: white; border: 4px solid var(--black);
+            padding: 10px; width: 100%; font-weight: 900; cursor: pointer;
+            box-shadow: 4px 4px 0 var(--black); margin-bottom: 15px; font-size: 14px;
+        }
+        .input-row { display: flex; gap: 8px; align-items: center; margin-bottom: 15px; }
+        select, input { 
+            border: 4px solid var(--black); padding: 12px; font-size: 18px; 
+            font-weight: 900; outline: none; background: white;
+        }
+        select { flex: 2; background: #fffceb; }
+        input[type="number"] { width: 80px; text-align: center; }
+        
         .btn-load {
             background: var(--comic-red); color: white; border: 4px solid var(--black);
-            padding: 15px; font-family: 'Bangers', cursive; font-size: 28px;
-            cursor: pointer; box-shadow: 6px 6px 0 var(--black);
+            padding: 18px; font-family: 'Bangers', cursive; font-size: 32px; width: 100%;
+            cursor: pointer; box-shadow: 6px 6px 0 var(--black); margin-bottom: 10px;
         }
         .btn-load:active { transform: translate(3px, 3px); box-shadow: 2px 2px 0 var(--black); }
-        .btn-undo {
-            background: #666; color: white; border: 2px solid var(--black);
-            font-size: 12px; padding: 5px; cursor: pointer; margin-top: 10px; width: 100%;
-        }
 
-        /* 警告表示 */
+        .history-panel { border-top: 6px solid var(--black); background: #f0f0f0; padding: 15px; }
+        .history-title { font-weight: 900; font-size: 14px; margin-bottom: 8px; display: flex; justify-content: space-between; }
+        .history-list { font-size: 12px; font-family: monospace; max-height: 100px; overflow-y: auto; }
+        .history-item { border-bottom: 1px dashed #999; padding: 5px 0; display: flex; justify-content: space-between; }
+
         #alert-box {
-            display: none; background: var(--comic-red); color: white;
-            padding: 10px; border: 3px solid var(--black); margin-top: 10px;
-            font-weight: 900; text-align: center; animation: blink 0.5s infinite;
+            display: none; background: var(--comic-red); color: white; padding: 10px;
+            border: 4px solid var(--black); font-weight: 900; text-align: center;
+            margin-bottom: 15px; animation: blink 0.5s infinite;
         }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
     </style>
 </head>
 <body>
 
 <div class="app-card">
+    <div id="login-overlay">
+        <h2 style="font-family: 'Bangers'; font-size: 50px; color: var(--comic-yellow); -webkit-text-stroke: 1px #000;">READY TO RIDE?</h2>
+        <p style="font-weight: 900; margin-bottom: 25px;">給油データを保存するために<br>ログインしてください</p>
+        <div id="g_id_onload"
+             data-client_id="1093173509944-v7k5e6v6v6v6v6v6v6v6v6v6.apps.googleusercontent.com"
+             data-callback="handleCredentialResponse">
+        </div>
+        <div class="g_id_signin" data-type="standard" data-shape="pill" data-theme="filled_blue"></div>
+    </div>
+
     <div class="header">
-        <img src="juicy.png" alt="ICON" class="user-icon" onerror="this.src='https://placehold.jp/80x80.png?text=ICON'">
+        <img id="user-img" src="juicy.png" alt="ICON" class="user-icon" onerror="this.src='https://placehold.jp/65x65.png?text=ICON'">
         <div>
-            <h1>JUICY RIDER</h1>
-            <div style="font-size: 11px; font-weight: 900;">WESTBOUND JOURNEY</div>
+            <h1 id="user-name-display">JUICY RIDER</h1>
+            <div style="font-size: 11px; font-weight: 900;">WESTBOUND JOURNEY v2.0</div>
         </div>
     </div>
 
     <div class="engine-panel">
-        <span id="engine-name">50cc MOPED</span>
-        <span id="engine-spec">EFFICIENCY: 1.0x | STATUS: READY</span>
+        <span id="engine-name" style="font-size: 20px; color: var(--comic-yellow); display: block;">50cc MOPED</span>
+        <span id="engine-status">STATUS: STANDBY</span>
     </div>
 
     <div id="progress-container"><div id="progress-fill"></div></div>
@@ -95,84 +118,125 @@
     </div>
 
     <div class="panel">
-        <div id="alert-box">OVER-EATING WARNING!</div>
-        <div class="input-group">
-            <div class="row">
-                <input type="text" id="fruit-in" placeholder="FRUIT NAME..." list="fruit-data">
-                <input type="number" id="gram-in" placeholder="GRAMS" style="width: 80px;">
-            </div>
-            <datalist id="fruit-data">
-                <option value="オレンジ"><option value="リンゴ"><option value="ドラゴンフルーツ">
-                <option value="ドリアン"><option value="マンゴスチン"><option value="アテモヤ">
-                <option value="サラク"><option value="スターフルーツ"><option value="100%ジュース">
-            </datalist>
-            <button class="btn-load" onclick="handleLoad()">LOAD GASOLINE!</button>
+        <button class="btn-map" onclick="openMap()">🗺️ 現在地をGoogleマップで確認</button>
+        <div id="alert-box">⚠️ OVER-EATING WARNING!</div>
+        <div class="input-row">
+            <select id="fruit-select" onchange="updateUnitUI()">
+                <option value="オレンジ">オレンジ (150g)</option>
+                <option value="リンゴ">リンゴ (300g)</option>
+                <option value="ドラゴンフルーツ">ドラゴンフルーツ (400g)</option>
+                <option value="ドリアン">ドリアン (300g)</option>
+                <option value="マンゴスチン">マンゴスチン (50g)</option>
+                <option value="100%ジュース">100%ジュース (ml)</option>
+            </select>
+            <input type="number" id="amount-in" value="1.0" step="0.1" min="0.1">
+            <span id="unit-label" style="font-weight: 900; min-width: 30px;">個</span>
         </div>
-        <button class="btn-undo" onclick="undoLast()">間違えて記録した（UNDO）</button>
+        <button class="btn-load" onclick="handleLoad()">LOAD GASOLINE!</button>
+        <button style="width:100%; border:none; background:none; text-decoration:underline; font-size:12px; cursor:pointer;" onclick="undoLast()">直前の記録を消す(UNDO)</button>
+    </div>
+
+    <div class="history-panel">
+        <div class="history-title">
+            <span>⛽️ 給油表 (HISTORY)</span>
+            <span id="save-status" style="font-size:10px; color:#666;">Ready</span>
+        </div>
+        <div id="history-list" class="history-list"></div>
     </div>
 </div>
 
 <script>
     let totalDist = parseFloat(localStorage.getItem('juicy_odo')) || 0;
     let todayGrams = parseFloat(localStorage.getItem('juicy_today')) || 0;
+    let history = JSON.parse(localStorage.getItem('juicy_history')) || [];
     const LIMIT = 200;
 
-    const engines = [
-        { min: 0, name: "50cc MOPED", boost: 1.0 },
-        { min: 50, name: "250cc STREET", boost: 1.3 },
-        { min: 200, name: "1200cc MONSTER", boost: 2.0 }
-    ];
-
     const fruitDB = {
-        "オレンジ": 0.8, "リンゴ": 0.9, "ドラゴンフルーツ": 1.5,
-        "ドリアン": 2.5, "アテモヤ": 2.2, "マンゴスチン": 1.4,
-        "サラク": 1.9, "スターフルーツ": 1.3, "100%ジュース": 1.0
+        "オレンジ": { weight: 150, rare: 0.8 },
+        "リンゴ": { weight: 300, rare: 0.9 },
+        "ドラゴンフルーツ": { weight: 400, rare: 1.5 },
+        "ドリアン": { weight: 300, rare: 2.5 },
+        "マンゴスチン": { weight: 50, rare: 1.4 },
+        "100%ジュース": { weight: 1, rare: 1.0, isLiquid: true }
     };
 
     updateUI();
 
+    function handleCredentialResponse(response) {
+        const payload = JSON.parse(atob(response.credential.split('.')[1]));
+        document.getElementById('user-name-display').innerText = payload.given_name.toUpperCase();
+        document.getElementById('user-img').src = payload.picture;
+        document.getElementById('login-overlay').style.display = 'none';
+        document.getElementById('save-status').innerText = "Logged In";
+        updateUI();
+    }
+
+    function updateUnitUI() {
+        const name = document.getElementById('fruit-select').value;
+        document.getElementById('unit-label').innerText = fruitDB[name].isLiquid ? "ml" : "個";
+    }
+
     function handleLoad() {
-        const name = document.getElementById('fruit-in').value;
-        const grams = parseFloat(document.getElementById('gram-in').value);
-        if (!name || !grams) return;
+        const name = document.getElementById('fruit-select').value;
+        const amount = parseFloat(document.getElementById('amount-in').value);
+        if (!amount || amount <= 0) return;
+
+        const data = fruitDB[name];
+        const grams = data.isLiquid ? amount : (amount * data.weight);
 
         todayGrams += grams;
         if (todayGrams > LIMIT) document.getElementById('alert-box').style.display = 'block';
 
-        const engine = [...engines].reverse().find(e => totalDist >= e.min);
-        const rarity = fruitDB[name] || 1.1;
-        const addKM = (grams * rarity / 10) * engine.boost;
-        
+        const boost = totalDist >= 200 ? 2.0 : (totalDist >= 50 ? 1.3 : 1.0);
+        const addKM = (grams * data.rare / 10) * boost;
         totalDist += addKM;
+
+        const now = new Date();
+        const timeStr = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        history.unshift({ time: timeStr, name: name, amount: amount, unit: data.isLiquid ? "ml" : "個", km: addKM.toFixed(1) });
+        if(history.length > 20) history.pop();
 
         saveData();
         updateUI();
-
-        document.getElementById('fruit-in').value = '';
-        document.getElementById('gram-in').value = '';
     }
 
     function updateUI() {
         document.getElementById('dist-val').innerText = totalDist.toFixed(1);
-        document.getElementById('today-val').innerText = todayGrams;
+        document.getElementById('today-val').innerText = Math.round(todayGrams);
         
-        const engine = [...engines].reverse().find(e => totalDist >= e.min);
-        document.getElementById('engine-name').innerText = engine.name;
-        document.getElementById('engine-spec').innerText = `EFFICIENCY: ${engine.boost}x | STATUS: VROOM!`;
+        const engineName = totalDist >= 200 ? "1200cc MONSTER" : (totalDist >= 50 ? "250cc STREET" : "50cc MOPED");
+        const boostVal = totalDist >= 200 ? "2.0x" : (totalDist >= 50 ? "1.3x" : "1.0x");
+        document.getElementById('engine-name').innerText = engineName;
+        document.getElementById('engine-status').innerText = `EFFICIENCY: ${boostVal} | STATUS: VROOM!`;
 
-        const next = engines.find(e => e.min > totalDist) || { min: 1000 };
-        const progress = (totalDist / next.min) * 100;
-        document.getElementById('progress-fill').style.width = Math.min(progress, 100) + "%";
+        let nextGoal = totalDist < 50 ? 50 : (totalDist < 200 ? 200 : 500);
+        document.getElementById('progress-fill').style.width = Math.min((totalDist / nextGoal) * 100, 100) + "%";
+
+        document.getElementById('history-list').innerHTML = history.map(item => `
+            <div class="history-item">
+                <span>[${item.time}] ${item.name} ${item.amount}${item.unit}</span>
+                <span style="color:var(--comic-red); font-weight:bold;">+${item.km}km</span>
+            </div>
+        `).join('');
+    }
+
+    function openMap() {
+        const baseLat = 35.6839;
+        const baseLng = 139.7744;
+        const currentLng = baseLng - (totalDist / 90); 
+        window.open(`https://www.google.com/maps/search/?api=1&query=${baseLat},${currentLng}`, '_blank');
     }
 
     function saveData() {
         localStorage.setItem('juicy_odo', totalDist);
         localStorage.setItem('juicy_today', todayGrams);
+        localStorage.setItem('juicy_history', JSON.stringify(history));
     }
 
     function undoLast() {
-        if (confirm("直前の記録を取り消しますか？")) {
-            totalDist = Math.max(0, totalDist - 10);
+        if (history.length > 0 && confirm("直前の記録を取り消しますか？")) {
+            const last = history.shift();
+            totalDist = Math.max(0, totalDist - parseFloat(last.km));
             todayGrams = Math.max(0, todayGrams - 100);
             saveData();
             updateUI();
