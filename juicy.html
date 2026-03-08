@@ -7,80 +7,29 @@
     <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Noto+Sans+JP:wght@900&display=swap" rel="stylesheet">
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
-        :root {
-            --comic-yellow: #ffde00; --comic-red: #e60012; --comic-blue: #00acee; --black: #000;
-        }
-        body {
-            background: #ddd; background-image: radial-gradient(var(--black) 10%, transparent 11%);
-            background-size: 15px 15px; font-family: 'Noto Sans JP', sans-serif; margin: 0; padding: 10px;
-            display: flex; flex-direction: column; align-items: center;
-        }
-        .app-card {
-            background: white; border: 6px solid var(--black); width: 100%; max-width: 450px;
-            box-shadow: 12px 12px 0px var(--black); overflow: hidden; position: relative;
-        }
-        /* ログイン画面 */
-        #login-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); z-index: 1000;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            color: white; text-align: center; padding: 20px; box-sizing: border-box;
-        }
-        .header {
-            background: var(--comic-yellow); border-bottom: 6px solid var(--black);
-            padding: 15px; display: flex; align-items: center; gap: 15px;
-        }
-        .user-icon {
-            width: 65px; height: 65px; border: 4px solid var(--black);
-            background: white; box-shadow: 4px 4px 0 var(--black); object-fit: cover;
-        }
-        h1 {
-            font-family: 'Bangers', cursive; font-size: 42px; color: var(--comic-red);
-            -webkit-text-stroke: 1.5px var(--black); margin: 0; transform: rotate(-2deg);
-        }
-        .engine-panel {
-            background: #222; color: #00ff00; padding: 10px;
-            font-family: 'Courier New', monospace; font-size: 13px;
-            border-bottom: 6px solid var(--black); text-align: center;
-        }
-        .status-bar {
-            background: var(--black); color: white; padding: 12px 15px;
-            display: flex; justify-content: space-between; font-size: 16px; font-weight: 900;
-        }
+        :root { --comic-yellow: #ffde00; --comic-red: #e60012; --comic-blue: #00acee; --black: #000; }
+        body { background: #ddd; background-image: radial-gradient(var(--black) 10%, transparent 11%); background-size: 15px 15px; font-family: 'Noto Sans JP', sans-serif; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
+        .app-card { background: white; border: 6px solid var(--black); width: 100%; max-width: 450px; box-shadow: 12px 12px 0px var(--black); overflow: hidden; position: relative; }
+        #login-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; text-align: center; padding: 20px; box-sizing: border-box; }
+        .header { background: var(--comic-yellow); border-bottom: 6px solid var(--black); padding: 15px; display: flex; align-items: center; gap: 15px; }
+        .user-icon { width: 65px; height: 65px; border: 4px solid var(--black); background: white; box-shadow: 4px 4px 0 var(--black); object-fit: cover; }
+        h1 { font-family: 'Bangers', cursive; font-size: 42px; color: var(--comic-red); -webkit-text-stroke: 1.5px var(--black); margin: 0; transform: rotate(-2deg); }
+        .engine-panel { background: #222; color: #00ff00; padding: 10px; font-family: 'Courier New', monospace; font-size: 13px; border-bottom: 6px solid var(--black); text-align: center; }
+        .status-bar { background: var(--black); color: white; padding: 12px 15px; display: flex; justify-content: space-between; font-size: 16px; font-weight: 900; }
         #progress-container { height: 12px; background: #444; border-bottom: 4px solid var(--black); }
         #progress-fill { height: 100%; background: var(--comic-red); width: 0%; transition: width 0.8s; }
-        
         .panel { padding: 20px; }
-        .btn-map {
-            background: var(--comic-blue); color: white; border: 4px solid var(--black);
-            padding: 10px; width: 100%; font-weight: 900; cursor: pointer;
-            box-shadow: 4px 4px 0 var(--black); margin-bottom: 15px; font-size: 14px;
-        }
+        .btn-map { background: var(--comic-blue); color: white; border: 4px solid var(--black); padding: 10px; width: 100%; font-weight: 900; cursor: pointer; box-shadow: 4px 4px 0 var(--black); margin-bottom: 15px; font-size: 14px; }
         .input-row { display: flex; gap: 8px; align-items: center; margin-bottom: 15px; }
-        select, input { 
-            border: 4px solid var(--black); padding: 12px; font-size: 18px; 
-            font-weight: 900; outline: none; background: white;
-        }
+        select, input { border: 4px solid var(--black); padding: 12px; font-size: 18px; font-weight: 900; outline: none; background: white; }
         select { flex: 2; background: #fffceb; }
         input[type="number"] { width: 80px; text-align: center; }
-        
-        .btn-load {
-            background: var(--comic-red); color: white; border: 4px solid var(--black);
-            padding: 18px; font-family: 'Bangers', cursive; font-size: 32px; width: 100%;
-            cursor: pointer; box-shadow: 6px 6px 0 var(--black); margin-bottom: 10px;
-        }
-        .btn-load:active { transform: translate(3px, 3px); box-shadow: 2px 2px 0 var(--black); }
-
+        .btn-load { background: var(--comic-red); color: white; border: 4px solid var(--black); padding: 18px; font-family: 'Bangers', cursive; font-size: 32px; width: 100%; cursor: pointer; box-shadow: 6px 6px 0 var(--black); margin-bottom: 10px; }
         .history-panel { border-top: 6px solid var(--black); background: #f0f0f0; padding: 15px; }
         .history-title { font-weight: 900; font-size: 14px; margin-bottom: 8px; display: flex; justify-content: space-between; }
         .history-list { font-size: 12px; font-family: monospace; max-height: 100px; overflow-y: auto; }
         .history-item { border-bottom: 1px dashed #999; padding: 5px 0; display: flex; justify-content: space-between; }
-
-        #alert-box {
-            display: none; background: var(--comic-red); color: white; padding: 10px;
-            border: 4px solid var(--black); font-weight: 900; text-align: center;
-            margin-bottom: 15px; animation: blink 0.5s infinite;
-        }
+        #alert-box { display: none; background: var(--comic-red); color: white; padding: 10px; border: 4px solid var(--black); font-weight: 900; text-align: center; margin-bottom: 15px; animation: blink 0.5s infinite; }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
     </style>
 </head>
@@ -98,25 +47,21 @@
     </div>
 
     <div class="header">
-        <img id="user-img" src="juicy.png" alt="ICON" class="user-icon" onerror="this.src='https://placehold.jp/65x65.png?text=ICON'">
+        <img id="user-img" src="juicy.png" alt="ICON" class="user-icon" onerror="this.src='https://placehold.jp/65x65.png'">
         <div>
             <h1 id="user-name-display">JUICY RIDER</h1>
             <div style="font-size: 11px; font-weight: 900;">WESTBOUND JOURNEY v2.0</div>
         </div>
     </div>
-
     <div class="engine-panel">
         <span id="engine-name" style="font-size: 20px; color: var(--comic-yellow); display: block;">50cc MOPED</span>
         <span id="engine-status">STATUS: STANDBY</span>
     </div>
-
     <div id="progress-container"><div id="progress-fill"></div></div>
-
     <div class="status-bar">
         <span>ODO: <span id="dist-val">0.0</span> km</span>
         <span>TODAY: <span id="today-val">0</span> / 200g</span>
     </div>
-
     <div class="panel">
         <button class="btn-map" onclick="openMap()">🗺️ 現在地をGoogleマップで確認</button>
         <div id="alert-box">⚠️ OVER-EATING WARNING!</div>
@@ -135,7 +80,6 @@
         <button class="btn-load" onclick="handleLoad()">LOAD GASOLINE!</button>
         <button style="width:100%; border:none; background:none; text-decoration:underline; font-size:12px; cursor:pointer;" onclick="undoLast()">直前の記録を消す(UNDO)</button>
     </div>
-
     <div class="history-panel">
         <div class="history-title">
             <span>⛽️ 給油表 (HISTORY)</span>
@@ -145,10 +89,25 @@
     </div>
 </div>
 
-<script>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = { 
+        apiKey: "AIzaSyA7pcr0G4qEx0yLNWueZPdaeQoEBjFuoic", 
+        authDomain: "necotastudio-app.firebaseapp.com", 
+        projectId: "necotastudio-app", 
+        storageBucket: "necotastudio-app.firebasestorage.app", 
+        messagingSenderId: "1093173509944", 
+        appId: "1:1093173509944:web:5340935ddffdd49628cbcd" 
+    };
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
     let totalDist = parseFloat(localStorage.getItem('juicy_odo')) || 0;
     let todayGrams = parseFloat(localStorage.getItem('juicy_today')) || 0;
     let history = JSON.parse(localStorage.getItem('juicy_history')) || [];
+    let currentUid = null;
     const LIMIT = 200;
 
     const fruitDB = {
@@ -160,87 +119,94 @@
         "100%ジュース": { weight: 1, rare: 1.0, isLiquid: true }
     };
 
-    updateUI();
-
-    function handleCredentialResponse(response) {
+    window.handleCredentialResponse = async (response) => {
         const payload = JSON.parse(atob(response.credential.split('.')[1]));
+        currentUid = payload.sub; // GoogleのユニークID
         document.getElementById('user-name-display').innerText = payload.given_name.toUpperCase();
         document.getElementById('user-img').src = payload.picture;
         document.getElementById('login-overlay').style.display = 'none';
-        document.getElementById('save-status').innerText = "Logged In";
+        
+        // Firebaseからデータ復元
+        const docSnap = await getDoc(doc(db, "juicy_rider", currentUid));
+        if (docSnap.exists()) {
+            const cloudData = docSnap.data();
+            totalDist = cloudData.odo || totalDist;
+            history = cloudData.history || history;
+            // 日付チェック
+            if(cloudData.lastDate === new Date().toLocaleDateString()) {
+                todayGrams = cloudData.today || todayGrams;
+            } else {
+                todayGrams = 0;
+            }
+        }
         updateUI();
-    }
+    };
 
-    function updateUnitUI() {
+    window.updateUnitUI = () => {
         const name = document.getElementById('fruit-select').value;
         document.getElementById('unit-label').innerText = fruitDB[name].isLiquid ? "ml" : "個";
     }
 
-    function handleLoad() {
+    window.handleLoad = async () => {
         const name = document.getElementById('fruit-select').value;
         const amount = parseFloat(document.getElementById('amount-in').value);
         if (!amount || amount <= 0) return;
-
         const data = fruitDB[name];
         const grams = data.isLiquid ? amount : (amount * data.weight);
 
         todayGrams += grams;
-        if (todayGrams > LIMIT) document.getElementById('alert-box').style.display = 'block';
-
         const boost = totalDist >= 200 ? 2.0 : (totalDist >= 50 ? 1.3 : 1.0);
         const addKM = (grams * data.rare / 10) * boost;
         totalDist += addKM;
 
-        const now = new Date();
-        const timeStr = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-        history.unshift({ time: timeStr, name: name, amount: amount, unit: data.isLiquid ? "ml" : "個", km: addKM.toFixed(1) });
+        history.unshift({ time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), name: name, amount: amount, unit: data.isLiquid ? "ml" : "個", km: addKM.toFixed(1) });
         if(history.length > 20) history.pop();
 
-        saveData();
         updateUI();
-    }
+        saveAll();
+    };
 
     function updateUI() {
         document.getElementById('dist-val').innerText = totalDist.toFixed(1);
         document.getElementById('today-val').innerText = Math.round(todayGrams);
+        document.getElementById('alert-box').style.display = todayGrams > LIMIT ? 'block' : 'none';
         
         const engineName = totalDist >= 200 ? "1200cc MONSTER" : (totalDist >= 50 ? "250cc STREET" : "50cc MOPED");
-        const boostVal = totalDist >= 200 ? "2.0x" : (totalDist >= 50 ? "1.3x" : "1.0x");
         document.getElementById('engine-name').innerText = engineName;
-        document.getElementById('engine-status').innerText = `EFFICIENCY: ${boostVal} | STATUS: VROOM!`;
-
-        let nextGoal = totalDist < 50 ? 50 : (totalDist < 200 ? 200 : 500);
-        document.getElementById('progress-fill').style.width = Math.min((totalDist / nextGoal) * 100, 100) + "%";
-
+        document.getElementById('progress-fill').style.width = Math.min((totalDist / 500) * 100, 100) + "%";
         document.getElementById('history-list').innerHTML = history.map(item => `
-            <div class="history-item">
-                <span>[${item.time}] ${item.name} ${item.amount}${item.unit}</span>
-                <span style="color:var(--comic-red); font-weight:bold;">+${item.km}km</span>
-            </div>
+            <div class="history-item"><span>[${item.time}] ${item.name}</span><span style="color:var(--comic-red); font-weight:bold;">+${item.km}km</span></div>
         `).join('');
     }
 
-    function openMap() {
-        const baseLat = 35.6839;
-        const baseLng = 139.7744;
-        const currentLng = baseLng - (totalDist / 90); 
-        window.open(`https://www.google.com/maps/search/?api=1&query=${baseLat},${currentLng}`, '_blank');
-    }
-
-    function saveData() {
+    async function saveAll() {
         localStorage.setItem('juicy_odo', totalDist);
         localStorage.setItem('juicy_today', todayGrams);
         localStorage.setItem('juicy_history', JSON.stringify(history));
+        
+        if (currentUid) {
+            document.getElementById('save-status').innerText = "Saving...";
+            await setDoc(doc(db, "juicy_rider", currentUid), {
+                odo: totalDist, today: todayGrams, history: history, lastDate: new Date().toLocaleDateString()
+            }, { merge: true });
+            document.getElementById('save-status').innerText = "Cloud Synced";
+        }
     }
 
-    function undoLast() {
-        if (history.length > 0 && confirm("直前の記録を取り消しますか？")) {
+    window.openMap = () => {
+        const baseLat = 35.6839;
+        const baseLng = 139.7744;
+        const currentLng = baseLng - (totalDist / 90); 
+        window.open(`https://www.google.com/maps?q=${baseLat},${currentLng}`, '_blank');
+    };
+
+    window.undoLast = () => {
+        if (history.length > 0 && confirm("取り消しますか？")) {
             const last = history.shift();
             totalDist = Math.max(0, totalDist - parseFloat(last.km));
             todayGrams = Math.max(0, todayGrams - 100);
-            saveData();
+            saveAll();
             updateUI();
-            if(todayGrams <= LIMIT) document.getElementById('alert-box').style.display = 'none';
         }
     }
 </script>
