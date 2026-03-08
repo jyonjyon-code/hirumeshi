@@ -27,6 +27,7 @@
         .btn-action:active { transform: translateY(3px); box-shadow: 0 2px 0 #d35400; }
         
         .btn-rakuten { background: #bf0000; font-size: 14px; }
+        .btn-oisix { background: #769500; font-size: 14px; } /* オイシックス用の緑 */
         .btn-search { background: #3498db; font-size: 15px; }
         .btn-retry { background: #95a5a6; font-size: 14px; padding: 10px; margin-top: 20px; }
         .btn-x { background: #000; }
@@ -35,7 +36,6 @@
         .btn-back { color: #888; text-decoration: none; font-size: 13px; display: inline-block; margin-bottom: 15px; font-weight: bold; }
         .sns-group { display: flex; gap: 10px; }
         .btn-sns { color: white; border: none; padding: 12px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px; flex: 1; }
-        .btn-x { background: #000; }
         .btn-insta { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
         
         #hint { font-size: 13px; color: #7f8c8d; margin-top: 12px; line-height: 1.5; }
@@ -66,6 +66,10 @@
         <a id="action-link" class="btn btn-search" target="_blank"></a>
         <a id="rakuten-link" class="btn btn-rakuten" target="_blank" rel="nofollow sponsored noopener"></a>
         
+        <a id="oisix-link" class="btn btn-oisix" target="_blank" rel="nofollow sponsored noopener" style="display: none;">
+            <i class="fa-solid fa-leaf"></i> 買い物不要！Oisixでお試し
+        </a>
+        
         <a id="x-share-btn" class="btn btn-x" target="_blank" style="margin-top: 20px;">
             <i class="fa-brands fa-x-twitter"></i> 結果を報告する
         </a>
@@ -88,8 +92,9 @@
 
 <script>
     const RAKUTEN_AFID = "51366796.8818598a.51366797.ddbb51d0"; 
-    // ★独自ドメインに変更
     const APP_URL = "https://necotastudio.com/yuhan.html"; 
+    const OISIX_URL = "https://px.a8.net/svt/ejp?a8mat=4AZBO2+81COS2+3RK+2THRHV"; // ★オイシックスURL
+
     let currentMode = 'cook';
     const emojis = ["🍳", "🍱", "🍕", "🍜", "🍛", "🥘", "🍖", "🥗", "🍣", "🍔", "🍝", "🥟"];
     
@@ -173,14 +178,23 @@
             actionLink.href = "https://www.google.com/maps/search/" + encodeURIComponent(res.name);
         }
 
+        // 楽天リンクの制御
         const rakutenLink = document.getElementById('rakuten-link');
         const rakutenKeyword = res.name + (currentMode === 'cook' ? " 材料" : " お取り寄せ");
         rakutenLink.href = "https://hb.afl.rakuten.co.jp/hgc/" + RAKUTEN_AFID + "/?pc=" + encodeURIComponent("https://search.rakuten.co.jp/search/mall/" + rakutenKeyword + "/");
         rakutenLink.innerText = `🎁 ${res.name} を楽天で探す`;
 
+        // ★オイシックスリンクの制御（自炊モードの時だけ表示）
+        const oisixLink = document.getElementById('oisix-link');
+        if (currentMode === 'cook') {
+            oisixLink.style.display = 'inline-block';
+            oisixLink.href = OISIX_URL;
+        } else {
+            oisixLink.style.display = 'none';
+        }
+
         const modeText = currentMode === 'cook' ? '自炊' : currentMode === 'buy' ? '買い出し' : '外食';
         
-        // ★Xシェアテキストの改行とフォーマットを修正
         const tweetText = encodeURIComponent(
             `今夜の夕食は…\n` +
             `【 ${res.name} 】に決定！\n\n` +
