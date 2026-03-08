@@ -60,9 +60,11 @@
         <div id="uber-section" style="display: none;">
             <p class="promo-tag">本ページはプロモーションです</p>
             <a id="uber-link" href="https://www.ubereats.com/jp" class="btn btn-uber" target="_blank" rel="nofollow noopener">
-                <i class="fas fa-motorcycle"></i> Uber Eats (ウーバーイーツ)
+                <i class="fas fa-motorcycle"></i> Uber Eats(ウーバーイーツ)
             </a>
-            <p class="uber-note">レストランから配達パートナーがお届けします。詳細はアプリ内でご確認ください。</p>
+            <p class="uber-note">
+                Uber Eats(ウーバーイーツ)なら、レストランから配達パートナーがお届けします。配送手数料等、詳細はカート内でご確認ください。
+            </p>
         </div>
 
         <a id="oisix-link" class="btn btn-oisix" target="_blank" rel="nofollow sponsored noopener" style="display: none;">
@@ -165,14 +167,12 @@
         const uberLink = document.getElementById('uber-link');
         
         if (currentMode === 'cook') {
-            // 自炊: レシピとOisix、Uberは非表示
             actionLink.innerHTML = '<i class="fas fa-utensils"></i> レシピを検索する';
             actionLink.href = "https://www.google.com/search?q=" + encodeURIComponent(res.name + " レシピ");
             oisixLink.style.display = 'inline-block';
             oisixLink.href = OISIX_URL;
             uberSection.style.display = 'none';
         } else {
-            // 買ってくる/外食: マップとUber、Oisixは非表示
             const mapKeyword = currentMode === 'buy' ? res.keyword : res.name;
             actionLink.innerHTML = currentMode === 'buy' ? '<i class="fas fa-shopping-cart"></i> 近くの買えるお店を探す' : '<i class="fas fa-map-marker-alt"></i> 近くの食べられるお店';
             actionLink.href = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(mapKeyword);
