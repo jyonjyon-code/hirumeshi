@@ -3,8 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
     <title>ゆうはんなにしよ | ねこたスタジオ</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -24,14 +22,17 @@
         
         .btn { color: white; border: none; padding: 16px 20px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; margin-top: 12px; font-size: 16px; width: 100%; box-sizing: border-box; transition: 0.2s; }
         .btn-action { background: #e67e22; box-shadow: 0 5px 0 #d35400; font-size: 18px; }
-        .btn-action:active { transform: translateY(3px); box-shadow: 0 2px 0 #d35400; }
         
-        .btn-rakuten { background: #bf0000; font-size: 14px; }
-        .btn-oisix { background: #769500; font-size: 14px; } /* オイシックス用の緑 */
+        /* ボタン色分け */
         .btn-search { background: #3498db; font-size: 15px; }
-        .btn-retry { background: #95a5a6; font-size: 14px; padding: 10px; margin-top: 20px; }
-        .btn-x { background: #000; }
+        .btn-oisix { background: #769500; font-size: 15px; }
+        .btn-rakuten { background: #bf0000; font-size: 14px; }
         
+        /* 枠の外のボタン（少し控えめ） */
+        .btn-outside { border-radius: 15px; padding: 12px; font-size: 14px; margin-top: 15px; width: auto; min-width: 140px; }
+        .btn-x { background: #000; margin-right: 5px; }
+        .btn-retry { background: #95a5a6; }
+
         .studio-nav { margin-top: 25px; border-top: 1px solid #ddd; padding-top: 20px; }
         .btn-back { color: #888; text-decoration: none; font-size: 13px; display: inline-block; margin-bottom: 15px; font-weight: bold; }
         .sns-group { display: flex; gap: 10px; }
@@ -65,16 +66,18 @@
         
         <a id="action-link" class="btn btn-search" target="_blank"></a>
         <a id="rakuten-link" class="btn btn-rakuten" target="_blank" rel="nofollow sponsored noopener"></a>
-        
-        <a id="oisix-link" class="btn btn-oisix" target="_blank" rel="nofollow sponsored noopener" style="display: none;">
+        <a id="oisix-link" class="btn btn-oisix" target="_blank" rel="nofollow sponsored noopener">
             <i class="fa-solid fa-leaf"></i> 買い物不要！Oisixでお試し
         </a>
-        
-        <a id="x-share-btn" class="btn btn-x" target="_blank" style="margin-top: 20px;">
-            <i class="fa-brands fa-x-twitter"></i> 結果を報告する
-        </a>
-        
-        <button class="btn btn-retry" onclick="reset()">もういちど決める</button>
+    </div>
+
+    <div id="outside-area" style="display: none;">
+        <div style="display: flex; justify-content: center; gap: 10px;">
+            <a id="x-share-btn" class="btn btn-outside btn-x" target="_blank">
+                <i class="fa-brands fa-x-twitter"></i> 報告する
+            </a>
+            <button class="btn btn-outside btn-retry" onclick="reset()">もういちど</button>
+        </div>
     </div>
 
     <div class="studio-nav">
@@ -93,7 +96,7 @@
 <script>
     const RAKUTEN_AFID = "51366796.8818598a.51366797.ddbb51d0"; 
     const APP_URL = "https://necotastudio.com/yuhan.html"; 
-    const OISIX_URL = "https://px.a8.net/svt/ejp?a8mat=4AZBO2+81COS2+3RK+2THRHV"; // ★オイシックスURL
+    const OISIX_URL = "https://px.a8.net/svt/ejp?a8mat=4AZBO2+81COS2+3RK+2THRHV";
 
     let currentMode = 'cook';
     const emojis = ["🍳", "🍱", "🍕", "🍜", "🍛", "🥘", "🍖", "🥗", "🍣", "🍔", "🍝", "🥟"];
@@ -161,51 +164,41 @@
         document.getElementById('slot-display').style.display = 'none';
         document.getElementById('hint').style.display = 'none';
         document.getElementById('result-area').style.display = 'block';
+        document.getElementById('outside-area').style.display = 'block'; // 枠の外を表示
         
         document.getElementById('food-result').innerText = res.name;
         document.getElementById('food-desc').innerHTML = res.desc;
 
         const actionLink = document.getElementById('action-link');
+        const rakutenLink = document.getElementById('rakuten-link');
+        const oisixLink = document.getElementById('oisix-link');
         
         if (currentMode === 'cook') {
             actionLink.innerText = "🍳 レシピを検索する";
             actionLink.href = "https://www.google.com/search?q=" + encodeURIComponent(res.name + " レシピ");
-        } else if (currentMode === 'buy') {
-            actionLink.innerText = "🛒 近くの買えるお店を探す";
-            actionLink.href = "https://www.google.com/maps/search/" + encodeURIComponent(res.keyword);
-        } else if (currentMode === 'out') {
-            actionLink.innerText = "🍴 近くの食べられるお店";
-            actionLink.href = "https://www.google.com/maps/search/" + encodeURIComponent(res.name);
-        }
-
-        // 楽天リンクの制御
-        const rakutenLink = document.getElementById('rakuten-link');
-        const rakutenKeyword = res.name + (currentMode === 'cook' ? " 材料" : " お取り寄せ");
-        rakutenLink.href = "https://hb.afl.rakuten.co.jp/hgc/" + RAKUTEN_AFID + "/?pc=" + encodeURIComponent("https://search.rakuten.co.jp/search/mall/" + rakutenKeyword + "/");
-        rakutenLink.innerText = `🎁 ${res.name} を楽天で探す`;
-
-        // ★オイシックスリンクの制御（自炊モードの時だけ表示）
-        const oisixLink = document.getElementById('oisix-link');
-        if (currentMode === 'cook') {
+            rakutenLink.style.display = 'none'; // 楽天隠す
             oisixLink.style.display = 'inline-block';
             oisixLink.href = OISIX_URL;
         } else {
-            oisixLink.style.display = 'none';
+            const mapKeyword = currentMode === 'buy' ? res.keyword : res.name;
+            actionLink.innerText = currentMode === 'buy' ? "🛒 近くの買えるお店を探す" : "🍴 近くの食べられるお店";
+            actionLink.href = "https://www.google.com/maps/search/" + encodeURIComponent(mapKeyword);
+            
+            rakutenLink.style.display = 'inline-block';
+            const rakutenKeyword = res.name + " お取り寄せ";
+            rakutenLink.href = "https://hb.afl.rakuten.co.jp/hgc/" + RAKUTEN_AFID + "/?pc=" + encodeURIComponent("https://search.rakuten.co.jp/search/mall/" + rakutenKeyword + "/");
+            rakutenLink.innerText = `🎁 ${res.name} を楽天で探す`;
+            oisixLink.style.display = 'none'; // Oisix隠す
         }
 
         const modeText = currentMode === 'cook' ? '自炊' : currentMode === 'buy' ? '買い出し' : '外食';
-        
-        const tweetText = encodeURIComponent(
-            `今夜の夕食は…\n` +
-            `【 ${res.name} 】に決定！\n\n` +
-            `（${modeText}モードで選びました🍴）\n\n` +
-            `#ゆうはんなにしよ #ねこたスタジオ`
-        );
+        const tweetText = encodeURIComponent(`今夜の夕食は…\n【 ${res.name} 】に決定！\n\n（${modeText}モードで選びました🍴）\n\n#ゆうはんなにしよ #ねこたスタジオ`);
         document.getElementById('x-share-btn').href = `https://twitter.com/intent/tweet?text=${tweetText}&url=${encodeURIComponent(APP_URL)}`;
     }
 
     function reset() {
         document.getElementById('result-area').style.display = 'none';
+        document.getElementById('outside-area').style.display = 'none'; // 枠の外も隠す
         document.getElementById('slot-display').style.display = 'flex';
         document.getElementById('slot-display').innerText = "🍳";
         document.getElementById('start-btn').style.display = 'inline-block';
