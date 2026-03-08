@@ -44,7 +44,6 @@
         .app-info p { font-size: 0.9rem; color: #666; line-height: 1.5; }
         .btn-group { display: flex; gap: 10px; padding: 0 20px 15px; }
         .btn { flex: 1; padding: 12px; border-radius: 12px; text-decoration: none; font-weight: bold; font-size: 0.9rem; text-align: center; transition: 0.2s; }
-        .btn:active { transform: scale(0.95); }
         .btn-play { background: var(--main-red); color: white; }
         .kiriban-box { background: #fffbe6; border: 2px double #f0ad4e; padding: 15px; margin: 20px auto; max-width: 500px; width: 85%; font-size: 13px; line-height: 1.6; }
         footer { background: white; padding: 30px 20px; border-top: 1px solid #eee; margin-top: 40px; }
@@ -68,7 +67,7 @@
 </div>
 
 <div class="counter-section">
-    <div class="counter-img" id="current-count">00000000</div>
+    <div class="counter-img" id="current-count">LOADING...</div>
     <p style="font-size: 12px; color: #888; margin-top: 5px;">人目の訪問者です🐱</p>
 </div>
 
@@ -148,15 +147,43 @@
     <div class="copyright" style="margin-top: 20px;">&copy; 2026 ねこたスタジオ</div>
 </footer>
 
-<script>
-    function initCounter() {
-        const counterEl = document.getElementById('current-count');
-        let count = parseInt(localStorage.getItem('studio-visit-count')) || 0;
-        count++; 
-        localStorage.setItem('studio-visit-count', count);
-        counterEl.innerText = String(count).padStart(8, '0');
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore, doc, updateDoc, increment, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyC4rb66A7CFgOOiXkPXoPKdUk3BVH42g28",
+    authDomain: "necotastudio-counter.firebaseapp.com",
+    projectId: "necotastudio-counter",
+    storageBucket: "necotastudio-counter.firebasestorage.app",
+    messagingSenderId: "28403673696",
+    appId: "1:28403673696:web:e5ebccac51207dc588f105",
+    measurementId: "G-0GV9MDP7M9"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const counterRef = doc(db, "counters", "studio-visitor");
+
+  async function updateCounter() {
+    const counterEl = document.getElementById('current-count');
+    try {
+      // 1. カウントを1増やす
+      await updateDoc(counterRef, { count: increment(1) });
+      
+      // 2. 最新の数字を取得
+      const snap = await getDoc(counterRef);
+      if (snap.exists()) {
+        const total = snap.data().count;
+        counterEl.innerText = String(total).padStart(8, '0');
+      }
+    } catch (e) {
+      console.error("Counter Error:", e);
+      counterEl.innerText = "------";
     }
-    window.onload = initCounter;
+  }
+
+  window.addEventListener('load', updateCounter);
 </script>
 
 </body>
