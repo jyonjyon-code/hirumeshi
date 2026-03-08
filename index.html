@@ -29,33 +29,26 @@
         }
         body { font-family: 'Zen Maru Gothic', sans-serif; margin: 0; background-color: var(--bg-cream); color: #333; text-align: center; }
         header { padding: 40px 20px; background: white; border-bottom: 5px solid var(--main-red); }
-        header h1 { font-size: 2.2rem; color: var(--main-red); margin: 0; }
+        header h1 { font-size: 2.2rem; color: var(--main-red); margin: 0; font-weight: 900; }
         .news-bar { background: #333; color: #fff; padding: 5px 0; font-size: 14px; }
         
-        /* 🍓 カウンター：少し小さく、よりリアルな電子掲示板風に */
         .counter-section { margin: 25px 0; }
         .counter-img { 
             background: #000; 
             color: #39ff14; 
             padding: 8px 18px; 
             border-radius: 6px; 
-            font-size: 28px; /* 38pxから28pxへサイズダウン */
+            font-size: 28px;
             display: inline-block; 
             border: 3px inset #444; 
             letter-spacing: 3px;
             font-family: 'Courier New', Courier, monospace;
             text-shadow: 0 0 8px #39ff14;
             box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-            vertical-align: middle; /* 文字と高さを合わせる */
+            vertical-align: middle;
         }
-        .counter-text {
-            font-size: 14px;
-            color: #666;
-            margin-top: 8px;
-            font-weight: bold;
-        }
+        .counter-text { font-size: 14px; color: #666; margin-top: 8px; font-weight: bold; }
         
-        /* お祝いパネル */
         #kiriban-celebration {
             display: none;
             background: #fff;
@@ -69,10 +62,9 @@
         }
         @keyframes pop { 0% { transform: scale(0.3); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
         .celebration-btn { display: inline-block; margin: 8px 4px; padding: 10px 20px; border-radius: 50px; color: white; text-decoration: none; font-weight: bold; font-size: 14px; transition: 0.2s; }
-        .btn-x { background: #000; }
-        .btn-insta { background: var(--insta-gradient); }
+        .btn-x-celeb { background: #000; }
+        .btn-insta-celeb { background: var(--insta-gradient); }
 
-        /* コンテンツ */
         .container { max-width: 1000px; margin: 20px auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; padding: 0 20px; }
         .app-card { background: white; border-radius: 25px; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.06); transition: 0.3s; border: 1px solid #eee; display: flex; flex-direction: column; }
         .app-card:hover { transform: translateY(-8px); }
@@ -80,20 +72,23 @@
         .app-icon-img { width: 100px; height: 100px; border-radius: 22px; object-fit: cover; }
         .app-info { padding: 20px; flex-grow: 1; }
         .app-info h2 { margin: 0 0 10px; font-size: 1.4rem; color: #333; }
-        .btn-group { display: flex; gap: 10px; padding: 0 20px 15px; }
-        .btn { flex: 1; padding: 12px; border-radius: 12px; text-decoration: none; font-weight: bold; text-align: center; }
-        .btn-play { background: var(--main-red); color: white; }
+        .app-info p { font-size: 14px; color: #666; line-height: 1.5; margin: 0; }
+        .btn-group { padding: 0 20px 20px; }
+        .btn { display: block; padding: 14px; border-radius: 50px; text-decoration: none; font-weight: bold; text-align: center; font-size: 16px; transition: 0.2s; }
+        .btn-play { background: var(--main-red); color: white; box-shadow: 0 4px 0 #b52b27; }
+        .btn-play:active { transform: translateY(2px); box-shadow: none; }
         
-        .kiriban-box { background: #fffbe6; border: 2px double #f0ad4e; padding: 15px; margin: 20px auto; max-width: 500px; width: 85%; font-size: 13px; line-height: 1.6; }
-        footer { background: white; padding: 30px 20px; border-top: 1px solid #eee; margin-top: 40px; }
-        .sns-links a { font-size: 32px; margin: 0 15px; text-decoration: none; }
+        .kiriban-box { background: #fffbe6; border: 2px double #f0ad4e; padding: 15px; margin: 20px auto; max-width: 500px; width: 85%; font-size: 13px; line-height: 1.6; border-radius: 15px; }
+        footer { background: white; padding: 40px 20px; border-top: 1px solid #eee; margin-top: 40px; }
+        .sns-links a { font-size: 28px; margin: 0 15px; text-decoration: none; display: inline-block; transition: 0.2s; }
+        .sns-links a:hover { transform: scale(1.1); }
     </style>
 </head>
 <body>
 
 <header>
     <h1>アプリの御品書き</h1>
-    <p>～ ねこたスタジオ ～</p>
+    <p style="font-weight: bold; color: #888;">～ ねこたスタジオ ～</p>
 </header>
 
 <div class="news-bar">
@@ -112,30 +107,45 @@
     <h2 style="color: var(--ichigo-pink); margin: 0;">🎉 キリ番おめでとう！ 🎉</h2>
     <p id="kiriban-msg" style="font-size: 15px; margin: 12px 0; font-weight: 900; color: #333;"></p>
     <p style="font-size: 12px; color: #666;">キリ番報告をしてね！中の人が喜びます🐱</p>
-    <a href="#" id="share-x" class="celebration-btn btn-x" target="_blank"><i class="fa-brands fa-x-twitter"></i> Xで報告</a>
-    <a href="https://www.instagram.com/necotastudio" class="celebration-btn btn-insta" target="_blank"><i class="fa-brands fa-instagram"></i> Instagramへ</a>
+    <a href="#" id="share-x" class="celebration-btn btn-x-celeb" target="_blank"><i class="fa-brands fa-x-twitter"></i> Xで報告</a>
+    <a href="https://www.instagram.com/necotastudio" class="celebration-btn btn-insta-celeb" target="_blank"><i class="fa-brands fa-instagram"></i> Instagramへ</a>
 </div>
 
 <div class="container">
     <div class="app-card">
         <div class="app-icon-wrap"><img src="icon.png" class="app-icon-img" onerror="this.src='https://via.placeholder.com/100?text=🍱'"></div>
-        <div class="app-info"><h2>ひるめしえらんで</h2><p>今日のランチをおみくじで決定！地図検索やお取り寄せも。</p></div>
+        <div class="app-info">
+            <h2>ひるめしえらんで</h2>
+            <p>今日のランチをおみくじで決定！<br>フードデリバリー検索やお取り寄せも。</p>
+        </div>
         <div class="btn-group"><a href="app.html" class="btn btn-play">あそぶ</a></div>
     </div>
+
     <div class="app-card">
         <div class="app-icon-wrap" style="background: #fff9f0;"><img src="myicon.png" class="app-icon-img" onerror="this.src='https://via.placeholder.com/100?text=🍳'"></div>
-        <div class="app-info"><h2>ゆうはんなにしよ</h2><p>今の気分に合わせて夕飯スロットを回そう！</p></div>
-        <div class="btn-group"><a href="yuhan.html" class="btn btn-play" style="background: var(--yuhan-orange);">あそぶ</a></div>
+        <div class="app-info">
+            <h2>ゆうはんなにしよ</h2>
+            <p>今の気分に合わせて夕飯スロット！<br>自炊・外食・デリバリーから選べるよ。</p>
+        </div>
+        <div class="btn-group"><a href="yuhan.html" class="btn btn-play" style="background: var(--yuhan-orange); box-shadow: 0 4px 0 #d35400;">あそぶ</a></div>
     </div>
+
     <div class="app-card" style="border-top: 5px solid var(--ichigo-pink);">
         <div class="app-icon-wrap" style="background: #fff5f6;"><img src="icon-ichigo.png" class="app-icon-img" onerror="this.src='https://via.placeholder.com/100?text=🍓'"></div>
-        <div class="app-info"><h2>今日イチ</h2><p>きみは今日いちごを食べたか？楽しく摂取量を記録！</p></div>
-        <div class="btn-group"><a href="ichigo.html" class="btn btn-play" style="background: var(--ichigo-pink);">あそぶ</a></div>
+        <div class="app-info">
+            <h2>今日イチ</h2>
+            <p>きみは今日いちごを食べたか？<br>楽しく摂取量を記録するいちごログ。</p>
+        </div>
+        <div class="btn-group"><a href="ichigo.html" class="btn btn-play" style="background: var(--ichigo-pink); box-shadow: 0 4px 0 #d0304a;">あそぶ</a></div>
     </div>
+
     <div class="app-card" style="border-top: 5px solid var(--leaf-green);">
         <div class="app-icon-wrap" style="background: #f0fff0;"><img src="hamono.png" class="app-icon-img" onerror="this.src='https://via.placeholder.com/100?text=🌿'"></div>
-        <div class="app-info"><h2>Leafy Library</h2><p>食べた野菜を「本」に変えるデジタル図書館。</p></div>
-        <div class="btn-group"><a href="leafy.html" class="btn btn-play" style="background: var(--leaf-green);">図書館へ</a></div>
+        <div class="app-info">
+            <h2>Leafy Library</h2>
+            <p>食べた野菜を「本」に変えて育てる、<br>あなただけのデジタル野菜図書館。</p>
+        </div>
+        <div class="btn-group"><a href="leafy.html" class="btn btn-play" style="background: var(--leaf-green); box-shadow: 0 4px 0 #3d8b40;">図書館へ</a></div>
     </div>
 </div>
 
