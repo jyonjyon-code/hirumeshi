@@ -27,24 +27,24 @@
         .btn { color: white; border: none; padding: 15px 25px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; margin-top: 15px; font-size: 16px; width: 100%; box-sizing: border-box; }
         .btn-map { background: #4285F4; }
         .btn-rakuten { background: #bf0000; }
-        .btn-uber { background: #06C167; }
+        .btn-uber { background: #06C167; font-size: 14px; padding: 12px; }
         .btn-retry { background: #f0ad4e; font-size: 14px; padding: 10px; }
         .btn-x { background: #000; }
         
         .lucky-item { color: #e67e22; font-weight: bold; font-size: 0.95em; margin-top: 15px; background: #fff; border-radius: 10px; padding: 5px; }
         #hint { font-size: 14px; color: #888; margin-top: 10px; }
 
-        .studio-nav { margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; }
-        .btn-back { background: #888; color: white; border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; font-size: 14px; margin-bottom: 10px; width: 100%; box-sizing: border-box; }
-        .sns-group { display: flex; gap: 10px; }
+        /* スタジオナビ周辺の整理 */
+        .studio-nav { margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee; }
+        .btn-back { background: #888; color: white; border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; font-size: 14px; margin-top: 10px; width: 100%; box-sizing: border-box; }
+        .sns-group { display: flex; gap: 10px; margin-top: 10px; }
         .btn-sns { color: white; border: none; padding: 10px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px; flex: 1; }
         .btn-insta { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
         
-        /* 審査用広告枠のスタイル */
-        .ad-container { margin-top: 20px; padding: 15px; border: 1px solid #eee; border-radius: 15px; background: #fff; text-align: center; }
-        .ad-disclaimer { font-size: 10px; color: #999; margin: 0 0 10px 0; }
-        .ad-description { font-size: 13px; color: #333; margin-bottom: 10px; line-height: 1.4; }
-        .ad-note { font-size: 9px; color: #999; margin-top: 8px; }
+        /* 審査用広告枠：スッキリ版 */
+        .uber-section { margin: 20px 0 10px 0; padding: 10px; border: 1px solid #eee; border-radius: 15px; background: #fff; }
+        .promo-text { font-size: 9px; color: #aaa; margin-bottom: 5px; }
+        .uber-note { font-size: 9px; color: #bbb; margin-top: 5px; }
     </style>
 </head>
 <body>
@@ -66,35 +66,28 @@
         <div class="lucky-item">✨ラッキー買い足し: <span id="add-on"></span></div>
         
         <a id="x-share-btn" class="btn btn-x" target="_blank">
-            <i class="fa-brands fa-x-twitter"></i> 結果をXで報告する
+            <i class="fa-brands fa-x-twitter"></i> 報告する
         </a>
 
-        <div class="ad-container">
-            <p class="ad-disclaimer">本ページはプロモーションです。掲載内容は予告なく変更される場合があります。</p>
-            <p class="ad-description">
-                Uber Eats（ウーバーイーツ）なら、お好きな料理をアプリやウェブサイトから簡単に注文できます。
-            </p>
+        <a id="map-link" class="btn btn-map" target="_blank" rel="noopener noreferrer">ちかくの店をさがす</a>
+        <a id="rakuten-link" class="btn btn-rakuten" target="_blank" rel="nofollow sponsored noopener">楽天でお取り寄せ</a>
+
+        <button class="btn btn-retry" onclick="reset()">もういちど ひく</button>
+
+        <div class="uber-section">
+            <p class="promo-text">本ページはプロモーションです</p>
             <a id="uber-link" href="https://www.ubereats.com/jp" class="btn btn-uber" style="margin-top: 0;" target="_blank" rel="nofollow noopener">
                 <i class="fas fa-motorcycle"></i> Uber Eats（ウーバーイーツ）で探す
             </a>
-            <p class="ad-note">※サービスエリア内のみ利用可能 / 詳細は公式アプリでご確認ください</p>
+            <p class="uber-note">エリアにより利用不可の場合あり。詳細は公式アプリで。</p>
         </div>
 
-        <a id="map-link" class="btn btn-map" target="_blank" rel="noopener noreferrer">ちかくの店をさがす</a>
-        <a id="rakuten-link" class="btn btn-rakuten" target="_blank" rel="nofollow sponsored noopener">楽天でお取り寄せする</a>
-
-        <button class="btn btn-retry" onclick="reset()">もういちど ひく</button>
-    </div>
-
-    <div class="studio-nav">
-        <a href="index.html" class="btn-back">ねこたスタジオへ戻る</a>
-        <div class="sns-group">
-            <a href="https://x.com/necotatu2" target="_blank" class="btn-sns btn-x">
-                <i class="fa-brands fa-x-twitter"></i> 公式X
-            </a>
-            <a href="https://www.instagram.com/necotastudio" target="_blank" class="btn-sns btn-insta">
-                <i class="fa-brands fa-instagram"></i> 公式Insta
-            </a>
+        <div class="studio-nav">
+            <a href="index.html" class="btn-back">ねこたスタジオへ戻る</a>
+            <div class="sns-group">
+                <a href="https://x.com/necotatu2" target="_blank" class="btn-sns btn-x">公式X</a>
+                <a href="https://www.instagram.com/necotastudio" target="_blank" class="btn-sns btn-insta">公式Insta</a>
+            </div>
         </div>
     </div>
 </div>
@@ -160,27 +153,16 @@
             document.getElementById('desc').innerText = res.desc;
             document.getElementById('add-on').innerText = res.add;
             
-            // Xシェアリンク
-            const tweetText = encodeURIComponent(
-                `今日のおみくじの結果は…\n` +
-                `${luckLabel}ランチは「${res.food}」に決定！\n\n` + 
-                `✨ラッキーアイテム: ${res.add}\n\n` +
-                `#ひるめしえらんで #ねこたスタジオ`
-            );
-            const tweetUrl = `https://twitter.com/intent/tweet?text=${tweetText}&url=${encodeURIComponent(APP_URL)}`;
-            document.getElementById('x-share-btn').href = tweetUrl;
+            const tweetText = encodeURIComponent(`今日のおみくじの結果は…\n${luckLabel}ランチは「${res.food}」に決定！\n\n✨ラッキーアイテム: ${res.add}\n\n#ひるめしえらんで #ねこたスタジオ`);
+            document.getElementById('x-share-btn').href = `https://twitter.com/intent/tweet?text=${tweetText}&url=${encodeURIComponent(APP_URL)}`;
 
-            // Googleマップ
             const mapKeyword = currentMode === 'conveni' ? "近くのコンビニ" : "近くの" + res.keyword;
             document.getElementById('map-link').href = "https://www.google.com/maps/search/" + encodeURIComponent(mapKeyword);
             
-            // 楽天アフィリエイト
             const rakutenKeyword = res.keyword + (currentMode === 'normal' ? " お取り寄せ" : "");
-            const rakutenBase = "https://hb.afl.rakuten.co.jp/hgc/" + RAKUTEN_AFID + "/?pc=https%3A%2F%2Fsearch.rakuten.co.jp%2Fsearch%2Fmall%2F" + encodeURIComponent(rakutenKeyword) + "%2F";
-            document.getElementById('rakuten-link').href = rakutenBase;
+            document.getElementById('rakuten-link').href = "https://hb.afl.rakuten.co.jp/hgc/" + RAKUTEN_AFID + "/?pc=https%3A%2F%2Fsearch.rakuten.co.jp%2Fsearch%2Fmall%2F" + encodeURIComponent(rakutenKeyword) + "%2F";
             document.getElementById('rakuten-link').innerText = res.food + " を楽天で探す";
 
-            // Uber Eats リンクの動的検索リンク（審査用）
             const uberKeyword = encodeURIComponent(res.food);
             document.getElementById('uber-link').href = `https://www.ubereats.com/jp/search?q=${uberKeyword}`;
             
