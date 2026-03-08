@@ -26,7 +26,6 @@
         
         .btn { color: white; border: none; padding: 15px 25px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; margin-top: 15px; font-size: 16px; width: 100%; box-sizing: border-box; }
         .btn-map { background: #4285F4; }
-        .btn-rakuten { background: #bf0000; }
         .btn-uber { background: #06C167; font-size: 14px; padding: 12px; }
         .btn-retry { background: #f0ad4e; font-size: 14px; padding: 10px; }
         .btn-x { background: #000; }
@@ -34,14 +33,12 @@
         .lucky-item { color: #e67e22; font-weight: bold; font-size: 0.95em; margin-top: 15px; background: #fff; border-radius: 10px; padding: 5px; }
         #hint { font-size: 14px; color: #888; margin-top: 10px; }
 
-        /* スタジオナビ周辺の整理 */
-        .studio-nav { margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee; }
-        .btn-back { background: #888; color: white; border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; font-size: 14px; margin-top: 10px; width: 100%; box-sizing: border-box; }
-        .sns-group { display: flex; gap: 10px; margin-top: 10px; }
+        .studio-nav { margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; width: 100%; }
+        .btn-back { background: #888; color: white; border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; font-size: 14px; margin-bottom: 10px; width: 100%; box-sizing: border-box; }
+        .sns-group { display: flex; gap: 10px; }
         .btn-sns { color: white; border: none; padding: 10px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px; flex: 1; }
         .btn-insta { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
         
-        /* 審査用広告枠：スッキリ版 */
         .uber-section { margin: 20px 0 10px 0; padding: 10px; border: 1px solid #eee; border-radius: 15px; background: #fff; }
         .promo-text { font-size: 9px; color: #aaa; margin-bottom: 5px; }
         .uber-note { font-size: 9px; color: #bbb; margin-top: 5px; }
@@ -56,8 +53,10 @@
         <button id="conveni-btn" class="mode-btn" onclick="setMode('conveni')">コンビニ</button>
     </div>
 
-    <div id="omikuji-box" onclick="draw()">🍱</div>
-    <p id="hint">タップして おみくじを ふる！</p>
+    <div id="main-view">
+        <div id="omikuji-box" onclick="draw()">🍱</div>
+        <p id="hint">タップして おみくじを ふる！</p>
+    </div>
 
     <div id="result-area">
         <div id="luck" style="font-size: 22px; font-weight: bold; color: #d9534f;"></div>
@@ -70,7 +69,6 @@
         </a>
 
         <a id="map-link" class="btn btn-map" target="_blank" rel="noopener noreferrer">ちかくの店をさがす</a>
-        <a id="rakuten-link" class="btn btn-rakuten" target="_blank" rel="nofollow sponsored noopener">楽天でお取り寄せ</a>
 
         <button class="btn btn-retry" onclick="reset()">もういちど ひく</button>
 
@@ -81,19 +79,22 @@
             </a>
             <p class="uber-note">エリアにより利用不可の場合あり。詳細は公式アプリで。</p>
         </div>
+    </div>
 
-        <div class="studio-nav">
-            <a href="index.html" class="btn-back">ねこたスタジオへ戻る</a>
-            <div class="sns-group">
-                <a href="https://x.com/necotatu2" target="_blank" class="btn-sns btn-x">公式X</a>
-                <a href="https://www.instagram.com/necotastudio" target="_blank" class="btn-sns btn-insta">公式Insta</a>
-            </div>
+    <div class="studio-nav">
+        <a href="index.html" class="btn-back">ねこたスタジオへ戻る</a>
+        <div class="sns-group">
+            <a href="https://x.com/necotatu2" target="_blank" class="btn-sns btn-x">
+                <i class="fa-brands fa-x-twitter"></i> 公式X
+            </a>
+            <a href="https://www.instagram.com/necotastudio" target="_blank" class="btn-sns btn-insta">
+                <i class="fa-brands fa-instagram"></i> 公式Insta
+            </a>
         </div>
     </div>
 </div>
 
 <script>
-    const RAKUTEN_AFID = "51366796.8818598a.51366797.ddbb51d0"; 
     const APP_URL = "https://necotastudio.com/app.html"; 
     let currentMode = 'normal';
 
@@ -118,16 +119,16 @@
     ];
 
     const conveniMenus = [
-        { luck: "大大吉", food: "高級幕の内 ＆ デザート", keyword: "お取り寄せ スイーツ", desc: "コンビニ界の王族のようなセット。", add: "挽きたてコーヒー" },
-        { luck: "大吉", food: "ガッツリ！カツカレー", keyword: "レトルト カツカレー", desc: "勝負の日はカツで決まり！", add: "飲むヨーグルト" },
-        { luck: "大吉", food: "二郎系まぜそば", keyword: "コンビニ ラーメン", desc: "コンビニでこのパンチ力。最高です。", add: "生卵" },
-        { luck: "中吉", food: "明太クリームパスタ", keyword: "明太パスタソース", desc: "濃厚さと満足感を両立！", add: "サラダチキン" },
+        { luck: "大大吉", food: "高級幕の内 ＆ デザート", keyword: "コンビニ", desc: "コンビニ界の王族のようなセット。", add: "挽きたてコーヒー" },
+        { luck: "大吉", food: "ガッツリ！カツカレー", keyword: "カツカレー", desc: "勝負の日はカツで決まり！", add: "飲むヨーグルト" },
+        { luck: "大吉", food: "二郎系まぜそば", keyword: "ラーメン", desc: "コンビニでこのパンチ力。最高です。", add: "生卵" },
+        { luck: "中吉", food: "明太クリームパスタ", keyword: "パスタ", desc: "濃厚さと満足感を両立！", add: "サラダチキン" },
         { luck: "中吉", food: "ネギ塩牛タン弁当", keyword: "牛タン", desc: "香ばしい香りが食欲をブースト！", add: "麦茶" },
         { luck: "中吉", food: "具たっぷり海鮮ドリア", keyword: "ドリア", desc: "とろーりチーズで心も温まる。", add: "コールスロー" },
-        { luck: "吉", food: "おにぎりとカップ味噌汁", keyword: "高級 味噌汁 セット", desc: "シンプルイズベスト！", add: "半熟ゆで卵" },
-        { luck: "吉", food: "旨辛担々麺", keyword: "担々麺 カップ", desc: "刺激が欲しいあなたの午後に。", add: "おにぎり（白飯）" },
-        { luck: "末吉", food: "新作カップヌードル", keyword: "カップラーメン 詰め合わせ", desc: "新商品はとりあえず試すのが吉！", add: "食後のアイス" },
-        { luck: "末吉", food: "冷製パスタ ＆ スープ", keyword: "冷製パスタ", desc: "オシャレに軽く済ませたい時に。", add: "杏仁豆腐" }
+        { luck: "吉", food: "おにぎりとカップ味噌汁", keyword: "おにぎり", desc: "シンプルイズベスト！", add: "半熟ゆで卵" },
+        { luck: "吉", food: "旨辛担々麺", keyword: "担々麺", desc: "刺激が欲しいあなたの午後に。", add: "おにぎり（白飯）" },
+        { luck: "末吉", food: "新作カップヌードル", keyword: "カップラーメン", desc: "新商品はとりあえず試すのが吉！", add: "食後のアイス" },
+        { luck: "末吉", food: "冷製パスタ ＆ スープ", keyword: "パスタ", desc: "オシャレに軽く済ませたい時に。", add: "杏仁豆腐" }
     ];
 
     function setMode(mode) {
@@ -158,25 +159,19 @@
 
             const mapKeyword = currentMode === 'conveni' ? "近くのコンビニ" : "近くの" + res.keyword;
             document.getElementById('map-link').href = "https://www.google.com/maps/search/" + encodeURIComponent(mapKeyword);
-            
-            const rakutenKeyword = res.keyword + (currentMode === 'normal' ? " お取り寄せ" : "");
-            document.getElementById('rakuten-link').href = "https://hb.afl.rakuten.co.jp/hgc/" + RAKUTEN_AFID + "/?pc=https%3A%2F%2Fsearch.rakuten.co.jp%2Fsearch%2Fmall%2F" + encodeURIComponent(rakutenKeyword) + "%2F";
-            document.getElementById('rakuten-link').innerText = res.food + " を楽天で探す";
 
             const uberKeyword = encodeURIComponent(res.food);
             document.getElementById('uber-link').href = `https://www.ubereats.com/jp/search?q=${uberKeyword}`;
             
             document.getElementById('result-area').style.display = 'block';
-            box.style.display = 'none';
-            document.getElementById('hint').style.display = 'none';
+            document.getElementById('main-view').style.display = 'none';
         }, 800);
     }
 
     function reset() {
         document.getElementById('result-area').style.display = 'none';
-        document.getElementById('omikuji-box').style.display = 'block';
+        document.getElementById('main-view').style.display = 'block';
         document.getElementById('omikuji-box').innerText = currentMode === 'normal' ? "🍱" : "🏪";
-        document.getElementById('hint').style.display = 'block';
         document.getElementById('hint').innerText = "タップして おみくじを ふる！";
     }
 </script>
