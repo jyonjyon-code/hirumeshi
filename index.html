@@ -32,53 +32,47 @@
         header h1 { font-size: 2.2rem; color: var(--main-red); margin: 0; }
         .news-bar { background: #333; color: #fff; padding: 5px 0; font-size: 14px; }
         
-        /* 🍓 レトロカウンターデザイン */
-        .counter-section { margin: 30px 0; }
+        /* 🍓 カウンター：少し小さく、よりリアルな電子掲示板風に */
+        .counter-section { margin: 25px 0; }
         .counter-img { 
             background: #000; 
             color: #39ff14; 
-            padding: 10px 25px; 
-            border-radius: 8px; 
-            font-size: 38px; 
+            padding: 8px 18px; 
+            border-radius: 6px; 
+            font-size: 28px; /* 38pxから28pxへサイズダウン */
             display: inline-block; 
-            border: 4px inset #444; 
-            letter-spacing: 4px;
+            border: 3px inset #444; 
+            letter-spacing: 3px;
             font-family: 'Courier New', Courier, monospace;
-            text-shadow: 0 0 12px #39ff14;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            text-shadow: 0 0 8px #39ff14;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            vertical-align: middle; /* 文字と高さを合わせる */
+        }
+        .counter-text {
+            font-size: 14px;
+            color: #666;
+            margin-top: 8px;
+            font-weight: bold;
         }
         
-        /* 🍓 キリ番お祝いパネル（踏んだ時だけ出る） */
+        /* お祝いパネル */
         #kiriban-celebration {
             display: none;
             background: #fff;
-            border: 5px dotted var(--ichigo-pink);
-            padding: 25px;
+            border: 4px dotted var(--ichigo-pink);
+            padding: 20px;
             margin: 20px auto;
-            max-width: 450px;
-            width: 90%;
-            border-radius: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 85%;
+            border-radius: 25px;
             animation: pop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         @keyframes pop { 0% { transform: scale(0.3); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-
-        .celebration-btn {
-            display: inline-block;
-            margin: 10px 5px;
-            padding: 12px 25px;
-            border-radius: 50px;
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 15px;
-            transition: 0.2s;
-        }
-        .celebration-btn:active { transform: scale(0.9); }
+        .celebration-btn { display: inline-block; margin: 8px 4px; padding: 10px 20px; border-radius: 50px; color: white; text-decoration: none; font-weight: bold; font-size: 14px; transition: 0.2s; }
         .btn-x { background: #000; }
         .btn-insta { background: var(--insta-gradient); }
 
-        /* コンテンツ配置 */
+        /* コンテンツ */
         .container { max-width: 1000px; margin: 20px auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; padding: 0 20px; }
         .app-card { background: white; border-radius: 25px; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.06); transition: 0.3s; border: 1px solid #eee; display: flex; flex-direction: column; }
         .app-card:hover { transform: translateY(-8px); }
@@ -107,16 +101,19 @@
 </div>
 
 <div class="counter-section">
-    <div class="counter-img" id="current-count">00000000</div>
-    <p style="font-size: 13px; color: #888; margin-top: 10px; font-weight: bold;">あなたは人目の訪問者です🐱</p>
+    <p class="counter-text">
+        あなたは 
+        <span class="counter-img" id="current-count">00000000</span> 
+        人目の訪問者です🐱
+    </p>
 </div>
 
 <div id="kiriban-celebration">
     <h2 style="color: var(--ichigo-pink); margin: 0;">🎉 キリ番おめでとう！ 🎉</h2>
-    <p id="kiriban-msg" style="font-size: 16px; margin: 15px 0; font-weight: 900; color: #333;"></p>
-    <p style="font-size: 13px; color: #666;">ぜひスクショを撮って報告してね！<br>下のボタンからすぐに投稿・報告できます🐱</p>
-    <a href="#" id="share-x" class="celebration-btn btn-x" target="_blank"><i class="fa-brands fa-x-twitter"></i> X(Twitter)で報告</a>
-    <a href="https://www.instagram.com/necotastudio" class="celebration-btn btn-insta" target="_blank"><i class="fa-brands fa-instagram"></i> Instagramで報告</a>
+    <p id="kiriban-msg" style="font-size: 15px; margin: 12px 0; font-weight: 900; color: #333;"></p>
+    <p style="font-size: 12px; color: #666;">キリ番報告をしてね！中の人が喜びます🐱</p>
+    <a href="#" id="share-x" class="celebration-btn btn-x" target="_blank"><i class="fa-brands fa-x-twitter"></i> Xで報告</a>
+    <a href="https://www.instagram.com/necotastudio" class="celebration-btn btn-insta" target="_blank"><i class="fa-brands fa-instagram"></i> Instagramへ</a>
 </div>
 
 <div class="container">
@@ -161,7 +158,7 @@
   import { getFirestore, doc, updateDoc, increment, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   const firebaseConfig = {
-    apiKey: "AIzaSyC4rb66A7CFgOOiXkPXoPXoPKdUk3BVH42g28",
+    apiKey: "AIzaSyC4rb66A7CFgOOiXkPXoPKdUk3BVH42g28",
     authDomain: "necotastudio-counter.firebaseapp.com",
     projectId: "necotastudio-counter",
     storageBucket: "necotastudio-counter.firebasestorage.app",
@@ -174,22 +171,17 @@
   const db = getFirestore(app);
   const counterRef = doc(db, "counters", "studio-visitor");
 
-  // キリ番リスト（ゾロ目や節目の数字）
   const kiribanList = [1, 7, 10, 50, 77, 100, 111, 222, 333, 444, 500, 555, 666, 777, 888, 999, 1000];
 
   async function updateCounter() {
     const counterEl = document.getElementById('current-count');
     try {
-      // 1. カウントを増やす
       await updateDoc(counterRef, { count: increment(1) });
-      
-      // 2. 最新の数字を取得
       const snap = await getDoc(counterRef);
       if (snap.exists()) {
         const total = snap.data().count;
         counterEl.innerText = String(total).padStart(8, '0');
 
-        // 3. キリ番判定
         if (kiribanList.includes(total)) {
           const celebPanel = document.getElementById('kiriban-celebration');
           const msgEl = document.getElementById('kiriban-msg');
@@ -197,23 +189,17 @@
           
           msgEl.innerText = `あなたは【 ${total} 】番目の訪問者です！`;
           celebPanel.style.display = 'block';
-
-          // X(Twitter)用の投稿URLを作成
           const shareText = encodeURIComponent(`🎉ねこたスタジオで【${total}】番目のキリ番を踏みました！🎉\n@necotatu2\nhttps://necotastudio.com/`);
           xBtn.href = `https://twitter.com/intent/tweet?text=${shareText}`;
-          
-          // パネルに自動スクロール
           celebPanel.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
       }
     } catch (e) {
-      console.error("Counter Error:", e);
+      console.error(e);
       counterEl.innerText = "ERROR!!";
     }
   }
-
   window.addEventListener('load', updateCounter);
 </script>
-
 </body>
 </html>
