@@ -119,11 +119,15 @@
         "100%ジュース": { weight: 1, rare: 1.0, isLiquid: true }
     };
 
+    // ★修正：グローバル（window）に登録して、外側のHTMLから見えるようにする
     window.handleCredentialResponse = async (response) => {
+        console.log("Login Success!"); // 動作確認用ログ
         const payload = JSON.parse(atob(response.credential.split('.')[1]));
         currentUid = payload.sub; 
         document.getElementById('user-name-display').innerText = payload.given_name.toUpperCase();
         document.getElementById('user-img').src = payload.picture;
+        
+        // 画面を切り替える（オーバーレイを消す）
         document.getElementById('login-overlay').style.display = 'none';
         
         // Firebaseからデータ復元
@@ -144,7 +148,7 @@
     window.updateUnitUI = () => {
         const name = document.getElementById('fruit-select').value;
         document.getElementById('unit-label').innerText = fruitDB[name].isLiquid ? "ml" : "個";
-    }
+    };
 
     window.handleLoad = async () => {
         const name = document.getElementById('fruit-select').value;
@@ -207,7 +211,10 @@
             saveAll();
             updateUI();
         }
-    }
+    };
+
+    // 初期表示
+    updateUI();
 </script>
 </body>
 </html>
