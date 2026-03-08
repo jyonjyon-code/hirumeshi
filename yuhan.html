@@ -17,21 +17,21 @@
         .mode-btn { border: 2px solid #f39c12; padding: 12px 5px; cursor: pointer; background: white; border-radius: 15px; font-size: 13px; color: #f39c12; font-weight: bold; flex: 1; transition: 0.2s; outline: none; }
         .active-mode { background: #f39c12; color: white; box-shadow: 0 4px 0 #d35400; transform: translateY(-2px); }
         
+        /* 結果を表示するオレンジの点線枠 */
         #result-area { display: none; background: #fffcf0; border: 2px dashed #f39c12; padding: 20px 15px; border-radius: 20px; margin-top: 20px; animation: fadeIn 0.4s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
         .btn { color: white; border: none; padding: 16px 20px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; margin-top: 12px; font-size: 16px; width: 100%; box-sizing: border-box; transition: 0.2s; }
         .btn-action { background: #e67e22; box-shadow: 0 5px 0 #d35400; font-size: 18px; }
         
-        /* ボタン色分け */
         .btn-search { background: #3498db; font-size: 15px; }
         .btn-oisix { background: #769500; font-size: 15px; }
         .btn-rakuten { background: #bf0000; font-size: 14px; }
         
-        /* 枠の外のボタン（少し控えめ） */
+        /* 枠の外（点線の外）に配置するボタンの設定 */
         .btn-outside { border-radius: 15px; padding: 12px; font-size: 14px; margin-top: 15px; width: auto; min-width: 140px; }
-        .btn-x { background: #000; margin-right: 5px; }
-        .btn-retry { background: #95a5a6; }
+        .btn-x { background: #000; }
+        .btn-retry { background: #95a5a6; color: white; border: none; cursor: pointer; font-weight: bold; }
 
         .studio-nav { margin-top: 25px; border-top: 1px solid #ddd; padding-top: 20px; }
         .btn-back { color: #888; text-decoration: none; font-size: 13px; display: inline-block; margin-bottom: 15px; font-weight: bold; }
@@ -66,12 +66,10 @@
         
         <a id="action-link" class="btn btn-search" target="_blank"></a>
         <a id="rakuten-link" class="btn btn-rakuten" target="_blank" rel="nofollow sponsored noopener"></a>
-        <a id="oisix-link" class="btn btn-oisix" target="_blank" rel="nofollow sponsored noopener">
+        <a id="oisix-link" class="btn btn-oisix" target="_blank" rel="nofollow sponsored noopener" style="display: none;">
             <i class="fa-solid fa-leaf"></i> 買い物不要！Oisixでお試し
         </a>
-    </div>
-
-    <div id="outside-area" style="display: none;">
+    </div> <div id="outside-area" style="display: none; margin-top: 10px;">
         <div style="display: flex; justify-content: center; gap: 10px;">
             <a id="x-share-btn" class="btn btn-outside btn-x" target="_blank">
                 <i class="fa-brands fa-x-twitter"></i> 報告する
@@ -174,21 +172,22 @@
         const oisixLink = document.getElementById('oisix-link');
         
         if (currentMode === 'cook') {
+            actionLink.style.display = 'inline-block';
             actionLink.innerText = "🍳 レシピを検索する";
             actionLink.href = "https://www.google.com/search?q=" + encodeURIComponent(res.name + " レシピ");
-            rakutenLink.style.display = 'none'; // 楽天隠す
+            rakutenLink.style.display = 'none';
             oisixLink.style.display = 'inline-block';
             oisixLink.href = OISIX_URL;
         } else {
+            actionLink.style.display = 'inline-block';
             const mapKeyword = currentMode === 'buy' ? res.keyword : res.name;
             actionLink.innerText = currentMode === 'buy' ? "🛒 近くの買えるお店を探す" : "🍴 近くの食べられるお店";
             actionLink.href = "https://www.google.com/maps/search/" + encodeURIComponent(mapKeyword);
-            
             rakutenLink.style.display = 'inline-block';
             const rakutenKeyword = res.name + " お取り寄せ";
             rakutenLink.href = "https://hb.afl.rakuten.co.jp/hgc/" + RAKUTEN_AFID + "/?pc=" + encodeURIComponent("https://search.rakuten.co.jp/search/mall/" + rakutenKeyword + "/");
             rakutenLink.innerText = `🎁 ${res.name} を楽天で探す`;
-            oisixLink.style.display = 'none'; // Oisix隠す
+            oisixLink.style.display = 'none';
         }
 
         const modeText = currentMode === 'cook' ? '自炊' : currentMode === 'buy' ? '買い出し' : '外食';
@@ -198,7 +197,7 @@
 
     function reset() {
         document.getElementById('result-area').style.display = 'none';
-        document.getElementById('outside-area').style.display = 'none'; // 枠の外も隠す
+        document.getElementById('outside-area').style.display = 'none';
         document.getElementById('slot-display').style.display = 'flex';
         document.getElementById('slot-display').innerText = "🍳";
         document.getElementById('start-btn').style.display = 'inline-block';
