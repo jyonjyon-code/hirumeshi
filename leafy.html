@@ -35,7 +35,8 @@
         .m-btn { flex: 1; padding: 10px; border: 2px solid var(--primary-green); background: white; border-radius: 12px; cursor: pointer; font-weight: bold; font-family: inherit; }
         .m-btn.active { background: var(--primary-green); color: white; }
         
-        .radish-btn-top { background: #ff9800; color: white; border: none; padding: 12px; border-radius: 12px; font-weight: bold; width: 100%; cursor: pointer; margin-top: 12px; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; }
+        /* 修正：ボタンのデザインを微調整 */
+        .radish-btn-top { background: #ff9800; color: white; border: none; padding: 10px; border-radius: 12px; font-weight: bold; width: 100%; cursor: pointer; margin-top: 10px; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
 
         #calendar-page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--paper-white); z-index: 1100; display: none; flex-direction: column; overflow-y: auto; align-items: center; padding-bottom: 30px; }
         .cal-nav { display: flex; align-items: center; justify-content: space-between; width: 90%; margin: 20px 0; }
@@ -99,19 +100,21 @@
     <select id="cat-select" style="width:100%; padding:12px; border-radius:10px; margin-bottom:10px; border:1px solid #ddd;" onchange="updateItemList()"></select>
     <select id="item-select" style="width:100%; padding:12px; border-radius:10px; margin-bottom:10px; border:1px solid #ddd;"></select>
     
-    <div style="display: flex; align-items: center; justify-content: space-between; background: #f0f0f0; padding: 10px 20px; border-radius: 15px;">
-        <div style="text-align: left;">
-            <div style="font-size: 0.7rem; color: #999;">今日の分</div>
-            <div id="daily-count-txt" style="font-size: 1.5rem; font-weight: 900;">0</div>
+    <div style="background: #f0f0f0; padding: 15px; border-radius: 15px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px;">
+            <div style="text-align: left;">
+                <div style="font-size: 0.7rem; color: #999;">今日の分</div>
+                <div id="daily-count-txt" style="font-size: 1.5rem; font-weight: 900;">0</div>
+            </div>
+            <button onclick="addEntry()" style="background: var(--primary-green); color: white; border: none; width: 50px; height: 50px; border-radius: 50%; font-size: 1.5rem; cursor: pointer;">
+                <i class="fas fa-plus"></i>
+            </button>
         </div>
-        <button onclick="addEntry()" style="background: var(--primary-green); color: white; border: none; width: 50px; height: 50px; border-radius: 50%; font-size: 1.5rem; cursor: pointer;">
-            <i class="fas fa-plus"></i>
-        </button>
+        
+        <a href="https://px.a8.net/svt/ejp?a8mat=4AZBO2+81Y4DU+1YGO+1ZGNQR" target="_blank" class="radish-btn-top">
+            <i class="fas fa-leaf"></i> 新鮮な葉っぱを仕入れる (お試しセット)
+        </a>
     </div>
-
-    <a href="https://px.a8.net/svt/ejp?a8mat=4AZBO2+81Y4DU+1YGO+1ZGNQR" target="_blank" class="radish-btn-top">
-        <i class="fas fa-leaf"></i> 新鮮な葉っぱを仕入れる (お試しセット)
-    </a>
 
     <div id="log-list" class="log-container"></div>
 </div>
