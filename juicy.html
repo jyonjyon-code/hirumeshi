@@ -21,7 +21,7 @@
         h1 { font-family: 'Bangers', cursive; font-size: 42px; color: var(--comic-red); -webkit-text-stroke: 1.5px var(--black); margin: 0; transform: rotate(-1deg); flex-grow: 1; text-align: center; }
 
         .tab-menu { display: flex; background: var(--black); }
-        .tab-btn { flex: 1; padding: 14px; color: #888; background: #222; border: none; font-weight: 900; cursor: pointer; }
+        .tab-btn { flex: 1; padding: 14px; color: #888; background: #222; border: none; font-weight: 900; cursor: pointer; transition: 0.2s; }
         .tab-btn.active { background: white; color: var(--black); }
         .content-panel { display: none; padding: 15px; flex-grow: 1; overflow-y: auto; }
         .content-panel.active { display: block; }
@@ -29,7 +29,7 @@
         #map-container { height: 180px; border: 4px solid var(--black); margin-bottom: 10px; background: #eee; }
         #map-iframe { width: 100%; height: 100%; border: 0; }
 
-        .engine-panel { background: #111; color: var(--neon-green); padding: 12px; font-family: 'Courier New', monospace; border: 3px solid var(--black); text-align: center; position: relative; }
+        .engine-panel { background: #111; color: var(--neon-green); padding: 12px; font-family: 'Courier New', monospace; border: 3px solid var(--black); text-align: center; }
         .goal-info { border-top: 1px dashed var(--neon-green); margin-top: 8px; padding-top: 8px; font-size: 11px; color: var(--comic-yellow); }
         
         .guest-warning { background: #440000; color: #ff0000; font-size: 10px; font-weight: 900; padding: 5px; text-align: center; border: 3px solid var(--black); border-top: none; margin-bottom: 10px; }
@@ -38,7 +38,13 @@
         #progress-fill { height: 100%; background: var(--comic-red); width: 0%; transition: width 0.8s; }
 
         .fruit-select { width: 100%; border: 4px solid var(--black); padding: 12px; font-size: 18px; font-weight: 900; background: #fffceb; margin-bottom: 15px; cursor: pointer; }
+        
         .btn-load { background: var(--comic-red); color: white; border: 4px solid var(--black); padding: 15px; font-weight: 900; font-size: 22px; width: 100%; cursor: pointer; box-shadow: 6px 6px 0 var(--black); }
+        .btn-load:disabled { background: #555 !important; color: #888 !important; cursor: not-allowed; box-shadow: none !important; transform: none !important; }
+        
+        #alert-box { display: none; background: var(--comic-red); color: white; padding: 10px; border: 3px solid var(--black); font-weight: 900; text-align: center; margin-bottom: 10px; animation: blink 0.5s infinite alternate; }
+        @keyframes blink { from { opacity: 1; } to { opacity: 0.7; } }
+
         .history-item { background: white; border: 3px solid var(--black); margin-bottom: 8px; padding: 10px; display: flex; justify-content: space-between; align-items: center; }
         .delete-btn { background: #eee; border: 2px solid var(--black); width: 30px; height: 30px; cursor: pointer; color: var(--comic-red); font-weight: 900; }
     </style>
@@ -80,44 +86,35 @@
             <span>TODAY: <span id="today-val">0</span> g</span>
         </div>
         <div id="progress-container"><div id="progress-fill"></div></div>
+        <div id="alert-box">⚠️ OVER-EATING WARNING! (LOCKED)</div>
 
         <select id="fruit-select-box" class="fruit-select" onchange="updateUnit()">
-            <option value="アサイー">アサイー</option> <option value="アセロラ">アセロラ</option>
-            <option value="アボカド">アボカド</option> <option value="アンズ">アンズ</option>
-            <option value="イチジク">イチジク</option> <option value="イチゴ">イチゴ</option>
-            <option value="イヨカン">イヨカン</option> <option value="ウメ">ウメ</option>
-            <option value="オレンジ" selected>オレンジ</option> <option value="カキ">カキ</option>
-            <option value="カボス">カボス</option> <option value="カリン">カリン</option>
-            <option value="キウイ">キウイ</option> <option value="グアバ">グアバ</option>
-            <option value="クランベリー">クランベリー</option> <option value="クリ">クリ</option>
-            <option value="グレープフルーツ">グレープフルーツ</option> <option value="サクランボ">サクランボ</option>
-            <option value="ザクロ">ザクロ</option> <option value="シークヮーサー">シークヮーサー</option>
-            <option value="ジャックフルーツ">ジャックフルーツ</option> <option value="スイカ">スイカ</option>
-            <option value="スターフルーツ">スターフルーツ</option> <option value="スモモ">スモモ</option>
-            <option value="タイガーナッツ">タイガーナッツ</option> <option value="チェリモヤ">チェリモヤ</option>
-            <option value="デコポン">デコポン</option> <option value="ドリアン">ドリアン</option>
-            <option value="ドラゴンフルーツ">ドラゴンフルーツ</option> <option value="ナシ">ナシ</option>
-            <option value="ナツメグ">ナツメグ</option> <option value="ナナカマド">ナナカマド</option>
-            <option value="パッションフルーツ">パッションフルーツ</option> <option value="バナナ">バナナ</option>
-            <option value="パパイヤ">パパイヤ</option> <option value="パラミツ">パラミツ</option>
-            <option value="ビワ">ビワ</option> <option value="ブドウ">ブドウ</option>
-            <option value="ブルーベリー">ブルーベリー</option> <option value="プルーン">プルーン</option>
-            <option value="ブンタン">ブンタン</option> <option value="ポメロ">ポメロ</option>
-            <option value="ホワイトサポテ">ホワイトサポテ</option> <option value="マンゴー">マンゴー</option>
-            <option value="マンゴスチン">マンゴスチン</option> <option value="ミカン">ミカン</option>
-            <option value="メロン">メロン</option> <option value="モモ">モモ</option>
-            <option value="ユズ">ユズ</option> <option value="ライチ">ライチ</option>
-            <option value="ライム">ライム</option> <option value="ラズベリー">ラズベリー</option>
-            <option value="リンゴ">リンゴ</option> <option value="レモン">レモン</option>
-            <option value="レンブ">レンブ</option> <option value="ロブスタ">ロブスタ</option>
-            <option value="100%ジュース">100%ジュース</option>
+            <option value="アサイー">アサイー</option> <option value="アセロラ">アセロラ</option> <option value="アボカド">アボカド</option>
+            <option value="アンズ">アンズ</option> <option value="イチジク">イチジク</option> <option value="イチゴ">イチゴ</option>
+            <option value="イヨカン">イヨカン</option> <option value="ウメ">ウメ</option> <option value="オレンジ" selected>オレンジ</option>
+            <option value="カキ">カキ</option> <option value="カボス">カボス</option> <option value="カリン">カリン</option>
+            <option value="キウイ">キウイ</option> <option value="グアバ">グアバ</option> <option value="クランベリー">クランベリー</option>
+            <option value="クリ">クリ</option> <option value="グレープフルーツ">グレープフルーツ</option> <option value="サクランボ">サクランボ</option>
+            <option value="ザクロ">ザクロ</option> <option value="シークヮーサー">シークヮーサー</option> <option value="ジャックフルーツ">ジャックフルーツ</option>
+            <option value="スイカ">スイカ</option> <option value="スターフルーツ">スターフルーツ</option> <option value="スモモ">スモモ</option>
+            <option value="タイガーナッツ">タイガーナッツ</option> <option value="チェリモヤ">チェリモヤ</option> <option value="デコポン">デコポン</option>
+            <option value="ドリアン">ドリアン</option> <option value="ドラゴンフルーツ">ドラゴンフルーツ</option> <option value="ナシ">ナシ</option>
+            <option value="ナツメグ">ナツメグ</option> <option value="ナナカマド">ナナカマド</option> <option value="パッションフルーツ">パッションフルーツ</option>
+            <option value="バナナ">バナナ</option> <option value="パパイヤ">パパイヤ</option> <option value="パラミツ">パラミツ</option>
+            <option value="ビワ">ビワ</option> <option value="ブドウ">ブドウ</option> <option value="ブルーベリー">ブルーベリー</option>
+            <option value="プルーン">プルーン</option> <option value="ブンタン">ブンタン</option> <option value="ポメロ">ポメロ</option>
+            <option value="ホワイトサポテ">ホワイトサポテ</option> <option value="マンゴー">マンゴー</option> <option value="マンゴスチン">マンゴスチン</option>
+            <option value="ミカン">ミカン</option> <option value="メロン">メロン</option> <option value="モモ">モモ</option>
+            <option value="ユズ">ユズ</option> <option value="ライチ">ライチ</option> <option value="ライム">ライム</option>
+            <option value="ラズベリー">ラズベリー</option> <option value="リンゴ">リンゴ</option> <option value="レモン">レモン</option>
+            <option value="レンブ">レンブ</option> <option value="ロブスタ">ロブスタ</option> <option value="100%ジュース">100%ジュース</option>
         </select>
 
         <div style="display:flex; gap:10px; margin-bottom:15px; align-items:center;">
             <input type="number" id="amount-in" value="1.0" step="0.1" style="border:4px solid #000; padding:12px; width:100px; font-size:20px; font-weight:900; text-align:center;">
             <span id="unit-label" style="font-weight:900; font-size:20px;">個</span>
         </div>
-        <button class="btn-load" onclick="handleLoad()">果汁×荷重 START!</button>
+        <button id="start-btn" class="btn-load" onclick="handleLoad()">果汁×荷重 START!</button>
     </div>
 
     <div id="panel-history" class="content-panel">
@@ -166,24 +163,38 @@
         "100%ジュース": { weight: 1, rare: 1.0, isLiquid: true }
     };
 
-    function updateMap() {
-        const currentLat = 35.6812 + (totalDist * 0.005); const currentLng = 139.7671 + (totalDist * 0.008);
-        document.getElementById('map-iframe').src = `https://maps.google.com/maps?q=${currentLat},${currentLng}&output=embed&z=14`;
-    }
-
     function updateUI() {
-        document.getElementById('dist-val').innerText = totalDist.toFixed(1);
         const today = new Date().toISOString().split('T')[0];
         const todayG = history.filter(i => i.date === today).reduce((s, i) => s + i.grams, 0);
+        
+        document.getElementById('dist-val').innerText = totalDist.toFixed(1);
         document.getElementById('today-val').innerText = Math.round(todayG);
+
+        // --- 強力な安全リミッターの発動 ---
+        const limit = 500;
+        const isOver = todayG >= limit;
+        const alertBox = document.getElementById('alert-box');
+        const startBtn = document.getElementById('start-btn');
+
+        if (isOver) {
+            alertBox.style.display = 'block';
+            startBtn.disabled = true;
+            startBtn.innerText = "OVER LIMIT (REST NOW)";
+        } else {
+            alertBox.style.display = 'none';
+            startBtn.disabled = false;
+            startBtn.innerText = "果汁×荷重 START!";
+        }
+
         document.getElementById('progress-fill').style.width = Math.min((totalDist / 1000) * 100, 100) + "%";
         document.getElementById('engine-name').innerText = totalDist >= 500 ? "1200cc MONSTER" : (totalDist >= 100 ? "250cc STREET" : "50cc MOPED");
         
-        // 目標更新
-        const next = goals.find(g => g.d > totalDist) || { d: 99999, n: "銀河の果て" };
+        const next = goals.find(g => g.d > totalDist) || { d: 40075, n: "銀河の果て" };
         document.getElementById('next-goal-name').innerText = next.n;
         document.getElementById('next-goal-dist').innerText = (next.d - totalDist).toFixed(1);
-        updateMap();
+        
+        const currentLat = 35.6812 + (totalDist * 0.005); const currentLng = 139.7671 + (totalDist * 0.008);
+        document.getElementById('map-iframe').src = `https://maps.google.com/maps?q=${currentLat},${currentLng}&output=embed&z=14`;
     }
 
     window.updateUnit = () => {
