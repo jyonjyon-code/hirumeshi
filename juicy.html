@@ -7,13 +7,13 @@
     <title>JUICY RIDER | necotastudio</title>
     <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Noto+Sans+JP:wght@900&display=swap" rel="stylesheet">
     <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCjHURgB5A-iLwJ8sG3_KXSrdTXZEAg7Ms"></script>
     <style>
         :root { --comic-yellow: #ffde00; --comic-red: #e60012; --black: #000; --neon-green: #00ff00; }
         body { background: #ddd; background-image: radial-gradient(var(--black) 10%, transparent 11%); background-size: 15px 15px; font-family: 'Noto Sans JP', sans-serif; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
         
-        /* スマホ対応：overflowをvisibleにして、リストが長くてもスクロールできるように修正 */
-        .app-card { background: white; border: 6px solid var(--black); width: 100%; max-width: 450px; box-shadow: 12px 12px 0px var(--black); display: flex; flex-direction: column; min-height: 100vh; position: relative; margin-bottom: 50px; }
+        /* スマホ対応：リストが長くなってもスクロールできるように設定 */
+        .app-card { background: white; border: 6px solid var(--black); width: 100%; max-width: 450px; box-shadow: 12px 12px 0px var(--black); display: flex; flex-direction: column; min-height: 100vh; position: relative; margin-bottom: 50px; overflow-y: auto; }
         
         #login-banner { background: var(--black); color: white; padding: 10px; border-bottom: 4px solid #333; }
         .banner-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
@@ -44,12 +44,12 @@
         .system-container { background: #222; border: 4px solid var(--black); padding: 15px; margin-top: 15px; position: relative; box-shadow: inset 0 0 15px rgba(0,255,0,0.2); }
         .btn-load { background: var(--comic-red); color: white; border: 5px solid var(--black); padding: 15px; font-weight: 900; font-size: 20px; width: 100%; cursor: pointer; box-shadow: 0 6px 0 var(--black); margin-top: 10px; position: relative; transition: 0.1s; }
 
-        /* カレンダー調整：月移動ボタン */
+        /* カレンダー調整：月移動ボタンとレイアウト */
         .cal-nav { display: flex; justify-content: space-between; align-items: center; background: #000; color: #fff; padding: 10px; font-weight: 900; }
-        .cal-nav button { background: var(--comic-yellow); border: 2px solid #fff; font-weight: 900; cursor: pointer; }
+        .cal-nav button { background: var(--comic-yellow); border: 2px solid #000; font-weight: 900; cursor: pointer; padding: 5px 10px; }
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); border: 4px solid var(--black); background: #fff; }
         .cal-day { aspect-ratio: 1; border: 1px solid #eee; display: flex; align-items: center; justify-content: center; font-size: 14px; position: relative; font-weight: 900; cursor: pointer; }
-        .cal-day.has-data::after { content: '🍊'; font-size: 12px; position: absolute; bottom: 1px; }
+        .cal-day.has-data::after { content: '🍊'; font-size: 10px; position: absolute; bottom: 1px; }
         .cal-day.selected { background: var(--comic-yellow); outline: 3px solid var(--black); z-index: 5; }
 
         #goal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; flex-direction: column; align-items: center; justify-content: center; color: var(--comic-yellow); text-align: center; font-family: 'Bangers', cursive; }
@@ -131,7 +131,7 @@
     <div id="panel-history" class="content-panel">
         <div id="calendar-area"></div>
         <div id="selected-day-summary" style="background:var(--comic-yellow); padding:10px; border:4px solid #000; font-weight:900; text-align:center; margin-top:10px;">日付を選択</div>
-        <div id="history-list" style="margin-top:10px; padding-bottom:50px;"></div>
+        <div id="history-list" style="margin-top:10px; padding-bottom:100px;"></div>
     </div>
 </div>
 
@@ -171,7 +171,7 @@
             });
             marker = new google.maps.Marker({ position: startPos, map: map });
             updateMapPosition();
-        } catch(e) {}
+        } catch(e) { console.error("Map Load Error:", e); }
     }
 
     function updateMapPosition() {
@@ -242,6 +242,7 @@
         if(tab === 'history') renderCalendar();
     };
 
+    // カレンダー月移動
     window.changeMonth = (diff) => {
         viewMonth += diff;
         if (viewMonth < 0) { viewMonth = 11; viewYear--; }
@@ -256,7 +257,7 @@
         const lastDate = new Date(viewYear, viewMonth + 1, 0).getDate();
         let html = `<div class="cal-nav"><button onclick="changeMonth(-1)">◀</button><span>${viewYear} / ${viewMonth+1}</span><button onclick="changeMonth(1)">▶</button></div>`;
         html += '<div class="calendar-grid">';
-        ['S','M','T','W','T','F','S'].forEach(d => html += `<div style="background:#000; color:#fff; font-size:10px; text-align:center; padding:5px;">${d}</div>`);
+        ['日','月','火','水','木','金','土'].forEach(d => html += `<div style="background:#000; color:#fff; font-size:10px; text-align:center; padding:5px;">${d}</div>`);
         for (let i = 0; i < firstDay; i++) html += '<div class="cal-day"></div>';
         for (let d = 1; d <= lastDate; d++) {
             const ds = `${viewYear}-${String(viewMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
@@ -276,7 +277,7 @@
                 <div><span>${i.name}</span> <span style="color:var(--comic-red); margin-left:10px;">+${i.km}km</span></div>
                 <div onclick="deleteItem(${i.id})" style="cursor:pointer; color:red; font-size:20px; font-weight:900;">×</div>
             </div>
-        `).join('') || '<div style="text-align:center; opacity:0.5; padding:20px;">記録なし</div>';
+        `).join('') || '<div style="text-align:center; opacity:0.5; padding:20px;">この日の記録はありません</div>';
     }
 
     window.deleteItem = (id) => {
