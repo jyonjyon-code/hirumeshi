@@ -11,24 +11,25 @@
     <style>
         :root { --comic-yellow: #ffde00; --comic-red: #e60012; --black: #000; --neon-green: #00ff00; }
         body { background: #ddd; background-image: radial-gradient(var(--black) 10%, transparent 11%); background-size: 15px 15px; font-family: 'Noto Sans JP', sans-serif; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
-        .app-card { background: white; border: 6px solid var(--black); width: 100%; max-width: 450px; box-shadow: 12px 12px 0px var(--black); overflow: hidden; display: flex; flex-direction: column; min-height: 950px; position: relative; }
+        
+        /* スマホ対応：overflowをvisibleにして、リストが長くてもスクロールできるように修正 */
+        .app-card { background: white; border: 6px solid var(--black); width: 100%; max-width: 450px; box-shadow: 12px 12px 0px var(--black); display: flex; flex-direction: column; min-height: 100vh; position: relative; margin-bottom: 50px; }
         
         #login-banner { background: var(--black); color: white; padding: 10px; border-bottom: 4px solid #333; }
         .banner-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
         #user-greeting { font-weight: 900; color: var(--comic-yellow); font-size: 12px; }
-        .sync-badge { font-size: 9px; background: #333; padding: 2px 6px; border-radius: 4px; }
         #g_btn_wrapper { display: flex; justify-content: center; background: #fff; padding: 8px; border-radius: 4px; min-height: 40px; }
 
         .header { background: var(--comic-yellow); border-bottom: 6px solid var(--black); height: 140px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
         h1 { font-family: 'Bangers', cursive; font-size: 60px; color: var(--comic-red); text-shadow: 5px 5px 0px var(--black); -webkit-text-stroke: 1.5px var(--black); margin: 0; transform: rotate(-3deg); line-height: 1; z-index: 2; }
         .back-btn { background: var(--black); color: white; border: 2px solid white; padding: 5px 8px; font-size: 10px; font-weight: 900; text-decoration: none; border-radius: 4px; position: absolute; left: 10px; top: 10px; z-index: 10; }
-        .user-icon { width: 70px; height: 70px; border: 4px solid var(--black); background: white; border-radius: 50%; box-shadow: 3px 3px 0px var(--black); transform: rotate(5deg); position: absolute; right: 10px; bottom: 10px; z-index: 5; object-fit: cover; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .user-icon { width: 70px; height: 70px; border: 4px solid var(--black); background: white; border-radius: 50%; box-shadow: 3px 3px 0px var(--black); transform: rotate(5deg); position: absolute; right: 10px; bottom: 10px; z-index: 5; object-fit: cover; }
 
         .tab-menu { display: flex; background: var(--black); gap: 2px; }
         .tab-btn { flex: 1; padding: 15px; color: #888; background: #1a1a1a; border: none; font-weight: 900; cursor: pointer; font-size: 14px; }
         .tab-btn.active { background: white; color: var(--black); }
 
-        .content-panel { display: none; padding: 15px; flex-grow: 1; }
+        .content-panel { display: none; padding: 15px; }
         .content-panel.active { display: block; }
 
         .machine-selector { border: 4px solid var(--black); margin-bottom: 12px; background: #eee; padding: 10px; font-weight: 900; width: 100%; border-radius: 0; cursor: pointer; }
@@ -38,38 +39,31 @@
         .part-label { font-size: 9px; text-transform: uppercase; font-weight: 900; opacity: 0.8; }
 
         .engine-panel { background: #111; color: var(--neon-green); padding: 12px; font-family: 'Courier New', monospace; border: 4px solid var(--black); text-align: center; }
-        #map { width: 100%; height: 180px; border: 4px solid var(--black); border-top: none; margin-bottom: 10px; }
-        
+        #map { width: 100%; height: 220px; border: 4px solid var(--black); margin-bottom: 10px; }
         .status-bar { background: var(--black); color: white; padding: 12px; display: flex; justify-content: space-between; font-size: 14px; font-weight: 900; border-radius: 4px; }
-        
         .system-container { background: #222; border: 4px solid var(--black); padding: 15px; margin-top: 15px; position: relative; box-shadow: inset 0 0 15px rgba(0,255,0,0.2); }
-        .system-label { color: var(--neon-green); font-size: 10px; font-family: 'Courier New', monospace; position: absolute; top: 5px; left: 10px; }
         .btn-load { background: var(--comic-red); color: white; border: 5px solid var(--black); padding: 15px; font-weight: 900; font-size: 20px; width: 100%; cursor: pointer; box-shadow: 0 6px 0 var(--black); margin-top: 10px; position: relative; transition: 0.1s; }
-        .btn-load:active { transform: translateY(4px); box-shadow: 0 2px 0 var(--black); }
-        .btn-load span { display: block; font-size: 12px; opacity: 0.8; letter-spacing: 2px; }
 
-        /* ゴール演出オーバーレイ */
-        #goal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; flex-direction: column; align-items: center; justify-content: center; color: var(--comic-yellow); text-align: center; font-family: 'Bangers', cursive; }
-        .goal-text { font-size: 50px; -webkit-text-stroke: 2px var(--black); animation: bounce 0.5s infinite alternate; }
-        @keyframes bounce { from { transform: scale(1); } to { transform: scale(1.2); } }
-
-        #alert-box { display: none; background: var(--comic-red); color: white; padding: 10px; border: 4px solid var(--black); font-weight: 900; text-align: center; margin-bottom: 10px; animation: blink 0.5s infinite alternate; }
-        @keyframes blink { from { opacity: 1; } to { opacity: 0.7; } }
-
-        .history-item { border: 4px solid #000; margin-bottom: 8px; padding: 12px; display: flex; justify-content: space-between; align-items: center; background: white; font-weight: 900; }
-        .del-btn { background: var(--comic-red); color: white; border: 2px solid #000; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 4px; font-size: 20px; }
+        /* カレンダー調整：月移動ボタン */
+        .cal-nav { display: flex; justify-content: space-between; align-items: center; background: #000; color: #fff; padding: 10px; font-weight: 900; }
+        .cal-nav button { background: var(--comic-yellow); border: 2px solid #fff; font-weight: 900; cursor: pointer; }
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); border: 4px solid var(--black); background: #fff; }
         .cal-day { aspect-ratio: 1; border: 1px solid #eee; display: flex; align-items: center; justify-content: center; font-size: 14px; position: relative; font-weight: 900; cursor: pointer; }
-        .cal-day.has-data::after { content: '🍊'; font-size: 16px; position: absolute; bottom: 2px; }
+        .cal-day.has-data::after { content: '🍊'; font-size: 12px; position: absolute; bottom: 1px; }
         .cal-day.selected { background: var(--comic-yellow); outline: 3px solid var(--black); z-index: 5; }
-        .cal-header { background: var(--black); color: white; font-size: 11px; text-align: center; padding: 8px 0; }
+
+        #goal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; flex-direction: column; align-items: center; justify-content: center; color: var(--comic-yellow); text-align: center; font-family: 'Bangers', cursive; }
+        .goal-text { font-size: 50px; -webkit-text-stroke: 2px var(--black); animation: bounce 0.5s infinite alternate; }
+        @keyframes bounce { from { transform: scale(1); } to { transform: scale(1.1); } }
+        #alert-box { display: none; background: var(--comic-red); color: white; padding: 10px; border: 4px solid var(--black); font-weight: 900; text-align: center; margin-bottom: 10px; }
+        .history-item { border: 4px solid #000; margin-bottom: 8px; padding: 12px; display: flex; justify-content: space-between; align-items: center; background: white; font-weight: 900; }
     </style>
 </head>
 <body>
 
 <div id="goal-overlay" onclick="this.style.display='none'">
     <div class="goal-text">DESTINATION REACHED!</div>
-    <div id="goal-place-name" style="font-size: 30px; margin: 20px; font-family: 'Noto Sans JP';">浅草寺</div>
+    <div id="goal-place-name" style="font-size: 30px; margin: 20px; font-family: 'Noto Sans JP';">--</div>
     <div style="font-size: 20px;">CLICK TO CLOSE</div>
 </div>
 
@@ -77,14 +71,14 @@
     <div id="login-banner">
         <div class="banner-top">
             <span id="user-greeting">PLEASE LOGIN -></span>
-            <span id="sync-status" class="sync-badge">☁️ CLOUD: OFF</span>
+            <span id="sync-status" style="font-size: 9px; background: #333; padding: 2px 6px; border-radius: 4px;">☁️ CLOUD: OFF</span>
         </div>
         <div id="g_btn_wrapper"></div>
     </div>
 
     <div class="header">
         <a href="https://necotastudio.github.io" class="back-btn">BACK</a>
-        <h1 id="main-logo">JUICY RIDER</h1>
+        <h1>JUICY RIDER</h1>
         <img id="user-img" src="juicy.png" class="user-icon" onerror="this.src='https://placehold.jp/150x150.png?text=RIDER'">
     </div>
 
@@ -112,6 +106,7 @@
             <span style="font-size: 11px; opacity: 0.8;">NEXT GOAL: <span id="next-goal-name">--</span></span><br>
             <span style="font-size: 16px; font-weight: 900;"><span id="next-goal-dist">--</span> km</span>
         </div>
+        
         <div id="map"></div>
         
         <div class="status-bar">
@@ -121,26 +116,14 @@
 
         <div id="alert-box">⚠️ OVER-EATING WARNING!</div>
 
-        <div class="fuel-controls">
-            <select id="fruit-select-box" onchange="updateUnit()">
-                <option value="オレンジ" selected>オレンジ</option>
-                <option value="リンゴ">リンゴ</option>
-                <option value="バナナ">バナナ</option>
-                <option value="メロン">メロン</option>
-                <option value="ドリアン">ドリアン</option>
-                <option value="100%ジュース">100%ジュース</option>
-                </select>
-            <div class="amount-row">
-                <input type="number" id="amount-in" value="1.0" step="0.1">
-                <span id="unit-label" style="font-weight:900; margin-left:5px;">個</span>
+        <div class="fuel-controls" style="margin-top:10px;">
+            <select id="fruit-select-box" style="width:100%; padding:10px; font-weight:900; border:4px solid #000;" onchange="updateUnit()"></select>
+            <div style="display:flex; align-items:center; margin-top:10px;">
+                <input type="number" id="amount-in" value="1.0" step="0.1" style="flex:1; padding:10px; border:4px solid #000; font-weight:900;">
+                <span id="unit-label" style="font-weight:900; margin-left:10px; width:40px;">個</span>
             </div>
-            
             <div class="system-container">
-                <div class="system-label">JUICY LOAD SYSTEM v3.0</div>
-                <button id="start-btn" class="btn-load" onclick="handleLoad()">
-                    <span>FRUIT POWER CHARGE</span>
-                    果汁×荷重 START!
-                </button>
+                <button class="btn-load" onclick="handleLoad()">果汁×荷重 START!</button>
             </div>
         </div>
     </div>
@@ -148,7 +131,7 @@
     <div id="panel-history" class="content-panel">
         <div id="calendar-area"></div>
         <div id="selected-day-summary" style="background:var(--comic-yellow); padding:10px; border:4px solid #000; font-weight:900; text-align:center; margin-top:10px;">日付を選択</div>
-        <div id="history-list" style="margin-top:10px;"></div>
+        <div id="history-list" style="margin-top:10px; padding-bottom:50px;"></div>
     </div>
 </div>
 
@@ -160,38 +143,41 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+    const fruitDB = {
+        "オレンジ": { weight: 150, rare: 0.8, part: "eng" }, "レモン": { weight: 120, rare: 1.0, part: "eng" }, "ミカン": { weight: 100, rare: 0.8, part: "eng" }, "グレープフルーツ": { weight: 400, rare: 1.1, part: "eng" }, "ライム": { weight: 80, rare: 1.2, part: "eng" }, "ユズ": { weight: 120, rare: 1.5, part: "eng" }, "スダチ": { weight: 40, rare: 1.8, part: "eng" }, "シークヮーサー": { weight: 30, rare: 2.0, part: "eng" }, "キンカン": { weight: 20, rare: 2.5, part: "eng" }, "ブンタン": { weight: 1000, rare: 1.3, part: "eng" }, "伊予柑": { weight: 250, rare: 0.9, part: "eng" }, "デコポン": { weight: 300, rare: 1.0, part: "eng" }, "リンゴ": { weight: 300, rare: 0.9, part: "eng" }, "和梨": { weight: 350, rare: 1.1, part: "eng" }, "洋梨": { weight: 300, rare: 1.2, part: "eng" }, "柿": { weight: 250, rare: 1.0, part: "eng" },
+        "バナナ": { weight: 120, rare: 0.7, part: "tire" }, "アボカド": { weight: 200, rare: 1.1, part: "tire" }, "マンゴー": { weight: 400, rare: 2.2, part: "tire" }, "メロン": { weight: 1500, rare: 2.0, part: "tire" }, "スイカ": { weight: 5000, rare: 1.5, part: "tire" }, "パイナップル": { weight: 1200, rare: 1.8, part: "tire" }, "パパイヤ": { weight: 500, rare: 1.6, part: "tire" }, "ドラゴンフルーツ": { weight: 400, rare: 2.5, part: "tire" }, "スターフルーツ": { weight: 150, rare: 3.0, part: "tire" }, "グアバ": { weight: 200, rare: 2.2, part: "tire" }, "パッションフルーツ": { weight: 80, rare: 2.8, part: "tire" }, "キウイ": { weight: 100, rare: 1.4, part: "tire" }, "イチジク": { weight: 80, rare: 1.9, part: "tire" }, "ザクロ": { weight: 300, rare: 2.4, part: "tire" }, "ビワ": { weight: 50, rare: 2.1, part: "tire" }, "アンズ": { weight: 50, rare: 1.7, part: "tire" },
+        "イチゴ": { weight: 20, rare: 1.2, part: "muff" }, "ブルーベリー": { weight: 2, rare: 1.5, part: "muff" }, "ラズベリー": { weight: 3, rare: 1.8, part: "muff" }, "ブラックベリー": { weight: 5, rare: 2.0, part: "muff" }, "クランベリー": { weight: 2, rare: 2.2, part: "muff" }, "ブドウ": { weight: 15, rare: 1.3, part: "muff" }, "マスカット": { weight: 15, rare: 1.6, part: "muff" }, "サクランボ": { weight: 8, rare: 1.9, part: "muff" }, "ライチ": { weight: 30, rare: 2.4, part: "muff" }, "ランブータン": { weight: 40, rare: 2.6, part: "muff" }, "マンゴスチン": { weight: 100, rare: 3.5, part: "muff" }, "アサイー": { weight: 2, rare: 2.5, part: "muff" }, "ドリアン": { weight: 2500, rare: 5.0, part: "muff" }, "プルーン": { weight: 50, rare: 1.4, part: "muff" },
+        "100%ジュース": { weight: 1, rare: 1.0, isLiquid: true, part: "none" }
+    };
+
     let totalDist = parseFloat(localStorage.getItem('juicy_odo')) || 0;
     let history = JSON.parse(localStorage.getItem('juicy_history')) || [];
     let achievedGoals = JSON.parse(localStorage.getItem('juicy_achieved')) || [];
     let currentUid = null;
     let selectedDate = new Date().toISOString().split('T')[0];
+    let viewMonth = new Date().getMonth();
+    let viewYear = new Date().getFullYear();
     let map, marker;
 
-    const fruitDB = {
-        "オレンジ": { weight: 150, rare: 0.8, part: "eng" }, "レモン": { weight: 120, rare: 1.0, part: "eng" }, "ミカン": { weight: 100, rare: 0.8, part: "eng" }, "リンゴ": { weight: 300, rare: 0.9, part: "eng" },
-        "バナナ": { weight: 120, rare: 0.7, part: "tire" }, "アボカド": { weight: 200, rare: 1.1, part: "tire" }, "マンゴー": { weight: 400, rare: 2.2, part: "tire" }, "メロン": { weight: 1500, rare: 2.0, part: "tire" },
-        "イチゴ": { weight: 20, rare: 1.2, part: "muff" }, "アサイー": { weight: 2, rare: 2.5, part: "muff" }, "ドリアン": { weight: 2500, rare: 5.0, part: "muff" },
-        "100%ジュース": { weight: 1, rare: 1.0, isLiquid: true, part: "none" }
-    };
     const goals = [ { d: 50, n: "浅草寺" }, { d: 300, n: "厳島神社" }, { d: 8000, n: "エッフェル塔" }, { d: 40075, n: "地球一周" } ];
     const machines = ["50cc MOPED", "250cc STREET", "1000cc SUPER BIKE", "SPACE RIDER"];
 
     function initMap() {
         const startPos = { lat: 35.6812, lng: 139.7671 };
-        map = new google.maps.Map(document.getElementById("map"), {
-            center: startPos, zoom: 12, disableDefaultUI: true,
-            styles: [{ featureType: "all", elementType: "all", stylers: [{ saturation: -100 }] }]
-        });
-        marker = new google.maps.Marker({ position: startPos, map: map });
-        updateMapPosition();
+        try {
+            map = new google.maps.Map(document.getElementById("map"), {
+                center: startPos, zoom: 12, disableDefaultUI: true,
+                styles: [{ featureType: "all", elementType: "all", stylers: [{ saturation: -100 }] }]
+            });
+            marker = new google.maps.Marker({ position: startPos, map: map });
+            updateMapPosition();
+        } catch(e) {}
     }
 
     function updateMapPosition() {
         if (!map) return;
-        const newLat = 35.6812 + (totalDist * 0.009);
-        const newPos = { lat: newLat, lng: 139.7671 };
-        map.setCenter(newPos);
-        marker.setPosition(newPos);
+        const newPos = { lat: 35.6812 + (totalDist * 0.009), lng: 139.7671 };
+        map.setCenter(newPos); marker.setPosition(newPos);
     }
 
     function checkGoal() {
@@ -221,41 +207,14 @@
         document.getElementById('next-goal-dist').innerText = (next.d - totalDist).toFixed(1);
 
         const mSelect = document.getElementById('machine-select');
-        mSelect.options[1].disabled = totalDist < 100;
-        mSelect.options[2].disabled = totalDist < 1000;
-        mSelect.options[3].disabled = totalDist < 10000;
-
-        updateMapPosition();
-        checkGoal();
+        for(let i=1; i<=3; i++) mSelect.options[i].disabled = totalDist < [100, 1000, 10000][i-1];
+        updateMapPosition(); checkGoal();
     }
 
     window.updateMachine = () => {
         const select = document.getElementById('machine-select');
-        const idx = select.value;
-        const imgPath = select.options[select.selectedIndex].dataset.img;
-        document.getElementById('engine-name').innerText = machines[idx];
-        document.getElementById('user-img').src = imgPath;
-    };
-
-    window.handleCredentialResponse = async (response) => {
-        const payload = JSON.parse(decodeURIComponent(escape(atob(response.credential.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')))));
-        currentUid = payload.sub;
-        document.getElementById('user-greeting').innerText = `HI, ${payload.given_name?.toUpperCase() || 'RIDER'}!`;
-        document.getElementById('sync-status').innerText = "☁️ CLOUD: ON";
-        document.getElementById('g_btn_wrapper').style.display = 'none';
-        const docSnap = await getDoc(doc(db, "juicy_rider", currentUid));
-        if (docSnap.exists()) {
-            totalDist = Math.max(totalDist, docSnap.data().odo || 0);
-            history = docSnap.data().history || history;
-        }
-        updateUI(); saveAll();
-    };
-
-    window.initGoogleBtn = () => {
-        if (window.google && google.accounts) {
-            google.accounts.id.initialize({ client_id: "1093173509944-ssn8tds7tgcb0r1i5lv1ir5lnk311dvv.apps.googleusercontent.com", callback: window.handleCredentialResponse });
-            google.accounts.id.renderButton(document.getElementById("g_btn_wrapper"), { theme: "outline", size: "large" });
-        } else { setTimeout(window.initGoogleBtn, 500); }
+        document.getElementById('engine-name').innerText = machines[select.value];
+        document.getElementById('user-img').src = select.options[select.selectedIndex].dataset.img;
     };
 
     window.handleLoad = () => {
@@ -268,15 +227,6 @@
         totalDist += addKM;
         history.unshift({ id: Date.now(), date: new Date().toISOString().split('T')[0], name: name, grams: grams, km: addKM.toFixed(2) });
         updateUI(); saveAll();
-    };
-
-    window.deleteItem = (id) => {
-        const idx = history.findIndex(i => i.id === id);
-        if (idx > -1) {
-            totalDist = Math.max(0, totalDist - parseFloat(history[idx].km));
-            history.splice(idx, 1);
-            updateUI(); updateHistoryUI(); renderCalendar(); saveAll();
-        }
     };
 
     window.updateUnit = () => {
@@ -292,17 +242,24 @@
         if(tab === 'history') renderCalendar();
     };
 
+    window.changeMonth = (diff) => {
+        viewMonth += diff;
+        if (viewMonth < 0) { viewMonth = 11; viewYear--; }
+        if (viewMonth > 11) { viewMonth = 0; viewYear++; }
+        renderCalendar();
+    };
+
     window.selectDate = (date) => { selectedDate = date; renderCalendar(); };
 
     function renderCalendar() {
-        const now = new Date(); const y = now.getFullYear(); const m = now.getMonth();
-        const firstDay = new Date(y, m, 1).getDay();
-        const lastDate = new Date(y, m + 1, 0).getDate();
-        let html = `<div style="text-align:center; font-weight:900; margin-bottom:12px;">${y} / ${m+1}</div><div class="calendar-grid">`;
-        ['SUN','MON','TUE','WED','THU','FRI','SAT'].forEach(d => html += `<div class="cal-header">${d}</div>`);
+        const firstDay = new Date(viewYear, viewMonth, 1).getDay();
+        const lastDate = new Date(viewYear, viewMonth + 1, 0).getDate();
+        let html = `<div class="cal-nav"><button onclick="changeMonth(-1)">◀</button><span>${viewYear} / ${viewMonth+1}</span><button onclick="changeMonth(1)">▶</button></div>`;
+        html += '<div class="calendar-grid">';
+        ['S','M','T','W','T','F','S'].forEach(d => html += `<div style="background:#000; color:#fff; font-size:10px; text-align:center; padding:5px;">${d}</div>`);
         for (let i = 0; i < firstDay; i++) html += '<div class="cal-day"></div>';
         for (let d = 1; d <= lastDate; d++) {
-            const ds = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+            const ds = `${viewYear}-${String(viewMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
             const isSel = selectedDate === ds ? 'selected' : '';
             const hasData = history.some(h => h.date === ds);
             html += `<div class="cal-day ${hasData?'has-data':''} ${isSel}" onclick="selectDate('${ds}')">${d}</div>`;
@@ -313,14 +270,23 @@
 
     function updateHistoryUI() {
         const filtered = history.filter(i => i.date === selectedDate);
-        document.getElementById('selected-day-summary').innerText = `${selectedDate} 合計: ${Math.round(filtered.reduce((s,i)=>s+i.grams,0))}g`;
+        document.getElementById('selected-day-summary').innerText = `${selectedDate} : ${Math.round(filtered.reduce((s,i)=>s+i.grams,0))}g`;
         document.getElementById('history-list').innerHTML = filtered.map(i => `
             <div class="history-item">
                 <div><span>${i.name}</span> <span style="color:var(--comic-red); margin-left:10px;">+${i.km}km</span></div>
-                <div class="del-btn" onclick="deleteItem(${i.id})">×</div>
+                <div onclick="deleteItem(${i.id})" style="cursor:pointer; color:red; font-size:20px; font-weight:900;">×</div>
             </div>
         `).join('') || '<div style="text-align:center; opacity:0.5; padding:20px;">記録なし</div>';
     }
+
+    window.deleteItem = (id) => {
+        const idx = history.findIndex(i => i.id === id);
+        if (idx > -1) {
+            totalDist = Math.max(0, totalDist - parseFloat(history[idx].km));
+            history.splice(idx, 1);
+            updateUI(); renderCalendar(); saveAll();
+        }
+    };
 
     async function saveAll() {
         localStorage.setItem('juicy_odo', totalDist);
@@ -328,11 +294,31 @@
         if (currentUid) await setDoc(doc(db, "juicy_rider", currentUid), { odo: totalDist, history: history }, { merge: true });
     }
 
+    window.handleCredentialResponse = async (response) => {
+        const payload = JSON.parse(decodeURIComponent(escape(atob(response.credential.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')))));
+        currentUid = payload.sub;
+        document.getElementById('user-greeting').innerText = `HI, ${payload.given_name?.toUpperCase()}!`;
+        const docSnap = await getDoc(doc(db, "juicy_rider", currentUid));
+        if (docSnap.exists()) {
+            totalDist = Math.max(totalDist, docSnap.data().odo || 0);
+            history = docSnap.data().history || history;
+        }
+        updateUI(); saveAll();
+    };
+
+    window.initGoogleBtn = () => {
+        if (window.google && google.accounts) {
+            google.accounts.id.initialize({ client_id: "1093173509944-ssn8tds7tgcb0r1i5lv1ir5lnk311dvv.apps.googleusercontent.com", callback: window.handleCredentialResponse });
+            google.accounts.id.renderButton(document.getElementById("g_btn_wrapper"), { theme: "outline", size: "large" });
+        } else { setTimeout(window.initGoogleBtn, 500); }
+    };
+
     window.onload = () => {
-        initMap();
-        updateUI();
-        updateUnit();
-        window.initGoogleBtn();
+        const select = document.getElementById('fruit-select-box');
+        Object.keys(fruitDB).forEach(f => {
+            const opt = document.createElement('option'); opt.value = f; opt.innerText = f; select.appendChild(opt);
+        });
+        initMap(); updateUI(); updateUnit(); window.initGoogleBtn();
     };
 </script>
 </body>
