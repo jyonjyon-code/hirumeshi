@@ -48,6 +48,7 @@
         .btn-load .big-go { font-family: 'Bangers', cursive; font-size: 48px; display: block; margin-top: 5px; color: var(--comic-yellow); -webkit-text-stroke: 2px var(--black); letter-spacing: 3px; }
         .btn-load:active { transform: translateY(4px); box-shadow: 0 2px 0 var(--black); }
 
+        /* 楽天リンク：色味を少し調整 */
         .rakuten-link { display: block; margin-top: 15px; background: #bf0000; color: white; text-align: center; padding: 12px; text-decoration: none; font-weight: 900; border: 4px solid var(--black); font-size: 14px; box-shadow: 4px 4px 0px var(--black); }
         .rakuten-link:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0px var(--black); }
 
@@ -132,7 +133,7 @@
             <div class="system-container">
                 <button class="btn-load" onclick="handleLoad()">果汁×荷重SYSTEM<span class="big-go">GO！</span></button>
             </div>
-            <a href="https://hb.afl.rakuten.co.jp/hgc/3f2089b0.6cc33df8.3f2089b1.1896894d/?pc=https%3A%2F%2Fsearch.rakuten.co.jp%2Fsearch%2Fmall%2F%25E6%259E%259C%25E7%2589%25A9%2F" target="_blank" class="rakuten-link">🛒 果汁給油（楽天で果物を探す）</a>
+            <a href="https://hb.afl.rakuten.co.jp/hgc/3f2089b0.6cc33df8.3f2089b1.1896894d/?pc=https%3A%2F%2Fsearch.rakuten.co.jp%2Fsearch%2Fmall%2F%25E6%259E%259C%25E7%2589%25A9%2F&m=https%3A%2F%2Fsearch.rakuten.co.jp%2Fsearch%2Fmall%2F%25E6%259E%259C%25E7%2589%25A9%2F" target="_blank" class="rakuten-link">🛒 果汁給油（楽天で果物を探す）</a>
         </div>
     </div>
 
@@ -144,7 +145,6 @@
 </div>
 
 <script type="module">
-    // --- 以下、既存ロジック（変更なし） ---
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
