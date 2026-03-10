@@ -252,12 +252,14 @@
         if(currentFruit) currentFruit.innerText = name;
     };
 
-    // 🍓 修正箇所：「今日イチ」と同じく検索語とURL全体を2重でエンコード
+    // 🍓 修正箇所：今日イチのロジックに合わせ、URL構成をより厳密に
     window.openRakuten = () => {
         const name = document.getElementById('fruit-select-box').value;
         const RAKUTEN_AFID = "3f2089b0.6cc33df8.3f2089b1.1896894d";
-        const searchUrl = 'https://search.rakuten.co.jp/search/mall/' + encodeURIComponent(name) + '/';
-        window.open(`https://hb.afl.rakuten.co.jp/hgc/${RAKUTEN_AFID}/?pc=${encodeURIComponent(searchUrl)}`, '_blank');
+        const searchKeyword = encodeURIComponent(name);
+        const searchUrl = 'https://search.rakuten.co.jp/search/mall/' + searchKeyword + '/';
+        const finalUrl = `https://hb.afl.rakuten.co.jp/hgc/${RAKUTEN_AFID}/?pc=${encodeURIComponent(searchUrl)}`;
+        window.open(finalUrl, '_blank');
     };
 
     window.switchTab = (tab, btn) => {
