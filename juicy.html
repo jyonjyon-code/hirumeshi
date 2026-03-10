@@ -248,17 +248,16 @@
     window.updateUnit = () => {
         const name = document.getElementById('fruit-select-box').value;
         document.getElementById('unit-label').innerText = fruitDB[name]?.isLiquid ? "ml" : "個";
-        // 追加：リンクの表示名を更新
         const currentFruit = document.getElementById('current-fruit-name');
         if(currentFruit) currentFruit.innerText = name;
     };
 
-    // 修正箇所：楽天検索を動的に行う関数
+    // 🍓 修正箇所：「今日イチ」と同じく検索語とURL全体を2重でエンコード
     window.openRakuten = () => {
         const name = document.getElementById('fruit-select-box').value;
-        const baseUrl = "https://hb.afl.rakuten.co.jp/hgc/3f2089b0.6cc33df8.3f2089b1.1896894d/?pc=";
-        const searchUrl = encodeURIComponent(`https://search.rakuten.co.jp/search/mall/${name}/`);
-        window.open(baseUrl + searchUrl, '_blank');
+        const RAKUTEN_AFID = "3f2089b0.6cc33df8.3f2089b1.1896894d";
+        const searchUrl = 'https://search.rakuten.co.jp/search/mall/' + encodeURIComponent(name) + '/';
+        window.open(`https://hb.afl.rakuten.co.jp/hgc/${RAKUTEN_AFID}/?pc=${encodeURIComponent(searchUrl)}`, '_blank');
     };
 
     window.switchTab = (tab, btn) => {
