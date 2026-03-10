@@ -25,27 +25,28 @@
         .tab-btn.active { background: white; color: var(--black); }
         .content-panel { display: none; padding: 15px; }
         .content-panel.active { display: block; }
-        .machine-selector { border: 4px solid var(--black); margin-bottom: 12px; background: #eee; padding: 12px; font-weight: 900; width: 100%; font-size: 16px; }
+        .machine-selector { border: 4px solid var(--black); margin-bottom: 12px; background: #eee; padding: 12px; font-weight: 900; width: 100%; border-radius: 0; cursor: pointer; font-size: 16px; }
         .parts-status { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
         .part-box { background: #222; border: 3px solid var(--black); padding: 10px 2px; color: var(--neon-green); text-align: center; }
-        .part-lv { color: var(--comic-yellow); font-weight: 900; font-size: 20px; display: block; }
+        .part-lv { color: var(--comic-yellow); font-weight: 900; font-size: 20px; display: block; margin-top: 2px; }
         .part-label { font-size: 10px; text-transform: uppercase; font-weight: 900; opacity: 0.9; }
         .engine-panel { background: #111; color: var(--neon-green); padding: 15px; font-family: 'Courier New', monospace; border: 4px solid var(--black); text-align: center; }
         #map { width: 100%; height: 240px; border: 4px solid var(--black); margin-bottom: 10px; background: #eee; }
         .status-bar { background: var(--black); color: white; padding: 15px; display: flex; justify-content: space-between; font-size: 16px; font-weight: 900; border-radius: 4px; }
         #dist-val, #today-val { color: var(--comic-yellow); font-size: 20px; }
-        .system-container { background: #222; border: 4px solid var(--black); padding: 15px; margin-top: 15px; box-shadow: inset 0 0 15px rgba(0,255,0,0.2); }
-        .btn-load { background: var(--comic-red); color: white; border: 5px solid var(--black); padding: 12px; font-weight: 900; font-size: 18px; width: 100%; cursor: pointer; box-shadow: 0 6px 0 var(--black); margin-top: 10px; transition: 0.1s; }
-        .btn-load .big-go { font-family: 'Bangers', cursive; font-size: 48px; display: block; color: var(--comic-yellow); -webkit-text-stroke: 2px var(--black); }
+        .system-container { background: #222; border: 4px solid var(--black); padding: 15px; margin-top: 15px; position: relative; box-shadow: inset 0 0 15px rgba(0,255,0,0.2); }
+        .btn-load { background: var(--comic-red); color: white; border: 5px solid var(--black); padding: 12px; font-weight: 900; font-size: 18px; width: 100%; cursor: pointer; box-shadow: 0 6px 0 var(--black); margin-top: 10px; position: relative; transition: 0.1s; line-height: 1.2; text-align: center; }
+        .btn-load .big-go { font-family: 'Bangers', cursive; font-size: 48px; display: block; margin-top: 5px; color: var(--comic-yellow); -webkit-text-stroke: 2px var(--black); letter-spacing: 3px; }
         .btn-load:active { transform: translateY(4px); box-shadow: 0 2px 0 var(--black); }
         .rakuten-link { display: block; margin-top: 15px; background: #bf0000; color: white; text-align: center; padding: 12px; text-decoration: none; font-weight: 900; border: 4px solid var(--black); font-size: 14px; box-shadow: 4px 4px 0px var(--black); cursor: pointer; }
-        .cal-nav { display: flex; justify-content: space-between; align-items: center; background: #000; color: #fff; padding: 12px; font-weight: 900; }
+        .cal-nav { display: flex; justify-content: space-between; align-items: center; background: #000; color: #fff; padding: 12px; font-weight: 900; font-size: 18px; }
+        .cal-nav button { background: var(--comic-yellow); border: 2px solid #000; font-weight: 900; cursor: pointer; padding: 8px 15px; font-size: 16px; }
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); border: 4px solid var(--black); background: #fff; }
         .cal-day { aspect-ratio: 1; border: 1px solid #eee; display: flex; align-items: center; justify-content: center; font-size: 16px; position: relative; font-weight: 900; cursor: pointer; }
         .cal-day.has-data::after { content: '🍊'; font-size: 10px; position: absolute; bottom: 2px; }
         .cal-day.selected { background: var(--comic-yellow); outline: 4px solid var(--black); z-index: 5; }
         #goal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; flex-direction: column; align-items: center; justify-content: center; color: var(--comic-yellow); text-align: center; font-family: 'Bangers', cursive; }
-        .history-item { border: 4px solid #000; margin-bottom: 8px; padding: 14px; display: flex; justify-content: space-between; align-items: center; background: white; font-weight: 900; }
+        .history-item { border: 4px solid #000; margin-bottom: 8px; padding: 14px; display: flex; justify-content: space-between; align-items: center; background: white; font-weight: 900; font-size: 16px; }
     </style>
 </head>
 <body>
@@ -82,21 +83,26 @@
             <option value="2" data-img="bike_1000.png" disabled>1000cc SUPER BIKE</option>
             <option value="3" data-img="space_rider.png" disabled>SPACE RIDER</option>
         </select>
+
         <div class="parts-status">
             <div class="part-box"><span class="part-label">Engine</span><span id="lv-eng" class="part-lv">Lv.1</span></div>
             <div class="part-box"><span class="part-label">Tire</span><span id="lv-tire" class="part-lv">Lv.1</span></div>
             <div class="part-box"><span class="part-label">Muffler</span><span id="lv-muff" class="part-lv">Lv.1</span></div>
         </div>
+
         <div class="engine-panel">
             <span id="engine-name" style="font-size: 24px; color: var(--comic-yellow); font-weight:900;">50cc MOPED</span><br>
             <span style="font-size: 12px; color: #fff;">NEXT GOAL: <span id="next-goal-name" style="color:var(--comic-yellow);">--</span></span><br>
             <span style="font-size: 20px; font-weight: 900; color: #fff;">あと <span id="next-goal-dist" style="color:var(--neon-green);">--</span> km</span>
         </div>
+        
         <div id="map"></div>
+        
         <div class="status-bar">
             <span>ODO: <span id="dist-val">0.0</span> km</span>
             <span>TODAY: <span id="today-val">0</span> / 500g</span>
         </div>
+
         <div class="fuel-controls" style="margin-top:10px;">
             <select id="fruit-select-box" style="width:100%; padding:14px; font-weight:900; border:4px solid #000; font-size:18px;" onchange="updateUnit()"></select>
             <div style="display:flex; align-items:center; margin-top:10px;">
@@ -106,7 +112,9 @@
             <div class="system-container">
                 <button class="btn-load" onclick="handleLoad()">果汁×荷重SYSTEM<span class="big-go">GO！</span></button>
             </div>
-            <div onclick="openRakuten()" class="rakuten-link">🛒 果汁給油（楽天で <span id="current-fruit-name">果物</span> を探す）</div>
+            <div onclick="openRakuten()" class="rakuten-link">
+                🛒 果汁給油（楽天で <span id="current-fruit-name">果物</span> を探す）
+            </div>
         </div>
     </div>
 
@@ -142,6 +150,7 @@
     let map, marker;
 
     const goals = [ { d: 50, n: "浅草寺" }, { d: 300, n: "厳島神社" }, { d: 8000, n: "エッフェル塔" }, { d: 40075, n: "地球一周" } ];
+    const machines = ["50cc MOPED", "250cc STREET", "1000cc SUPER BIKE", "SPACE RIDER"];
 
     window.initMap = async function() {
         if (!window.google || !google.maps.importLibrary) return;
@@ -181,6 +190,12 @@
         updateMapPosition();
     }
 
+    window.updateMachine = () => {
+        const select = document.getElementById('machine-select');
+        document.getElementById('engine-name').innerText = machines[select.value];
+        document.getElementById('user-img').src = select.options[select.selectedIndex].dataset.img;
+    };
+
     window.handleLoad = () => {
         const name = document.getElementById('fruit-select-box').value;
         const amount = parseFloat(document.getElementById('amount-in').value);
@@ -202,8 +217,8 @@
     window.openRakuten = () => {
         const name = document.getElementById('fruit-select-box').value;
         const RAKUTEN_AFID = "3f2089b0.6cc33df8.3f2089b1.1896894d";
-        // 🍓 ここが最重要：今日イチと同じURL構成
-        window.open('https://hb.afl.rakuten.co.jp/hgc/' + RAKUTEN_AFID + '/?pc=' + encodeURIComponent('https://search.rakuten.co.jp/search/mall/' + encodeURIComponent(name) + '/'), '_blank');
+        const searchUrl = 'https://search.rakuten.co.jp/search/mall/' + encodeURIComponent(name) + '/';
+        window.open('https://hb.afl.rakuten.co.jp/hgc/' + RAKUTEN_AFID + '/?pc=' + encodeURIComponent(searchUrl), '_blank');
     };
 
     window.switchTab = (tab, btn) => {
