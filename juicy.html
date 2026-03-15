@@ -201,7 +201,7 @@
         const amount = parseFloat(document.getElementById('amount-in').value);
         if (!amount || amount <= 0) return;
 
-        // ★ 画面に給油した果物名を表示（これをもとに楽天検索します）
+        // ★ 給油した果物名を確定表示
         document.getElementById('current-fruit-name').innerText = name;
 
         const data = fruitDB[name] || { weight: 100, rare: 1.0, part: "none" };
@@ -215,25 +215,24 @@
     window.updateUnit = () => {
         const name = document.getElementById('fruit-select-box').value;
         document.getElementById('unit-label').innerText = fruitDB[name]?.isLiquid ? "ml" : "個";
-        // セレクトボックスを変えた時も、一応表示名を更新しておく
-        document.getElementById('current-fruit-name').innerText = name;
     };
 
-    // ★ 楽天リンク：完全にリニューアルした確実な関数
+    // ★ 楽天リンク：楽天の推奨する「検索結果への直接リンク」形式に変更
     window.openRakuten = () => {
         const name = document.getElementById('current-fruit-name').innerText;
         const RAKUTEN_AFID = "3f2089b0.6cc33df8.3f2089b1.1896894d";
         
         let keyword = name;
-        if (name === "イチゴ") keyword = "あまおう ギフト";
-        if (name === "メロン") keyword = "クラウンメロン 静岡";
+        if (name === "イチゴ") keyword = "あまおう いちご ギフト";
+        if (name === "メロン") keyword = "クラウンメロン 訳あり";
+
+        // 【最重要】楽天アフィリエイトのカスタムリンク形式
+        // pcパラメータに渡す検索URLは、https://search.rakuten.co.jp/search/mall/キーワード/
+        const targetSearchUrl = "https://search.rakuten.co.jp/search/mall/" + encodeURIComponent(keyword) + "/";
         
-        // 楽天の検索URL（日本語をエンコード）
-        const searchUrl = "https://search.rakuten.co.jp/search/mall/" + encodeURIComponent(keyword) + "/";
-        
-        // アフィリエイト用URL：pcパラメータに「https://なし」のURLを渡すパターンが最も安定するため調整
-        const pcUrl = searchUrl.replace("https://", "");
-        const finalUrl = `https://hb.afl.rakuten.co.jp/hgc/${RAKUTEN_AFID}/?pc=${encodeURIComponent(pcUrl)}`;
+        // 楽天のゲートウェイURLを組み立て
+        // pc= 以下のURLは、さらに全体をエンコードする必要がある
+        const finalUrl = "https://hb.afl.rakuten.co.jp/hgc/" + RAKUTEN_AFID + "/?pc=" + encodeURIComponent(targetSearchUrl);
         
         window.open(finalUrl, '_blank');
     };
@@ -246,13 +245,7 @@
         if(tab === 'history') renderCalendar();
     };
 
-    window.changeMonth = (diff) => {
-        viewMonth += diff;
-        if (viewMonth < 0) { viewMonth = 11; viewYear--; }
-        if (viewMonth > 11) { viewMonth = 0; viewYear++; }
-        renderCalendar();
-    };
-
+    window.changeMonth = (diff) => { viewMonth += diff; if (viewMonth < 0) { viewMonth = 11; viewYear--; } if (viewMonth > 11) { viewMonth = 0; viewYear++; } renderCalendar(); };
     window.selectDate = (date) => { selectedDate = date; renderCalendar(); };
 
     function renderCalendar() {
@@ -279,20 +272,13 @@
 
     window.deleteItem = (id) => {
         const idx = history.findIndex(i => i.id === id);
-        if (idx > -1) {
-            totalDist = Math.max(0, totalDist - parseFloat(history[idx].km));
-            history.splice(idx, 1);
-            updateUI(); renderCalendar(); saveAll();
-        }
+        if (idx > -1) { totalDist = Math.max(0, totalDist - parseFloat(history[idx].km)); history.splice(idx, 1); updateUI(); renderCalendar(); saveAll(); }
     };
 
     async function saveAll() {
         localStorage.setItem('juicy_odo', totalDist);
         localStorage.setItem('juicy_history', JSON.stringify(history));
-        if (currentUid) {
-            await setDoc(doc(db, "juicy_rider", currentUid), { odo: totalDist, history: history }, { merge: true });
-            document.getElementById('sync-status').innerText = "☁️ CLOUD: ON";
-        }
+        if (currentUid) { await setDoc(doc(db, "juicy_rider", currentUid), { odo: totalDist, history: history }, { merge: true }); document.getElementById('sync-status').innerText = "☁️ CLOUD: ON"; }
     }
 
     window.handleCredentialResponse = async (response) => {
@@ -300,10 +286,7 @@
         currentUid = payload.sub;
         document.getElementById('user-greeting').innerText = `HI, ${payload.given_name?.toUpperCase()}!`;
         const docSnap = await getDoc(doc(db, "juicy_rider", currentUid));
-        if (docSnap.exists()) {
-            totalDist = Math.max(totalDist, docSnap.data().odo || 0);
-            history = docSnap.data().history || history;
-        }
+        if (docSnap.exists()) { totalDist = Math.max(totalDist, docSnap.data().odo || 0); history = docSnap.data().history || history; }
         updateUI(); saveAll();
     };
 
