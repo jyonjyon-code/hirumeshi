@@ -113,7 +113,7 @@
                 <button class="btn-load" onclick="handleLoad()">果汁×荷重SYSTEM<span class="big-go">GO！</span></button>
             </div>
             <div onclick="openRakuten()" class="rakuten-link">
-                🛒 果汁給油（楽天で <span id="current-fruit-name">果物</span> を探す）
+                🛒 果汁給油（楽天で <span id="current-fruit-name">オレンジ</span> を探す）
             </div>
         </div>
     </div>
@@ -142,7 +142,6 @@
 
     let totalDist = parseFloat(localStorage.getItem('juicy_odo')) || 0;
     let history = JSON.parse(localStorage.getItem('juicy_history')) || [];
-    let achievedGoals = JSON.parse(localStorage.getItem('juicy_achieved')) || [];
     let currentUid = null;
     let selectedDate = new Date().toISOString().split('T')[0];
     let viewMonth = new Date().getMonth();
@@ -175,16 +174,13 @@
         const todayG = history.filter(i => i.date === today).reduce((s, i) => s + i.grams, 0);
         document.getElementById('dist-val').innerText = totalDist.toFixed(1);
         document.getElementById('today-val').innerText = Math.round(todayG);
-        
         const calcLv = (p) => Math.floor(history.filter(h => (fruitDB[h.name]||{part:"none"}).part === p).reduce((s, h) => s + h.grams, 0) / 1000) + 1;
         document.getElementById('lv-eng').innerText = `Lv.${calcLv('eng')}`;
         document.getElementById('lv-tire').innerText = `Lv.${calcLv('tire')}`;
         document.getElementById('lv-muff').innerText = `Lv.${calcLv('muff')}`;
-        
         const next = goals.find(g => g.d > totalDist) || { d: 40075, n: "GALAXY" };
         document.getElementById('next-goal-name').innerText = next.n;
         document.getElementById('next-goal-dist').innerText = (next.d - totalDist).toFixed(1);
-
         const mSelect = document.getElementById('machine-select');
         for(let i=1; i<=3; i++) mSelect.options[i].disabled = totalDist < [100, 1000, 10000][i-1];
         updateMapPosition();
@@ -200,10 +196,7 @@
         const name = document.getElementById('fruit-select-box').value;
         const amount = parseFloat(document.getElementById('amount-in').value);
         if (!amount || amount <= 0) return;
-
-        // ★ 給油した果物名を確定表示
         document.getElementById('current-fruit-name').innerText = name;
-
         const data = fruitDB[name] || { weight: 100, rare: 1.0, part: "none" };
         const grams = data.isLiquid ? amount : (amount * data.weight);
         const addKM = (grams * data.rare / 100);
@@ -215,25 +208,18 @@
     window.updateUnit = () => {
         const name = document.getElementById('fruit-select-box').value;
         document.getElementById('unit-label').innerText = fruitDB[name]?.isLiquid ? "ml" : "個";
+        document.getElementById('current-fruit-name').innerText = name;
     };
 
-    // ★ 楽天リンク：楽天の推奨する「検索結果への直接リンク」形式に変更
     window.openRakuten = () => {
         const name = document.getElementById('current-fruit-name').innerText;
         const RAKUTEN_AFID = "3f2089b0.6cc33df8.3f2089b1.1896894d";
-        
         let keyword = name;
-        if (name === "イチゴ") keyword = "あまおう いちご ギフト";
-        if (name === "メロン") keyword = "クラウンメロン 訳あり";
-
-        // 【最重要】楽天アフィリエイトのカスタムリンク形式
-        // pcパラメータに渡す検索URLは、https://search.rakuten.co.jp/search/mall/キーワード/
-        const targetSearchUrl = "https://search.rakuten.co.jp/search/mall/" + encodeURIComponent(keyword) + "/";
-        
-        // 楽天のゲートウェイURLを組み立て
-        // pc= 以下のURLは、さらに全体をエンコードする必要がある
+        if (name === "イチゴ") keyword = "いちご ギフト";
+        if (name === "メロン") keyword = "メロン ギフト";
+        // ★ 楽天検索の基本URL（末尾にスラッシュを入れないのがコツ）
+        const targetSearchUrl = "https://search.rakuten.co.jp/search/mall/" + encodeURIComponent(keyword);
         const finalUrl = "https://hb.afl.rakuten.co.jp/hgc/" + RAKUTEN_AFID + "/?pc=" + encodeURIComponent(targetSearchUrl);
-        
         window.open(finalUrl, '_blank');
     };
 
@@ -302,7 +288,10 @@
         Object.keys(fruitDB).forEach(f => {
             const opt = document.createElement('option'); opt.value = f; opt.innerText = f; select.appendChild(opt);
         });
-        updateUI(); updateUnit(); window.initGoogleBtn();
+        // ★ 初期化時に画面上の果物名と単位をセット
+        updateUnit();
+        updateUI();
+        window.initGoogleBtn();
     };
 </script>
 </body>
