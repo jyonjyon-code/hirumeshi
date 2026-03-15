@@ -149,6 +149,9 @@
     let viewYear = new Date().getFullYear();
     let map, marker;
 
+    // ★ 楽天リンク保持用変数を追加
+    let currentRakutenUrl = "";
+
     const goals = [ { d: 50, n: "浅草寺" }, { d: 300, n: "厳島神社" }, { d: 8000, n: "エッフェル塔" }, { d: 40075, n: "地球一周" } ];
     const machines = ["50cc MOPED", "250cc STREET", "1000cc SUPER BIKE", "SPACE RIDER"];
 
@@ -200,6 +203,19 @@
         const name = document.getElementById('fruit-select-box').value;
         const amount = parseFloat(document.getElementById('amount-in').value);
         if (!amount || amount <= 0) return;
+
+        // --- ★ 楽天リンクの動的更新ロジックここから ---
+        const RAKUTEN_AFID = "3f2089b0.6cc33df8.3f2089b1.1896894d";
+        let keyword = name;
+        if (name === "イチゴ") keyword = "あまおう ギフト";
+        if (name === "メロン") keyword = "クラウンメロン 静岡";
+        
+        const searchUrl = 'https://search.rakuten.co.jp/search/mall/' + encodeURIComponent(keyword) + '/';
+        currentRakutenUrl = 'https://hb.afl.rakuten.co.jp/hgc/' + RAKUTEN_AFID + '/?pc=' + encodeURIComponent(searchUrl);
+        
+        document.getElementById('current-fruit-name').innerText = name;
+        // --- ★ 楽天リンクの動的更新ロジックここまで ---
+
         const data = fruitDB[name] || { weight: 100, rare: 1.0, part: "none" };
         const grams = data.isLiquid ? amount : (amount * data.weight);
         const addKM = (grams * data.rare / 100);
@@ -215,10 +231,13 @@
     };
 
     window.openRakuten = () => {
-        const name = document.getElementById('fruit-select-box').value;
-        const RAKUTEN_AFID = "3f2089b0.6cc33df8.3f2089b1.1896894d";
-        const searchUrl = 'https://search.rakuten.co.jp/search/mall/' + encodeURIComponent(name) + '/';
-        window.open('https://hb.afl.rakuten.co.jp/hgc/' + RAKUTEN_AFID + '/?pc=' + encodeURIComponent(searchUrl), '_blank');
+        // ★ 保存されているURLがあればそれを開き、なければデフォルト（果物）を生成して開く
+        if (!currentRakutenUrl) {
+            const RAKUTEN_AFID = "3f2089b0.6cc33df8.3f2089b1.1896894d";
+            const searchUrl = 'https://search.rakuten.co.jp/search/mall/' + encodeURIComponent("果物") + '/';
+            currentRakutenUrl = 'https://hb.afl.rakuten.co.jp/hgc/' + RAKUTEN_AFID + '/?pc=' + encodeURIComponent(searchUrl);
+        }
+        window.open(currentRakutenUrl, '_blank');
     };
 
     window.switchTab = (tab, btn) => {
