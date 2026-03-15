@@ -149,8 +149,8 @@
     let viewYear = new Date().getFullYear();
     let map, marker;
 
-    // ★ 楽天リンク保持用変数を追加
-    let currentRakutenUrl = "";
+    // ★ 最後に給油した果物名を保持（初期表示用）
+    let lastFueledFruit = "果物";
 
     const goals = [ { d: 50, n: "浅草寺" }, { d: 300, n: "厳島神社" }, { d: 8000, n: "エッフェル塔" }, { d: 40075, n: "地球一周" } ];
     const machines = ["50cc MOPED", "250cc STREET", "1000cc SUPER BIKE", "SPACE RIDER"];
@@ -204,17 +204,9 @@
         const amount = parseFloat(document.getElementById('amount-in').value);
         if (!amount || amount <= 0) return;
 
-        // --- ★ 楽天リンクの動的更新ロジックここから ---
-        const RAKUTEN_AFID = "3f2089b0.6cc33df8.3f2089b1.1896894d";
-        let keyword = name;
-        if (name === "イチゴ") keyword = "あまおう ギフト";
-        if (name === "メロン") keyword = "クラウンメロン 静岡";
-        
-        const searchUrl = 'https://search.rakuten.co.jp/search/mall/' + encodeURIComponent(keyword) + '/';
-        currentRakutenUrl = 'https://hb.afl.rakuten.co.jp/hgc/' + RAKUTEN_AFID + '/?pc=' + encodeURIComponent(searchUrl);
-        
+        // ★ 最後に給油した果物を記憶
+        lastFueledFruit = name;
         document.getElementById('current-fruit-name').innerText = name;
-        // --- ★ 楽天リンクの動的更新ロジックここまで ---
 
         const data = fruitDB[name] || { weight: 100, rare: 1.0, part: "none" };
         const grams = data.isLiquid ? amount : (amount * data.weight);
@@ -227,17 +219,27 @@
     window.updateUnit = () => {
         const name = document.getElementById('fruit-select-box').value;
         document.getElementById('unit-label').innerText = fruitDB[name]?.isLiquid ? "ml" : "個";
+        // 選択中の果物を表示（給油しなくても楽天ボタンに連動させたい場合はここでも更新）
         document.getElementById('current-fruit-name').innerText = name;
     };
 
     window.openRakuten = () => {
-        // ★ 保存されているURLがあればそれを開き、なければデフォルト（果物）を生成して開く
-        if (!currentRakutenUrl) {
-            const RAKUTEN_AFID = "3f2089b0.6cc33df8.3f2089b1.1896894d";
-            const searchUrl = 'https://search.rakuten.co.jp/search/mall/' + encodeURIComponent("果物") + '/';
-            currentRakutenUrl = 'https://hb.afl.rakuten.co.jp/hgc/' + RAKUTEN_AFID + '/?pc=' + encodeURIComponent(searchUrl);
-        }
-        window.open(currentRakutenUrl, '_blank');
+        // 現在の表示名（給油した果物、あるいは選択中の果物）を取得
+        const name = document.getElementById('current-fruit-name').innerText;
+        const RAKUTEN_AFID = "3f2089b0.6cc33df8.3f2089b1.1896894d";
+        
+        // 検索用キーワードの調整
+        let keyword = name;
+        if (name === "イチゴ") keyword = "あまおう ギフト";
+        if (name === "メロン") keyword = "クラウンメロン 静岡";
+        
+        // 1. 楽天の検索結果ページのURLを作成
+        const baseUrl = "https://search.rakuten.co.jp/search/mall/" + encodeURIComponent(keyword) + "/";
+        
+        // 2. アフィリエイトリンクの形式に組み立て（pcパラメータに1をエンコードして渡す）
+        const finalUrl = "https://hb.afl.rakuten.co.jp/hgc/" + RAKUTEN_AFID + "/?pc=" + encodeURIComponent(baseUrl);
+        
+        window.open(finalUrl, '_blank');
     };
 
     window.switchTab = (tab, btn) => {
