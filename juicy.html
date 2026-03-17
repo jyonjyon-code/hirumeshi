@@ -39,6 +39,10 @@
         .btn-load .big-go { font-family: 'Bangers', cursive; font-size: 48px; display: block; margin-top: 5px; color: var(--comic-yellow); -webkit-text-stroke: 2px var(--black); letter-spacing: 3px; }
         .btn-load:active { transform: translateY(4px); box-shadow: 0 2px 0 var(--black); }
         .rakuten-link { display: block; margin-top: 15px; background: #bf0000; color: white; text-align: center; padding: 12px; text-decoration: none; font-weight: 900; border: 4px solid var(--black); font-size: 14px; box-shadow: 4px 4px 0px var(--black); cursor: pointer; }
+        
+        /* ★ X報告ボタン追加 */
+        .x-share-btn { display: block; margin-top: 10px; background: #000; color: #fff; text-align: center; padding: 12px; text-decoration: none; font-weight: 900; border: 4px solid #fff; font-size: 14px; box-shadow: 4px 4px 0px var(--black); cursor: pointer; }
+
         .cal-nav { display: flex; justify-content: space-between; align-items: center; background: #000; color: #fff; padding: 12px; font-weight: 900; font-size: 18px; }
         .cal-nav button { background: var(--comic-yellow); border: 2px solid #000; font-weight: 900; cursor: pointer; padding: 8px 15px; font-size: 16px; }
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); border: 4px solid var(--black); background: #fff; }
@@ -114,6 +118,9 @@
             </div>
             <div onclick="openRakuten()" class="rakuten-link">
                 🛒 果汁給油（楽天で <span id="current-fruit-name">オレンジ</span> を探す）
+            </div>
+            <div onclick="shareX()" class="x-share-btn">
+                𝕏 爆走を報告する
             </div>
         </div>
     </div>
@@ -217,10 +224,18 @@
         let keyword = name;
         if (name === "イチゴ") keyword = "いちご ギフト";
         if (name === "メロン") keyword = "メロン ギフト";
-        // ★ 楽天検索の基本URL（末尾にスラッシュを入れないのがコツ）
         const targetSearchUrl = "https://search.rakuten.co.jp/search/mall/" + encodeURIComponent(keyword);
         const finalUrl = "https://hb.afl.rakuten.co.jp/hgc/" + RAKUTEN_AFID + "/?pc=" + encodeURIComponent(targetSearchUrl);
         window.open(finalUrl, '_blank');
+    };
+
+    /* ★ バズ狙いのX報告関数 */
+    window.shareX = () => {
+        const todayDist = document.getElementById('today-val').innerText;
+        const odo = document.getElementById('dist-val').innerText;
+        const text = `!!! JUICY RIDER ALERT !!!\n\n果汁を ${todayDist}g 搾り取ってマシンにブチ込んだぜ！\nODOメーターはついに ${odo}km を突破ッ！！\n\nこのフレッシュな爆走は誰にも止められない…！\nカモン、次のデスティネーション！！\n\n#JUICYRIDER #necotastudio #搾りたて爆走`;
+        const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(location.href)}`;
+        window.open(url, '_blank');
     };
 
     window.switchTab = (tab, btn) => {
@@ -288,7 +303,6 @@
         Object.keys(fruitDB).forEach(f => {
             const opt = document.createElement('option'); opt.value = f; opt.innerText = f; select.appendChild(opt);
         });
-        // ★ 初期化時に画面上の果物名と単位をセット
         updateUnit();
         updateUI();
         window.initGoogleBtn();
