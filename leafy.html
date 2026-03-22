@@ -42,13 +42,20 @@
         .radish-btn-top { background: #ff9800; color: white; border: none; padding: 15px 10px; border-radius: 15px; font-weight: bold; width: 100%; box-sizing: border-box; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; box-shadow: 0 4px 0 #e68a00; transition: 0.1s; }
         .radish-btn-top:active { transform: translateY(2px); box-shadow: 0 2px 0 #e68a00; }
 
+        /* Xシェアボタン共通 */
+        .x-share-mini { background: #000; color: white; border: none; border-radius: 20px; padding: 8px 15px; font-size: 0.8rem; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 5px; margin: 10px auto; }
+
         #calendar-page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--paper-white); z-index: 1100; display: none; flex-direction: column; overflow-y: auto; align-items: center; padding-bottom: 30px; }
         .cal-nav { display: flex; align-items: center; justify-content: space-between; width: 90%; margin: 20px 0; }
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; background: white; padding: 10px; border-radius: 20px; border: 2px solid var(--primary-green); width: 90%; max-width: 400px; }
-        .cal-day { height: 60px; background: #f9f9f9; border-radius: 8px; font-size: 10px; display: flex; flex-direction: column; align-items: center; padding-top: 5px; position: relative; }
+        .cal-day { height: 65px; background: #f9f9f9; border-radius: 8px; font-size: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; cursor: pointer; border: 2px solid transparent; }
+        .cal-day.active-day { border-color: var(--primary-green); background: #f0fff0; }
         .cal-header { font-weight: bold; color: var(--dark-green); padding: 5px 0; font-size: 12px; text-align: center; }
-        .leaf-dot { color: var(--primary-green); font-size: 14px; margin-top: 2px; }
+        .leaf-dot { color: var(--primary-green); font-size: 12px; margin-top: 2px; }
         .cal-score { font-size: 9px; font-weight: 900; color: var(--dark-green); }
+
+        /* カレンダーの詳細ログ表示用 */
+        #cal-detail-area { width: 90%; max-width: 400px; margin-top: 20px; background: white; border-radius: 15px; padding: 15px; border: 2px solid #ddd; }
 
         footer { margin-top: 30px; padding: 20px; text-align: center; width: 100%; border-top: 1px solid #ddd; background: #fff; }
         .footer-home-btn { background: var(--wood-brown); color: white; border: none; padding: 10px 25px; border-radius: 25px; font-weight: bold; cursor: pointer; margin-bottom: 10px; font-size: 0.9rem; }
@@ -77,6 +84,8 @@
     <div id="user-display" style="font-size: 14px; font-weight: bold; color: #444; margin-bottom: 8px;">読み込み中...</div>
     <div class="leaf-display">🍃 <span id="leaf-total">0</span> <small style="font-size: 1rem;">枚</small></div>
     
+    <button class="x-share-mini" onclick="shareTotal()"><i class="fab fa-x-twitter"></i> 蔵書の増築を報告</button>
+
     <div id="logged-in-actions" style="display:none;">
         <div class="action-btns">
             <button class="go-library" onclick="openLibrary()"><i class="fas fa-book"></i> 図書室へ</button>
@@ -129,6 +138,9 @@
         <span style="font-weight:bold; font-size:1.1rem;">Leafy Library 蔵書</span>
         <span>所蔵: <span id="lib-book-count">0</span>冊</span>
     </div>
+    <div style="text-align: center; padding-top: 10px;">
+        <button class="x-share-mini" onclick="shareLibrary()" style="background: #2d1b18; border: 1px solid #d7ccc8;"><i class="fab fa-x-twitter"></i> 司書報告を公開する</button>
+    </div>
     <div class="shelf-container" id="shelf-rows-container"></div>
 </div>
 
@@ -143,6 +155,12 @@
         <button class="m-btn" style="padding:5px 10px;" onclick="changeMonth(1)">▶</button>
     </div>
     <div class="calendar-grid" id="calendar-grid"></div>
+
+    <div id="cal-detail-area" style="display:none;">
+        <h4 id="cal-detail-date" style="margin-top:0; border-bottom: 2px solid var(--primary-green); padding-bottom: 5px;"></h4>
+        <div id="cal-detail-logs" style="font-size: 0.9rem; line-height: 1.6;"></div>
+        <button class="x-share-mini" id="cal-share-btn" onclick="shareDaily()"><i class="fab fa-x-twitter"></i> この日の活動をシェア</button>
+    </div>
 </div>
 
 <div class="overlay" id="overlay" onclick="closePanel()"></div>
@@ -162,7 +180,7 @@
     const RAKUTEN_AFID = "51366796.8818598a.51366797.ddbb51d0";
     const vData = { "定番葉物": ["キャベツ", "レタス", "白菜", "ほうれん草", "小松菜", "チンゲン菜"], "香味ハーブ": ["大葉", "茗荷", "ニラ", "パクチー", "バジル", "パセリ", "ルッコラ"], "サラダ葉": ["ケール", "水菜", "ベビーリーフ", "トレビス", "サニーレタス"], "その他": ["明日葉", "モロヘイヤ", "豆苗", "春菊", "セロリ"] };
     const dData = { "和風": { "お浸し": 2, "胡麻和え": 2, "浅漬け": 2, "天ぷら": 3, "野菜炒め": 3, "白和え": 3, "筑前煮": 3, "冷奴の大葉のせ": 2, "茗荷の甘酢漬け": 2 }, "洋風": { "サラダ": 2, "ロールキャベツ": 3, "バジルパスタ": 2, "ポトフ": 3, "ほうれん草ソテー": 2, "コールスロー": 2, "ケールチップス": 3, "ラタトゥイユ": 4, "バーニャカウダ": 4 }, "中華・エスニック": { "青椒肉絲": 3, "回鍋肉": 3, "パクチーサラダ": 3, "空芯菜炒め": 3, "餃子（ニラたっぷり）": 4, "八宝菜": 4, "ガパオライス": 3, "生春巻き": 3 }, "スープ・飲み物": { "青汁": 1, "スムージー": 2, "野菜スープ": 2, "ミネストローネ": 3, "味噌汁（葉物入り）": 2, "ポタージュ": 3 } };
-    const rarities = { C: { color: "#9e9e9e", price: 20 }, U: { color: "#2196f3", price: 100 }, R: { color: "#9c27b0", price: 300 }, E: { color: "#ff9800", price: 800 }, L: { color: "#d4af37", price: 2500 } };
+    const rarities = { C: { label:"Common", color: "#9e9e9e", price: 20 }, U: { label:"Uncommon", color: "#2196f3", price: 100 }, R: { label:"Rare", color: "#9c27b0", price: 300 }, E: { label:"Epic", color: "#ff9800", price: 800 }, L: { label:"Legendary", color: "#d4af37", price: 2500 } };
     const bookMaster = [ { id: 1, title: "キャベツと鬼退治の旅", rare: "C", desc: "キャベツの昔話。", kw: "キャベツ 絵本" }, { id: 2, title: "森の魔法使いと緑の杖", rare: "U", desc: "ほうれん草の杖。", kw: "ほうれん草 魔法" }, { id: 3, title: "迷宮のレタス姫", rare: "R", desc: "レタス栽培サバイバル。", kw: "レタス 本" }, { id: 4, title: "銀河へ飛ぶハーブ船", rare: "E", desc: "パクチー号のSF。", kw: "パクチー 育て方" }, { id: 5, title: "翡翠の司書と禁断の葉", rare: "L", desc: "世界の真実の記録。", kw: "司書 小説" }, { id: 6, title: "小松菜の騎士道", rare: "C", desc: "鉄分豊富な騎士道。", kw: "小松菜 レシピ" }, { id: 7, title: "バジルと秘密の調味料", rare: "U", desc: "美食の冒険。", kw: "バジル 料理本" }, { id: 8, title: "白菜の降る night に", rare: "R", desc: "冬の奇跡の物語。", kw: "白菜 専門書" }, { id: 9, title: "ケールの巨人と空の庭", rare: "E", desc: "天空の庭園守護記。", kw: "ケール 健康本" }, { id: 10, title: "伝説の野菜使い・第一巻", rare: "L", desc: "野菜を操る戦士の歴史。", kw: "伝説 野菜 歴史" } ];
 
     let myLeaves = null;
@@ -170,6 +188,7 @@
     let fullHistory = [];
     let currentCalDate = new Date();
     let currentMode = 'veg';
+    let selectedCalKey = null; // カレンダーで選択中の日付
     const todayStr = () => new Date().toLocaleDateString("ja-JP");
 
     window.login = async () => { try { await signInWithPopup(auth, provider); } catch (e) { console.error(e); } };
@@ -211,7 +230,6 @@
         updateUI(); await sync();
     };
 
-    // 修正機能：指定したIDのログを削除する
     window.deleteEntry = async (id) => {
         const index = fullHistory.findIndex(h => h.id === id);
         if (index > -1) {
@@ -241,7 +259,12 @@
     }
 
     window.openCalendar = () => { renderCalendar(); document.getElementById('calendar-page').style.display = 'flex'; };
-    window.closeCalendar = () => { document.getElementById('calendar-page').style.display = 'none'; };
+    window.closeCalendar = () => { 
+        document.getElementById('calendar-page').style.display = 'none'; 
+        document.getElementById('cal-detail-area').style.display = 'none';
+        selectedCalKey = null;
+    };
+
     function renderCalendar() {
         const year = currentCalDate.getFullYear(); const month = currentCalDate.getMonth();
         document.getElementById('cal-title').innerText = `${year}年 ${month + 1}月`;
@@ -255,10 +278,30 @@
         for(let i=0; i<firstDay; i++) html += '<div></div>';
         for(let d=1; d<=lastDate; d++) {
             const key = `${year}-${month+1}-${d}`; const score = dailyTotals[key] || 0;
-            html += `<div class="cal-day">${d}${score > 0 ? `<i class="fas fa-leaf leaf-dot"></i><span class="cal-score">${score}</span>` : ''}</div>`;
+            const activeClass = score > 0 ? 'active-day' : '';
+            html += `<div class="cal-day ${activeClass}" onclick="showCalDetail('${key}', ${d})">
+                ${d}${score > 0 ? `<i class="fas fa-leaf leaf-dot"></i><span class="cal-score">${score}</span>` : ''}
+            </div>`;
         }
         document.getElementById('calendar-grid').innerHTML = html;
     }
+
+    window.showCalDetail = (key, dayNum) => {
+        selectedCalKey = key;
+        const logs = fullHistory.filter(h => {
+            const d = new Date(h.timestamp);
+            const k = `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+            return k === key;
+        });
+        
+        const area = document.getElementById('cal-detail-area');
+        if (logs.length === 0) { area.style.display = 'none'; return; }
+        
+        area.style.display = 'block';
+        document.getElementById('cal-detail-date').innerText = `${key.replace(/-/g, '/')} の活動記録`;
+        document.getElementById('cal-detail-logs').innerHTML = logs.map(l => `・${l.name} (+${l.val})`).join('<br>');
+    };
+
     window.changeMonth = (delta) => { currentCalDate.setMonth(currentCalDate.getMonth() + delta); renderCalendar(); };
 
     window.openLibrary = () => { renderLibrary(); document.getElementById('library-page').style.display = 'flex'; };
@@ -306,10 +349,37 @@
     };
     window.showPanel = (id) => {
         let b = bookMaster.find(x => x.id === id);
-        document.getElementById('panel-content').innerHTML = `<h3>『${b.title}』</h3><p>${b.desc}</p><button class="rakuten-btn" onclick="window.open('https://hb.afl.rakuten.co.jp/hgc/${RAKUTEN_AFID}/?pc=${encodeURIComponent('https://search.rakuten.co.jp/search/mall/'+b.kw+'/')}')">楽天で探す</button>`;
+        document.getElementById('panel-content').innerHTML = `<h3>『${b.title}』</h3><p style="font-size:0.8rem; color:#999;">Rare: ${rarities[b.rare].label}</p><p>${b.desc}</p><button class="rakuten-btn" onclick="window.open('https://hb.afl.rakuten.co.jp/hgc/${RAKUTEN_AFID}/?pc=${encodeURIComponent('https://search.rakuten.co.jp/search/mall/'+b.kw+'/')}')">楽天で探す</button>`;
         document.getElementById('panel').style.display = 'block'; document.getElementById('overlay').style.display = 'block';
     };
     window.closePanel = () => { document.getElementById('panel').style.display = 'none'; document.getElementById('overlay').style.display = 'none'; };
+
+    /* --- Xシェア機能 --- */
+    window.shareTotal = () => {
+        const text = `【Leafy Library 司書日誌】\n\n日々の収穫が実を結び、累計はっぱ数が ${myLeaves} 枚に到達しました。🍃\n少しずつ、図書室が緑に染まっていくのを感じます。\n\n#LeafyLibrary #葉もの図書館 #necotastudio`;
+        const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(location.href)}`;
+        window.open(url, '_blank');
+    };
+
+    window.shareLibrary = () => {
+        const text = `【Leafy Library 蔵書報告】\n\n現在の蔵書数は ${myBooks.length} 冊。\n静かな棚には、緑の知恵が詰まった本が並んでいます。📖✨\nぜひ、私の図書室へ遊びに来てください。\n\n#LeafyLibrary #葉もの図書館 #necotastudio`;
+        const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(location.href)}`;
+        window.open(url, '_blank');
+    };
+
+    window.shareDaily = () => {
+        if (!selectedCalKey) return;
+        const logs = fullHistory.filter(h => {
+            const d = new Date(h.timestamp);
+            return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}` === selectedCalKey;
+        });
+        const total = logs.reduce((s, l) => s + l.val, 0);
+        const names = Array.from(new Set(logs.map(l => l.name))).join('、');
+        
+        const text = `【Leafy Library 今日の収穫】\n\n${selectedCalKey.replace(/-/g, '/')} は、${names} などを摂取しました。🥬\n本日のはっぱ獲得数：${total} 枚\n\n健やかな一日を、緑とともに。🍃\n#LeafyLibrary #葉もの図書館 #necotastudio`;
+        const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(location.href)}`;
+        window.open(url, '_blank');
+    };
 
     switchMode('veg');
 </script>
