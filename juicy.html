@@ -39,8 +39,6 @@
         .btn-load .big-go { font-family: 'Bangers', cursive; font-size: 48px; display: block; margin-top: 5px; color: var(--comic-yellow); -webkit-text-stroke: 2px var(--black); letter-spacing: 3px; }
         .btn-load:active { transform: translateY(4px); box-shadow: 0 2px 0 var(--black); }
         .rakuten-link { display: block; margin-top: 15px; background: #bf0000; color: white; text-align: center; padding: 12px; text-decoration: none; font-weight: 900; border: 4px solid var(--black); font-size: 14px; box-shadow: 4px 4px 0px var(--black); cursor: pointer; }
-        
-        /* ★ X報告ボタン追加 */
         .x-share-btn { display: block; margin-top: 10px; background: #000; color: #fff; text-align: center; padding: 12px; text-decoration: none; font-weight: 900; border: 4px solid #fff; font-size: 14px; box-shadow: 4px 4px 0px var(--black); cursor: pointer; }
 
         .cal-nav { display: flex; justify-content: space-between; align-items: center; background: #000; color: #fff; padding: 12px; font-weight: 900; font-size: 18px; }
@@ -51,6 +49,11 @@
         .cal-day.selected { background: var(--comic-yellow); outline: 4px solid var(--black); z-index: 5; }
         #goal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; flex-direction: column; align-items: center; justify-content: center; color: var(--comic-yellow); text-align: center; font-family: 'Bangers', cursive; }
         .history-item { border: 4px solid #000; margin-bottom: 8px; padding: 14px; display: flex; justify-content: space-between; align-items: center; background: white; font-weight: 900; font-size: 16px; }
+
+        /* 追加：ヘルプボタンとポップアップのスタイル */
+        #help-trigger { position: absolute; right: 10px; top: 10px; background: var(--comic-yellow); color: var(--black); border: 3px solid var(--black); width: 30px; height: 30px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-weight: 900; cursor: pointer; z-index: 11; box-shadow: 3px 3px 0px var(--black); }
+        #help-popup { display: none; position: absolute; top: 50px; right: 10px; width: 280px; background: white; border: 5px solid var(--black); box-shadow: 8px 8px 0px var(--black); z-index: 1000; padding: 15px; text-align: left; font-size: 13px; color: var(--black); line-height: 1.4; }
+        #help-popup b { color: var(--comic-red); font-size: 15px; }
     </style>
 </head>
 <body>
@@ -61,6 +64,18 @@
 </div>
 
 <div class="app-card">
+    <!-- ヘルプボタンを追加 -->
+    <div id="help-trigger" onclick="toggleHelp()">?</div>
+    <!-- ヘルプポップアップを追加 -->
+    <div id="help-popup">
+        <div style="font-family: 'Bangers'; font-size: 24px; border-bottom: 3px solid var(--black); margin-bottom: 10px;">HOW TO RIDE!!</div>
+        <p><b>1. 果汁を給油せよ！</b><br>食べたフルーツの種類と量（個数やml）を入力して「GO！」をタップ。果汁の重さがそのままマシンの推進力に変わるぜ！</p>
+        <p><b>2. パーツを強化せよ！</b><br>フルーツの種類によって「Engine」「Tire」「Muffler」の経験値が貯まる。1000gごとにLvアップだ！</p>
+        <p><b>3. 新車をアンロックせよ！</b><br>走行距離（ODO）が伸びれば、より強力なマシンに乗り換え可能になるぞ！</p>
+        <p><b>4. 爆走を記録せよ！</b><br>「FUEL LOG」タブで過去の給油履歴を確認できる。毎日搾り取って世界を目指せ！</p>
+        <button onclick="toggleHelp()" style="width:100%; background:var(--black); color:white; border:none; padding:8px; font-weight:900; cursor:pointer; margin-top:5px;">CLOSE</button>
+    </div>
+
     <div id="login-banner">
         <div class="banner-top">
             <span id="user-greeting">PLEASE LOGIN -></span>
@@ -158,6 +173,12 @@
     const goals = [ { d: 50, n: "浅草寺" }, { d: 300, n: "厳島神社" }, { d: 8000, n: "エッフェル塔" }, { d: 40075, n: "地球一周" } ];
     const machines = ["50cc MOPED", "250cc STREET", "1000cc SUPER BIKE", "SPACE RIDER"];
 
+    // 追加：ヘルプ表示・非表示の関数
+    window.toggleHelp = () => {
+        const popup = document.getElementById('help-popup');
+        popup.style.display = (popup.style.display === 'block') ? 'none' : 'block';
+    }
+
     window.initMap = async function() {
         if (!window.google || !google.maps.importLibrary) return;
         const { Map } = await google.maps.importLibrary("maps");
@@ -229,7 +250,6 @@
         window.open(finalUrl, '_blank');
     };
 
-    /* ★ バズ狙いのX報告関数 */
     window.shareX = () => {
         const todayDist = document.getElementById('today-val').innerText;
         const odo = document.getElementById('dist-val').innerText;
