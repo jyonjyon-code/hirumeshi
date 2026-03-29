@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vitanic v0.3 - Bio-Vitamin Mechanics</title>
+    <style>
+        :root {
+            --primary-bg: #f8fafc;
+            --vitanic-green: #27ae60;
+            --vitanic-blue: #3498db;
+            --vitanic-red: #e74c3c;
+            --vitanic-gold: #f1c40f;
+            --dark-text: #2c3e50;
+        }
+
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--primary-bg); padding: 20px; color: var(--dark-text); margin: 0; }
+        .container { max-width: 900px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+        
+        h1 { text-align: center; color: var(--dark-text); letter-spacing: 2px; margin-bottom: 5px; }
+        .subtitle { text-align: center; color: #7f8c8d; font-size: 0.9em; margin-bottom: 30px; }
+
+        /* 🔬 錬成マニュアル */
+        .intro-box {
+            background: #ebf5fb;
+            border-left: 5px solid var(--vitanic-blue);
+            padding: 15px;
+            margin-bottom: 25px;
+            font-size: 0.85em;
+            line-height: 1.6;
+            border-radius: 0 8px 8px 0;
+        }
+        .step-title { color: var(--vitanic-blue); font-weight: bold; display: block; margin-bottom: 3px; }
+
+        /* スライダーセクション */
+        .vitamin-controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px; }
+        .control-group { border: 1px solid #eee; padding: 12px; border-radius: 10px; background: #fff; transition: transform 0.2s; }
+        .control-group:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        label { display: block; font-weight: bold; margin-bottom: 8px; font-size: 0.8em; color: #555; }
+        input[type=range] { width: 100%; cursor: pointer; accent-color: var(--vitanic-green); }
+        .val-display { float: right; color: var(--vitanic-blue); font-family: monospace; }
+
+        /* 命名セクション */
+        .naming-section { text-align: center; margin: 30px 0; padding: 20px; background: #f9f9f9; border-radius: 12px; }
+        #unit-name { padding: 12px; font-size: 1.1em; border: 2px solid var(--vitanic-green); border-radius: 8px; width: 70%; text-align: center; outline: none; }
+        
+        /* 錬成ボタン */
+        button#generate-btn { 
+            display: block; width: 100%; padding: 18px; font-size: 1.3em; font-weight: bold;
+            background: linear-gradient(135deg, var(--vitanic-green), #2ecc71); 
+            color: white; border: none; border-radius: 12px; cursor: pointer; 
+            transition: all 0.3s; box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+        }
+        button#generate-btn:hover { transform: scale(1.01); filter: brightness(1.1); }
+
+        /* 結果表示エリア */
+        #result-area { margin-top: 40px; padding: 25px; border: 3px double var(--vitanic-green); border-radius: 15px; display: none; background: #fff; animation: fadeIn 0.8s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .result-header { text-align: center; font-size: 1.6em; color: var(--vitanic-green); font-weight: bold; margin-bottom: 20px; }
+        
+        .ai-comment { margin: 15px 0; padding: 12px; background: #fdfefe; border: 1px solid #d5dbdb; border-radius: 8px; font-style: italic; color: #5d6d7e; font-size: 0.9em; }
+        .ai-comment::before { content: "🤖 Vitanic AI: "; font-weight: bold; color: var(--dark-text); }
+
+        /* マッチンググラフ */
+        .match-bar { height: 24px; background-color: #f0f0f0; border-radius: 12px; overflow: hidden; margin-bottom: 12px; position: relative; }
+        .match-bar-fill { height: 100%; background: linear-gradient(90deg, var(--vitanic-gold), #f39c12); width: 0%; transition: width 1s ease-out; }
+        .match-text { position: absolute; left: 12px; top: 0; font-size: 0.85em; line-height: 24px; color: #333; font-weight: bold; }
+
+        /* 共有セクション */
+        .share-section { margin-top: 30px; text-align: center; border-top: 1px solid #eee; padding-top: 20px; }
+        .x-share-btn { 
+            background-color: #000; color: white; border: none; padding: 12px 25px; 
+            border-radius: 30px; font-weight: bold; cursor: pointer; text-decoration: none; 
+            display: inline-flex; align-items: center; gap: 10px; transition: 0.3s;
+        }
+        .x-share-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>VITANIC</h1>
+    <div class="subtitle">BIO-VITAMIN MECHANICS - 次世代生体ユニット錬成システム</div>
+
+    <div class="intro-box">
+        <span class="step-title">🔬 錬成（REFINING）マニュアル</span>
+        1. 13種類のスライダーを操作し、ビタミン含有パラメータを定義します。<br>
+        2. 赤枠は脂溶性（蓄積型）、青・黄枠は水溶性（代謝型）のバイオ成分です。<br>
+        3. 独自のユニット名を決定し「錬成」を実行。上位5属の特性を融合したユニットが生成されます。
+    </div>
+
+    <div class="vitamin-controls">
+        <!-- 脂溶性 -->
+        <div class="control-group" style="border-top: 4px solid var(--vitanic-red);">
+            <label>Vit-A (μgRAE) <span id="val-A" class="val-display">500</span></label>
+            <input type="range" id="vit-A" min="0" max="3000" value="500" oninput="updateVal('A')">
+        </div>
+        <div class="control-group" style="border-top: 4px solid var(--vitanic-red);">
+            <label>Vit-D (μg) <span id="val-D" class="val-display">5</span></label>
+            <input type="range" id="vit-D" min="0" max="100" value="5" oninput="updateVal('D')">
+        </div>
+        <div class="control-group" style="border-top: 4px solid var(--vitanic-red);">
+            <label>Vit-E (mg) <span id="val-E" class="val-display">7</span></label>
+            <input type="range" id="vit-E" min="0" max="100" value="7" oninput="updateVal('E')">
+        </div>
+        <div class="control-group" style="border-top: 4px solid var(--vitanic-red);">
+            <label>Vit-K (μg) <span id="val-K" class="val-display">150</span></label>
+            <input type="range" id="vit-K" min="0" max="1000" value="150" oninput="updateVal('K')">
+        </div>
+
+        <!-- 水溶性 C -->
+        <div class="control-group" style="border-top: 4px solid var(--vitanic-gold);">
+            <label>Vit-C (mg) <span id="val-C" class="val-display">100</span></label>
+            <input type="range" id="vit-C" min="0" max="2000" value="100" oninput="updateVal('C')">
+        </div>
+
+        <!-- 水溶性 B群 -->
+        <div class="control-group" style="border-top: 4px solid var(--vitanic-blue);">
+            <label>Vit-B1 (mg) <span id="val-B1" class="val-display">1.2</span></label>
+            <input type="range" id="vit-B1" min="0" max="10" value="1.2" step="0.1" oninput="updateVal('B1')">
+        </div>
+        <div class="control-group" style="border-top: 4px solid var(--vitanic-blue);">
+            <label>Vit-B2 (mg) <span id="val-B2" class="val-display">1.4</span></label>
+            <input type="range" id="vit-B2" min="0" max="10" value="1.4" step="0.1" oninput="updateVal('B2')">
+        </div>
+        <div class="control-group" style="border-top: 4px solid var(--vitanic-blue);">
+            <label>Vit-B6 (mg) <span id="val-B6" class="val-display">1.3</span></label>
+            <input type="range" id="vit-B6" min="0" max="10" value="1.3" step="0.1" oninput="updateVal('B6')">
+        </div>
+        <div class="control-group" style="border-top: 4px solid var(--vitanic-blue);">
+            <label>Vit-B12 (μg) <span id="val-B12" class="val-display">2.4</span></label>
+            <input type="range" id="vit-B12" min="0" max="50" value="2.4" step="0.1" oninput="updateVal('B12')">
+        </div>
+        <div class="control-group" style="border-top: 4px solid var(--vitanic-blue);">
+            <label>Niacin (mgNE) <span id="val-Niacin" class="val-display">15</span></label>
+            <input type="range" id="vit-Niacin" min="0" max="100" value="15" oninput="updateVal('Niacin')">
+        </div>
+        <div class="control-group" style="border-top: 4px solid var(--vitanic-blue);">
+            <label>Pantothenic (mg) <span id="val-Panto" class="val-display">5</span></label>
+            <input type="range" id="vit-Panto" min="0" max="50" value="5" oninput="updateVal('Panto')">
+        </div>
+        <div class="control-group" style="border-top: 4px solid var(--vitanic-blue);">
+            <label>Folate (μg) <span id="val-Folate" class="val-display">240</span></label>
+            <input type="range" id="vit-Folate" min="0" max="1000" value="240" oninput="updateVal('Folate')">
+        </div>
+        <div class="control-group" style="border-top: 4px solid var(--vitanic-blue);">
+            <label>Biotin (μg) <span id="val-Biotin" class="val-display">50</span></label>
+            <input type="range" id="vit-Biotin" min="0" max="500" value="50" oninput="updateVal('Biotin')">
+        </div>
+    </div>
+
+    <div class="naming-section">
+        <label for="unit-name">生体ユニット識別名（UNIT NAME）：</label><br><br>
+        <input type="text" id="unit-name" placeholder="例：V-TOMATO MK-I" value="NEW-UNIT-01">
+    </div>
+
+    <button id="generate-btn" onclick="refineUnit()">⚡ 錬成プロセスを開始 ⚡</button>
+
+    <div id="result-area">
+        <div class="result-header">REFINING COMPLETE</div>
+        
+        <div style="text-align: center;">
+            <!-- 画像プレースホルダー（将来的にAI生成画像を表示） -->
+            <div id="unit-visual" style="width:280px; height:280px; background:#f0f0f0; margin:0 auto 20px; border-radius:20px; display:flex; align-items:center; justify-content:center; border: 4px solid var(--vitanic-green); overflow: hidden;">
+                <span style="color:#999; font-size:0.8em; padding:20px; text-align:center;">[5属融合ハイブリッド画像<br>GENESIS ENGINE]</span>
+            </div>
+            
+            <span style="font-size: 2.2em; font-weight: bold; color: var(--dark-text);" id="res-name"></span>
+            <div id="ai-advice" class="ai-comment"></div>
+            <p style="font-size: 0.9em; color: #7f8c8d; margin-top: 20px;">構成マトリックス（上位5属の融合比率）：</p>
+        </div>
+        
+        <div id="match-results"></div>
+
+        <div class="share-section">
+            <a id="x-share-link" href="#" target="_blank" class="x-share-btn">
+                 X で錬成報告をポストする
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    function updateVal(id) {
+        document.getElementById('val-' + id).innerText = document.getElementById('vit-' + id).value;
+    }
+
+    // Vitanic 構成参照データベース
+    const ref_foods = [
+        { name: 'LEMON (C-Type)', vits: { A: 10, D: 0, E: 1, K: 0, C: 1000, B1: 0.1, B2: 0.1, B6: 0.1, B12: 0, Niacin: 1, Panto: 0.1, Folate: 10, Biotin: 1 } },
+        { name: 'CARROT (A-Type)', vits: { A: 1000, D: 0, E: 1, K: 20, C: 10, B1: 0.1, B2: 0.1, B6: 0.1, B12: 0, Niacin: 1, Panto: 0.1, Folate: 10, Biotin: 1 } },
+        { name: 'SPINACH (K/F-Type)', vits: { A: 300, D: 0, E: 2, K: 500, C: 50, B1: 0.1, B2: 0.2, B6: 0.2, B12: 0, Niacin: 1, Panto: 0.1, Folate: 200, Biotin: 1 } },
+        { name: 'MOROHEIYA (B-Multi)', vits: { A: 500, D: 0, E: 5, K: 300, C: 80, B1: 0.3, B2: 0.5, B6: 0.3, B12: 0, Niacin: 2, Panto: 1, Folate: 100, Biotin: 5 } },
+        { name: 'SHIITAKE (D-Type)', vits: { A: 0, D: 20, E: 0, K: 0, C: 0, B1: 0.1, B2: 0.2, B6: 0.1, B12: 0, Niacin: 4, Panto: 1, Folate: 20, Biotin: 2 } },
+        { name: 'AVOCADO (E-Type)', vits: { A: 10, D: 0, E: 3.3, K: 26, C: 15, B1: 0.1, B2: 0.1, B6: 0.3, B12: 0, Niacin: 2, Panto: 1.5, Folate: 80, Biotin: 1 } }
+    ];
+
+    function refineUnit() {
+        const name = document.getElementById('unit-name').value;
+        const resultArea = document.getElementById('result-area');
+        
+        const user_vits = {
+            A: parseFloat(document.getElementById('vit-A').value),
+            D: parseFloat(document.getElementById('vit-D').value),
+            E: parseFloat(document.getElementById('vit-E').value),
+            K: parseFloat(document.getElementById('vit-K').value),
+            C: parseFloat(document.getElementById('vit-C').value),
+            B1: parseFloat(document.getElementById('vit-B1').value),
+            B2: parseFloat(document.getElementById('vit-B2').value),
+            B6: parseFloat(document.getElementById('vit-B6').value),
+            B12: parseFloat(document.getElementById('vit-B12').value),
+            Niacin: parseFloat(document.getElementById('vit-Niacin').value),
+            Panto: parseFloat(document.getElementById('vit-Panto').value),
+            Folate: parseFloat(document.getElementById('vit-Folate').value),
+            Biotin: parseFloat(document.getElementById('vit-Biotin').value)
+        };
+
+        // マッチングスコア計算
+        let food_scores = ref_foods.map(food => {
+            let score = 0;
+            if (user_vits.C > 500) score += (user_vits.C / 1000) * 10;
+            if (user_vits.A > 500) score += (user_vits.A / 1000) * 8;
+            if (user_vits.K > 300) score += (user_vits.K / 500) * 8;
+            if (user_vits.D > 10) score += (user_vits.D / 20) * 12;
+            if (user_vits.Folate > 400) score += (user_vits.Folate / 800) * 7;
+            if (user_vits.E > 20) score += (user_vits.E / 50) * 6;
+            return { name: food.name, score: score };
+        });
+
+        food_scores.sort((a, b) => b.score - a.score);
+        const top5 = food_scores.slice(0, 5);
+        const total_score = top5.reduce((sum, f) => sum + f.score, 0);
+
+        // 表示処理
+        document.getElementById('res-name').innerText = "「" + name + "」";
+        resultArea.style.display = 'block';
+
+        const matchResultsDiv = document.getElementById('match-results');
+        matchResultsDiv.innerHTML = '';
+
+        top5.forEach(fs => {
+            const percentage = total_score > 0 ? Math.round((fs.score / total_score) * 90) : 0;
+            if (percentage > 0) {
+                matchResultsDiv.innerHTML += `
+                    <div class="match-bar">
+                        <div class="match-bar-fill" style="width: ${percentage}%;"></div>
+                        <span class="match-text">${fs.name} ${percentage}%</span>
+                    </div>`;
+            }
+        });
+
+        // AIアドバイス
+        let advice = "バランスの良い配合です。汎用性の高い生体ユニットとして機能するでしょう。";
+        if (user_vits.C > 1500) advice = "圧倒的なC-Typeエネルギー。抗酸化パルスにより老化を拒絶する個体です。";
+        else if (user_vits.A > 2500) advice = "A-Typeの視覚強化個体。暗所での活動に特化したバイオ・メカニクスです。";
+        else if (user_vits.D > 50) advice = "希少なD-Type反応を検出。骨格強度が大幅に強化されています。";
+        document.getElementById('ai-advice').innerText = advice;
+
+        // X共有リンク生成
+        const topNames = top5.filter(f => f.score > 0).map(f => f.name.split(' ')[0]).join(' × ');
+        const shareText = `【Vitanic - Bio-Vitamin Mechanics】\n新種の生体ユニット「${name}」を錬成！\n構成要素：${topNames}\nVit-C: ${user_vits.C}mg / Vit-A: ${user_vits.A}μg\n#Vitanic #BioVitamin #NextGenFood`;
+        const xLink = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(window.location.href)}`;
+        document.getElementById('x-share-link').href = xLink;
+        
+        // 画面を結果までスクロール
+        resultArea.scrollIntoView({ behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>
