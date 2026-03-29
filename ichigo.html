@@ -20,7 +20,7 @@
             margin: 0 auto 15px auto; line-height: 1.6; text-align: left; max-width: 400px; box-shadow: 0 4px 10px rgba(255, 77, 109, 0.3);
         }
 
-        .card { background: white; padding: 25px 20px; border-radius: 30px; box-shadow: 0 10px 30px rgba(255,100,120,0.15); display: inline-block; width: 100%; max-width: 400px; border: 4px solid #ff4d6d; box-sizing: border-box; }
+        .card { background: white; padding: 25px 20px; border-radius: 30px; box-shadow: 0 10px 30px rgba(255,100,120,0.15); display: inline-block; width: 100%; max-width: 400px; border: 4px solid #ff4d6d; box-sizing: border-box; position: relative; }
         
         .main-title { color: #4a1a1a; font-size: 18px; margin-bottom: 5px; font-weight: 700; line-height: 1.3; }
         .brand-badge { 
@@ -29,7 +29,6 @@
             letter-spacing: 0.1em; text-shadow: 2px 2px 0px #ffffff; box-shadow: 0 6px 0 #ffcad4;
         }
         
-        /* 15日ボーナス表示用 */
         #bonus-msg-15 { display: none; background: #ff4d6d; color: white; padding: 5px; border-radius: 10px; font-size: 12px; font-weight: 900; margin-bottom: 15px; }
 
         .auth-section { margin-bottom: 15px; }
@@ -55,7 +54,6 @@
         #judgment-area { display: none; margin-top: 20px; padding: 20px; background: #fffbf0; border-radius: 20px; border: 2px dashed #ff4d6d; }
         .shogo { font-size: 22px; font-weight: 900; color: #ff4d6d; }
         
-        /* 楽天エリアのデザイン */
         .rakuten-area-fixed { margin-top: 15px; padding: 15px; border-radius: 15px; background: #fff0f0; border: 2px solid #ffccd5; }
         .rakuten-link { color: white; font-weight: bold; text-decoration: none; font-size: 13px; display: block; padding: 10px; border-radius: 10px; background: #ff4d6d; }
 
@@ -66,6 +64,11 @@
         .btn-sns { color: white; border: none; padding: 10px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 12px; flex: 1; }
         .btn-x { background: #000; }
         .btn-insta { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
+
+        /* 追加：ヘルプポップアップのスタイル */
+        #help-trigger { position: absolute; right: 15px; top: 15px; cursor: pointer; background: #ff4d6d; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        #help-popup { display: none; position: absolute; top: 50px; right: 10px; width: 260px; background: white; border: 2px solid #ff4d6d; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); z-index: 1000; padding: 15px; text-align: left; font-size: 13px; color: #4a1a1a; line-height: 1.5; }
+        #help-popup b { color: #ff4d6d; }
     </style>
 </head>
 <body>
@@ -76,6 +79,20 @@
 </div>
 
 <div class="card">
+    <!-- 追加：ヘルプボタン -->
+    <div id="help-trigger" onclick="toggleHelp()"><i class="fas fa-question"></i></div>
+    <!-- 追加：ポップアップ中身 -->
+    <div id="help-popup">
+        <p style="margin-top:0;">🍓 <b>使いかたの手引き</b></p>
+        <ul style="padding-left: 18px; margin: 0;">
+            <li><b>記録する：</b>今日食べたいちごの数や種類を入力します。</li>
+            <li><b>判定：</b>ボタンを押すと摂取量に応じた「称号」がもらえます。</li>
+            <li><b>カレンダー：</b>ログインすると「いちごよみ」に毎日の記録が残せます。</li>
+            <li><b>いちごの日：</b>毎月15日はスコアが2倍になります！</li>
+        </ul>
+        <button onclick="toggleHelp()" style="margin-top:12px; width:100%; border:none; background:#ff4d6d; color:white; padding:6px; border-radius:10px; cursor:pointer; font-weight:bold;">わかった！</button>
+    </div>
+
     <div class="main-title">きみは今日 いちごを食べたか</div>
     <div class="brand-badge">今日イチ</div>
 
@@ -179,6 +196,12 @@
 
     const loginBtn = document.getElementById('login-btn');
     const userDisplay = document.getElementById('user-display');
+
+    // 追加：ヘルプ表示・非表示の関数
+    window.toggleHelp = () => {
+        const popup = document.getElementById('help-popup');
+        popup.style.display = (popup.style.display === 'block') ? 'none' : 'block';
+    }
 
     // 常設楽天リンクの初期設定
     const RAKUTEN_AFID = "51366796.8818598a.51366797.ddbb51d0"; 
