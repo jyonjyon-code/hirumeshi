@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         body { font-family: 'Hiragino Kaku Gothic ProN', sans-serif; text-align: center; background: #f9f1e6; padding: 20px; color: #333; margin: 0; }
-        .card { background: white; padding: 30px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); display: inline-block; width: 90%; max-width: 380px; border: 4px solid #d9534f; margin-top: 20px; box-sizing: border-box; }
+        .card { background: white; padding: 30px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); display: inline-block; width: 90%; max-width: 380px; border: 4px solid #d9534f; margin-top: 20px; box-sizing: border-box; position: relative; }
         h2 { color: #d9534f; margin-bottom: 20px; font-size: 26px; letter-spacing: 2px; }
         #omikuji-box { font-size: 100px; cursor: pointer; margin: 20px 0; transition: transform 0.1s; user-select: none; }
         .shake { animation: shake 0.5s infinite; }
@@ -41,11 +41,29 @@
         
         .promo-tag { font-size: 10px; color: #999; margin: 20px 0 -10px 0; text-align: center; }
         .uber-note { font-size: 9px; color: #aaa; margin-top: 5px; line-height: 1.3; }
+
+        /* 追加：ヘルプポップアップのスタイル */
+        #help-trigger { position: absolute; right: 15px; top: 15px; cursor: pointer; background: #d9534f; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        #help-popup { display: none; position: absolute; top: 50px; right: 10px; width: 260px; background: white; border: 2px solid #d9534f; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); z-index: 1000; padding: 15px; text-align: left; font-size: 13px; line-height: 1.5; }
+        #help-popup b { color: #d9534f; }
     </style>
 </head>
 <body>
     
 <div class="card">
+    <!-- 追加：ヘルプボタン -->
+    <div id="help-trigger" onclick="toggleHelp()"><i class="fas fa-question"></i></div>
+    <!-- 追加：ポップアップ中身 -->
+    <div id="help-popup">
+        <p style="margin-top:0;">🍜 <b>使いかたの手引き</b></p>
+        <ul style="padding-left: 18px; margin: 0;">
+            <li><b>モード：</b>「お店を探す」か「コンビニ」を選びます。</li>
+            <li><b>おみくじ：</b>真ん中のアイコンをタップして振ります！</li>
+            <li><b>おひる：</b>結果が出たら、そのままGoogleマップで場所を探したり、UberEatsで注文できます。</li>
+        </ul>
+        <button onclick="toggleHelp()" style="margin-top:12px; width:100%; border:none; background:#d9534f; color:white; padding:5px; border-radius:10px; cursor:pointer; font-weight:bold;">わかった！</button>
+    </div>
+
     <h2>ひるめしえらんで</h2>
     <div class="mode-selector">
         <button id="normal-btn" class="mode-btn active-mode" onclick="setMode('normal')">みせをえらぶ</button>
@@ -98,6 +116,13 @@
     const APP_URL = "https://necotastudio.com/app.html"; 
     let currentMode = 'normal';
 
+    /* 追加：ヘルプ表示・非表示の関数 */
+    function toggleHelp() {
+        const popup = document.getElementById('help-popup');
+        popup.style.display = (popup.style.display === 'block') ? 'none' : 'block';
+    }
+
+    /* 以下、既存のロジック（一切変更なし） */
     const normalMenus = [
         { luck: "大大吉", food: "特選！厚切りステーキ", keyword: "ステーキ", desc: "自分へのご褒美！午後も無敵のパワーです。", add: "ガーリックライス" },
         { luck: "大大吉", food: "回らないお寿司", keyword: "寿司", desc: "旬のネタで贅沢に。至福のひとときを。", add: "あおさの味噌汁" },
