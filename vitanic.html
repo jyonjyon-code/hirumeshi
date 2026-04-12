@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vitanic v0.5 - Bio-Vitamin Mechanics</title>
+    <title>Vitanic v0.7 - Bio-Vitamin Mechanics</title>
     <style>
         :root {
             --primary-bg: #f8fafc;
@@ -14,141 +14,102 @@
             --dark-text: #2c3e50;
         }
 
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--primary-bg); padding: 20px; color: var(--dark-text); margin: 0; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--primary-bg); padding: 20px; color: var(--dark-text); margin: 0; }
         .container { max-width: 900px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
         
         h1 { text-align: center; color: var(--dark-text); letter-spacing: 2px; margin-bottom: 5px; }
         .subtitle { text-align: center; color: #7f8c8d; font-size: 0.9em; margin-bottom: 30px; }
 
-        .intro-box {
-            background: #ebf5fb;
-            border-left: 5px solid var(--vitanic-blue);
-            padding: 15px;
-            margin-bottom: 25px;
-            font-size: 0.85em;
-            line-height: 1.6;
-            border-radius: 0 8px 8px 0;
-        }
+        .intro-box { background: #ebf5fb; border-left: 5px solid var(--vitanic-blue); padding: 15px; margin-bottom: 25px; font-size: 0.85em; line-height: 1.6; border-radius: 0 8px 8px 0; }
         .step-title { color: var(--vitanic-blue); font-weight: bold; display: block; margin-bottom: 3px; }
 
         .vitamin-controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px; }
-        .control-group { border: 1px solid #eee; padding: 12px; border-radius: 10px; background: #fff; transition: transform 0.2s; }
-        .control-group:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .control-group { border: 1px solid #eee; padding: 12px; border-radius: 10px; background: #fff; transition: 0.2s; }
         label { display: block; font-weight: bold; margin-bottom: 8px; font-size: 0.8em; color: #555; }
         input[type=range] { width: 100%; cursor: pointer; accent-color: var(--vitanic-green); }
         .val-display { float: right; color: var(--vitanic-blue); font-family: monospace; }
 
-        .naming-section { text-align: center; margin: 30px 0; padding: 20px; background: #f9f9f9; border-radius: 12px; }
-        #unit-name { padding: 12px; font-size: 1.1em; border: 2px solid var(--vitanic-green); border-radius: 8px; width: 70%; text-align: center; outline: none; }
-        
+        /* 錬成中アニメーション */
+        #loading-overlay { display: none; text-align: center; padding: 40px; }
+        .spinner { width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid var(--vitanic-green); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* バイオカプセル（視覚代用） */
+        .bio-capsule {
+            width: 120px; height: 180px; margin: 20px auto;
+            border: 4px solid #ddd; border-radius: 60px;
+            position: relative; overflow: hidden;
+            background: #f0f0f0; box-shadow: inset 0 0 20px rgba(0,0,0,0.1);
+        }
+        .capsule-fluid {
+            position: absolute; bottom: 0; width: 100%; height: 0%;
+            transition: height 1.5s ease-out, background-color 1.5s;
+            filter: blur(5px); opacity: 0.7;
+        }
+
+        .naming-section { text-align: center; margin: 20px 0; }
+        #unit-name { padding: 12px; font-size: 1.1em; border: 2px solid var(--vitanic-green); border-radius: 8px; width: 60%; text-align: center; }
+
         button#generate-btn { 
             display: block; width: 100%; padding: 18px; font-size: 1.3em; font-weight: bold;
             background: linear-gradient(135deg, var(--vitanic-green), #2ecc71); 
-            color: white; border: none; border-radius: 12px; cursor: pointer; 
-            transition: all 0.3s; box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
-            white-space: nowrap; /* 改行防止 */
+            color: white; border: none; border-radius: 12px; cursor: pointer; transition: 0.3s;
         }
-        button#generate-btn:hover { transform: scale(1.01); filter: brightness(1.1); }
+        button#generate-btn:disabled { background: #ccc; cursor: not-allowed; }
 
-        #result-area { margin-top: 40px; padding: 25px; border: 3px double var(--vitanic-green); border-radius: 15px; display: none; background: #fff; animation: fadeIn 0.8s; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .result-header { text-align: center; font-size: 1.6em; color: var(--vitanic-green); font-weight: bold; margin-bottom: 20px; }
-        
-        /* 特徴表示テキストボックス */
-        .visual-description-box {
-            background: #fdfefe;
-            border: 2px solid #eee;
-            padding: 20px;
-            margin: 0 auto 20px;
-            max-width: 500px;
-            border-radius: 15px;
-            font-size: 0.95em;
-            line-height: 1.6;
-            color: #444;
-        }
-
-        .ai-comment { margin: 15px 0; padding: 12px; background: #fdfefe; border: 1px solid #d5dbdb; border-radius: 8px; font-style: italic; color: #5d6d7e; font-size: 0.9em; }
-        .ai-comment::before { content: "🤖 Vitanic AI: "; font-weight: bold; color: var(--dark-text); }
-
-        .match-bar { height: 28px; background-color: #f0f0f0; border-radius: 14px; overflow: hidden; margin-bottom: 12px; position: relative; border: 1px solid #ddd; }
-        .match-bar-fill { height: 100%; background: linear-gradient(90deg, var(--vitanic-green), var(--vitanic-blue)); width: 0%; transition: width 1s ease-out; }
-        .match-text { position: absolute; left: 12px; top: 0; font-size: 0.85em; line-height: 28px; color: #333; font-weight: bold; }
-
-        /* アフィリエイトセクション */
-        .ad-section {
-            margin-top: 30px;
-            padding: 20px;
-            background: #fff9f0;
-            border: 1px solid #ffeaa7;
-            border-radius: 12px;
-            text-align: center;
-        }
-        .ad-title { font-weight: bold; color: #d35400; margin-bottom: 10px; display: block; }
-        .ad-link { color: #e67e22; font-weight: bold; text-decoration: underline; font-size: 1.1em; }
-
-        .share-section { margin-top: 30px; text-align: center; border-top: 1px solid #eee; padding-top: 20px; }
-        .x-share-btn { 
-            background-color: #000; color: white; border: none; padding: 12px 25px; 
-            border-radius: 30px; font-weight: bold; cursor: pointer; text-decoration: none; 
-            display: inline-flex; align-items: center; gap: 10px; transition: 0.3s;
-        }
+        #result-area { margin-top: 40px; padding: 25px; border: 4px solid var(--vitanic-green); border-radius: 15px; display: none; background: #fff; }
+        .visual-description-box { background: #fdfefe; border: 1px solid #eee; padding: 15px; margin-bottom: 20px; border-radius: 10px; font-size: 0.9em; }
+        .match-bar { height: 28px; background: #eee; border-radius: 14px; margin-bottom: 10px; position: relative; }
+        .match-bar-fill { height: 100%; border-radius: 14px; width: 0%; transition: width 1s ease-out; }
+        .match-text { position: absolute; left: 12px; top: 0; font-size: 0.8em; line-height: 28px; font-weight: bold; }
+        .share-section { margin-top: 20px; text-align: center; }
+        .x-share-btn { background: #000; color: #fff; padding: 10px 20px; border-radius: 20px; text-decoration: none; font-size: 0.9em; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h1>VITANIC</h1>
-    <div class="subtitle">BIO-VITAMIN MECHANICS - 次世代生体ユニット錬成システム</div>
+    <div class="subtitle">BIO-VITAMIN MECHANICS</div>
 
-    <div class="intro-box">
-        <span class="step-title">🔬 錬成（REFINING）マニュアル</span>
-        1. 13種類のスライダーを操作し、ビタミン含有パラメータを定義します。<br>
-        2. パラメータの比率から、最適な5つの素材が自動選出され、新種として融合します。<br>
-        3. 独自のユニット名を決定し「錬成」を実行。構成マトリックスを確認してください。
-    </div>
-
-    <div class="vitamin-controls">
-        <div class="control-group" style="border-top: 4px solid var(--vitanic-red);"><label>ビタミンA (μg) <span id="val-A" class="val-display">500</span></label><input type="range" id="vit-A" min="0" max="3000" value="500" oninput="updateVal('A')"></div>
-        <div class="control-group" style="border-top: 4px solid var(--vitanic-red);"><label>ビタミンD (μg) <span id="val-D" class="val-display">5</span></label><input type="range" id="vit-D" min="0" max="100" value="5" oninput="updateVal('D')"></div>
-        <div class="control-group" style="border-top: 4px solid var(--vitanic-red);"><label>ビタミンE (mg) <span id="val-E" class="val-display">7</span></label><input type="range" id="vit-E" min="0" max="100" value="7" oninput="updateVal('E')"></div>
-        <div class="control-group" style="border-top: 4px solid var(--vitanic-red);"><label>ビタミンK (μg) <span id="val-K" class="val-display">150</span></label><input type="range" id="vit-K" min="0" max="1000" value="150" oninput="updateVal('K')"></div>
-        <div class="control-group" style="border-top: 4px solid var(--vitanic-gold);"><label>ビタミンC (mg) <span id="val-C" class="val-display">100</span></label><input type="range" id="vit-C" min="0" max="2000" value="100" oninput="updateVal('C')"></div>
-        <div class="control-group" style="border-top: 4px solid var(--vitanic-blue);"><label>ビタミンB1 (mg) <span id="val-B1" class="val-display">1.2</span></label><input type="range" id="vit-B1" min="0" max="10" value="1.2" step="0.1" oninput="updateVal('B1')"></div>
-        <div class="control-group" style="border-top: 4px solid var(--vitanic-blue);"><label>ビタミンB2 (mg) <span id="val-B2" class="val-display">1.4</span></label><input type="range" id="vit-B2" min="0" max="10" value="1.4" step="0.1" oninput="updateVal('B2')"></div>
-        <div class="control-group" style="border-top: 4px solid var(--vitanic-blue);"><label>ビタミンB6 (mg) <span id="val-B6" class="val-display">1.3</span></label><input type="range" id="vit-B6" min="0" max="10" value="1.3" step="0.1" oninput="updateVal('B6')"></div>
-        <div class="control-group" style="border-top: 4px solid var(--vitanic-blue);"><label>ビタミンB12 (μg) <span id="val-B12" class="val-display">2.4</span></label><input type="range" id="vit-B12" min="0" max="50" value="2.4" step="0.1" oninput="updateVal('B12')"></div>
-        <div class="control-group" style="border-top: 4px solid var(--vitanic-blue);"><label>ナイアシン (mg) <span id="val-Niacin" class="val-display">15</span></label><input type="range" id="vit-Niacin" min="0" max="100" value="15" oninput="updateVal('Niacin')"></div>
-        <div class="control-group" style="border-top: 4px solid var(--vitanic-blue);"><label>パントテン酸 (mg) <span id="val-Panto" class="val-display">5</span></label><input type="range" id="vit-Panto" min="0" max="50" value="5" oninput="updateVal('Panto')"></div>
-        <div class="control-group" style="border-top: 4px solid var(--vitanic-blue);"><label>葉酸 (μg) <span id="val-Folate" class="val-display">240</span></label><input type="range" id="vit-Folate" min="0" max="1000" value="240" oninput="updateVal('Folate')"></div>
-        <div class="control-group" style="border-top: 4px solid var(--vitanic-blue);"><label>ビオチン (μg) <span id="val-Biotin" class="val-display">50</span></label><input type="range" id="vit-Biotin" min="0" max="500" value="50" oninput="updateVal('Biotin')"></div>
+    <div class="vitamin-controls" id="controls-panel">
+        <div class="control-group"><label>ビタミンA <span id="val-A" class="val-display">500</span></label><input type="range" id="vit-A" min="0" max="3000" value="500" oninput="updateVal('A')"></div>
+        <div class="control-group"><label>ビタミンD <span id="val-D" class="val-display">5</span></label><input type="range" id="vit-D" min="0" max="100" value="5" oninput="updateVal('D')"></div>
+        <div class="control-group"><label>ビタミンE <span id="val-E" class="val-display">7</span></label><input type="range" id="vit-E" min="0" max="100" value="7" oninput="updateVal('E')"></div>
+        <div class="control-group"><label>ビタミンK <span id="val-K" class="val-display">150</span></label><input type="range" id="vit-K" min="0" max="1000" value="150" oninput="updateVal('K')"></div>
+        <div class="control-group"><label>ビタミンC <span id="val-C" class="val-display">100</span></label><input type="range" id="vit-C" min="0" max="2000" value="100" oninput="updateVal('C')"></div>
+        <div class="control-group"><label>ビタミンB1 <span id="val-B1" class="val-display">1.2</span></label><input type="range" id="vit-B1" min="0" max="10" value="1.2" step="0.1" oninput="updateVal('B1')"></div>
+        <div class="control-group"><label>ビタミンB6 <span id="val-B6" class="val-display">1.3</span></label><input type="range" id="vit-B6" min="0" max="10" value="1.3" step="0.1" oninput="updateVal('B6')"></div>
+        <div class="control-group"><label>ビタミンB12 <span id="val-B12" class="val-display">2.4</span></label><input type="range" id="vit-B12" min="0" max="50" value="2.4" step="0.1" oninput="updateVal('B12')"></div>
+        <div class="control-group"><label>ナイアシン <span id="val-Niacin" class="val-display">15</span></label><input type="range" id="vit-Niacin" min="0" max="100" value="15" oninput="updateVal('Niacin')"></div>
+        <div class="control-group"><label>パントテン酸 <span id="val-Panto" class="val-display">5</span></label><input type="range" id="vit-Panto" min="0" max="50" value="5" oninput="updateVal('Panto')"></div>
+        <div class="control-group"><label>葉酸 <span id="val-Folate" class="val-display">240</span></label><input type="range" id="vit-Folate" min="0" max="1000" value="240" oninput="updateVal('Folate')"></div>
+        <div class="control-group"><label>ビオチン <span id="val-Biotin" class="val-display">50</span></label><input type="range" id="vit-Biotin" min="0" max="500" value="50" oninput="updateVal('Biotin')"></div>
     </div>
 
     <div class="naming-section">
-        <label for="unit-name">UNIT NAME（ユニット名）：</label><br><br>
         <input type="text" id="unit-name" value="BIO-UNIT-V1">
     </div>
 
-    <button id="generate-btn" onclick="refineUnit()">⚡ 錬成プロセスを開始 ⚡</button>
+    <button id="generate-btn" onclick="refineWithEffect()">⚡ 錬成プロセスを開始 ⚡</button>
+
+    <div id="loading-overlay">
+        <div class="spinner"></div>
+        <div id="loading-text" style="font-weight: bold; color: var(--vitanic-blue);">ゲノム解析中...</div>
+    </div>
 
     <div id="result-area">
-        <div class="result-header">REFINING COMPLETE</div>
+        <div class="bio-capsule">
+            <div id="fluid" class="capsule-fluid"></div>
+        </div>
         <div style="text-align: center;">
-            <div id="unit-visual-text" class="visual-description-box">
-                </div>
-            <span style="font-size: 2.2em; font-weight: bold; color: var(--dark-text);" id="res-name"></span>
-            <div id="ai-advice" class="ai-comment"></div>
-            <p style="font-size: 0.9em; color: #7f8c8d; margin-top: 20px;">構成マトリックス（素材融合比率）：</p>
+            <h2 id="res-name" style="margin: 0; color: var(--dark-text);"></h2>
+            <div id="ai-advice" style="font-size: 0.85em; margin: 10px 0; font-style: italic;"></div>
+            <div id="unit-visual-text" class="visual-description-box"></div>
         </div>
         <div id="match-results"></div>
-
-        <div class="ad-section">
-            <span class="ad-title">🌱 栄養豊富なおいしい野菜はいかが？</span>
-            <a href="https://www.radishbo-ya.co.jp/" class="ad-link" target="_blank" rel="nofollow">らでぃっしゅぼーやで本物の素材をチェック</a>
-        </div>
-
         <div class="share-section">
-            <a id="x-share-link" href="#" target="_blank" class="x-share-btn">X で錬成報告をポストする</a>
+            <a id="x-share-link" href="#" target="_blank" class="x-share-btn">Xで報告</a>
         </div>
     </div>
 </div>
@@ -157,81 +118,94 @@
     function updateVal(id) { document.getElementById('val-' + id).innerText = document.getElementById('vit-' + id).value; }
 
     const ref_foods = [
-        { name: 'レモン', vits: { A: 10, D: 0, E: 1, K: 0, C: 1000, B1: 0.1, B2: 0.1, B6: 0.1, B12: 0, Niacin: 1, Panto: 0.1, Folate: 10, Biotin: 1 } },
-        { name: '人参', vits: { A: 1000, D: 0, E: 1, K: 20, C: 10, B1: 0.1, B2: 0.1, B6: 0.1, B12: 0, Niacin: 1, Panto: 0.1, Folate: 10, Biotin: 1 } },
-        { name: 'ほうれん草', vits: { A: 300, D: 0, E: 2, K: 500, C: 50, B1: 0.1, B2: 0.2, B6: 0.2, B12: 0, Niacin: 1, Panto: 0.1, Folate: 200, Biotin: 1 } },
-        { name: 'モロヘイヤ', vits: { A: 500, D: 0, E: 5, K: 300, C: 80, B1: 0.3, B2: 0.5, B6: 0.3, B12: 0, Niacin: 2, Panto: 1, Folate: 100, Biotin: 5 } },
-        { name: 'しいたけ', vits: { A: 0, D: 20, E: 0, K: 0, C: 0, B1: 0.1, B2: 0.2, B6: 0.1, B12: 0, Niacin: 4, Panto: 1, Folate: 20, Biotin: 2 } },
-        { name: 'アボカド', vits: { A: 10, D: 0, E: 3.3, K: 26, C: 15, B1: 0.1, B2: 0.1, B6: 0.3, B12: 0, Niacin: 2, Panto: 1.5, Folate: 80, Biotin: 1 } }
+        { name: 'レモン', color: '#f1c40f', vits: { C: 1.0, B6: 0.1 } },
+        { name: '人参', color: '#e67e22', vits: { A: 1.0, K: 0.2 } },
+        { name: 'ほうれん草', color: '#27ae60', vits: { K: 1.0, A: 0.4, Folate: 0.6 } },
+        { name: 'トマト', color: '#e74c3c', vits: { C: 0.3, A: 0.2, E: 0.1 } },
+        { name: 'ブロッコリー', color: '#2ecc71', vits: { C: 0.8, K: 0.5, Folate: 0.4 } },
+        { name: 'バナナ', color: '#fff176', vits: { B6: 0.5, B1: 0.1 } },
+        { name: 'アボカド', color: '#556b2f', vits: { E: 0.8, Panto: 0.5, B6: 0.3 } },
+        { name: 'しいたけ', color: '#8d6e63', vits: { D: 1.0, Niacin: 0.5 } },
+        { name: 'いちご', color: '#ff4d6d', vits: { C: 0.7, Biotin: 0.1 } },
+        { name: 'かぼちゃ', color: '#fb8c00', vits: { A: 0.6, E: 0.5 } },
+        { name: 'あさり', color: '#b0bec5', vits: { B12: 1.0 } }
     ];
 
-    function refineUnit() {
+    async function refineWithEffect() {
+        const btn = document.getElementById('generate-btn');
+        const loader = document.getElementById('loading-overlay');
+        const loadText = document.getElementById('loading-text');
+        const resultArea = document.getElementById('result-area');
+        const fluid = document.getElementById('fluid');
+
+        btn.disabled = true;
+        resultArea.style.display = 'none';
+        loader.style.display = 'block';
+        fluid.style.height = '0%';
+
+        const logs = ["ゲノム配列をスキャン中...", "ビタミンマトリックスを照合...", "バイオ素材を融合中...", "錬成完了！"];
+        for(let log of logs) {
+            loadText.innerText = log;
+            await new Promise(r => setTimeout(r, 400));
+        }
+
+        loader.style.display = 'none';
+        btn.disabled = false;
+        renderResult();
+    }
+
+    function renderResult() {
         const name = document.getElementById('unit-name').value;
         const resultArea = document.getElementById('result-area');
-        const user_vits = {
-            A: parseFloat(document.getElementById('vit-A').value),
-            D: parseFloat(document.getElementById('vit-D').value),
-            E: parseFloat(document.getElementById('vit-E').value),
-            K: parseFloat(document.getElementById('vit-K').value),
-            C: parseFloat(document.getElementById('vit-C').value),
-            B1: parseFloat(document.getElementById('vit-B1').value),
-            B2: parseFloat(document.getElementById('vit-B2').value),
-            B6: parseFloat(document.getElementById('vit-B6').value),
-            B12: parseFloat(document.getElementById('vit-B12').value),
-            Niacin: parseFloat(document.getElementById('vit-Niacin').value),
-            Panto: parseFloat(document.getElementById('vit-Panto').value),
-            Folate: parseFloat(document.getElementById('vit-Folate').value),
-            Biotin: parseFloat(document.getElementById('vit-Biotin').value)
+        const fluid = document.getElementById('fluid');
+
+        const user = {
+            A: document.getElementById('vit-A').value / 3000,
+            D: document.getElementById('vit-D').value / 100,
+            E: document.getElementById('vit-E').value / 100,
+            K: document.getElementById('vit-K').value / 1000,
+            C: document.getElementById('vit-C').value / 2000,
+            B1: document.getElementById('vit-B1').value / 10,
+            B6: document.getElementById('vit-B6').value / 10,
+            B12: document.getElementById('vit-B12').value / 50,
+            Niacin: document.getElementById('vit-Niacin').value / 100,
+            Panto: document.getElementById('vit-Panto').value / 50,
+            Folate: document.getElementById('vit-Folate').value / 1000,
+            Biotin: document.getElementById('vit-Biotin').value / 500
         };
 
-        let food_scores = ref_foods.map(food => {
-            let score = 0;
-            if (user_vits.C > 500 && food.name === 'レモン') score += (user_vits.C / 1000) * 15;
-            if (user_vits.A > 500 && food.name === '人参') score += (user_vits.A / 1000) * 12;
-            if (user_vits.K > 300 && food.name === 'ほうれん草') score += (user_vits.K / 500) * 10;
-            if (user_vits.D > 10 && food.name === 'しいたけ') score += (user_vits.D / 20) * 14;
-            if (user_vits.E > 10 && food.name === 'アボカド') score += (user_vits.E / 30) * 8;
-            if ((user_vits.B1 + user_vits.B2) > 2 && food.name === 'モロヘイヤ') score += (user_vits.B1 + user_vits.B2) * 5;
-            return { name: food.name, score: score + 0.1 };
-        });
+        let scores = ref_foods.map(f => {
+            let s = 0;
+            for(let k in f.vits) s += user[k] * f.vits[k];
+            return { ...f, score: s + 0.01 };
+        }).sort((a,b) => b.score - a.score).slice(0, 5);
 
-        food_scores.sort((a, b) => b.score - a.score);
-        const top5 = food_scores.slice(0, 5);
-        const total_score = top5.reduce((sum, f) => sum + f.score, 0);
+        const total = scores.reduce((sum, f) => sum + f.score, 0);
+        const main = scores[0];
 
-        document.getElementById('res-name').innerText = "「" + name + "」";
+        // 視覚反映
         resultArea.style.display = 'block';
+        resultArea.style.borderColor = main.color;
+        fluid.style.backgroundColor = main.color;
+        setTimeout(() => fluid.style.height = '80%', 50);
 
-        const matchResultsDiv = document.getElementById('match-results');
-        matchResultsDiv.innerHTML = '';
+        document.getElementById('res-name').innerText = "UNIT: " + name;
+        document.getElementById('ai-advice').innerText = `Main DNA: ${main.name} Type`;
+        document.getElementById('unit-visual-text').innerText = `「${main.name}」の特性が強く発現しました。${main.color}色のバイオ液を満たしたカプセル内で安定しています。`;
 
-        top5.forEach(fs => {
-            const percentage = Math.round((fs.score / total_score) * 100);
-            matchResultsDiv.innerHTML += `
+        const matchDiv = document.getElementById('match-results');
+        matchDiv.innerHTML = '';
+        scores.forEach(s => {
+            const p = Math.round((s.score/total)*100);
+            matchDiv.innerHTML += `
                 <div class="match-bar">
-                    <div class="match-bar-fill" style="width: ${percentage}%;"></div>
-                    <span class="match-text">${fs.name} ${percentage}%</span>
+                    <div class="match-bar-fill" style="width:${p}%; background:${s.color}"></div>
+                    <span class="match-text" style="color:${p > 50 ? '#fff' : '#333'}">${s.name} ${p}%</span>
                 </div>`;
         });
 
-        // 外見特徴テキスト生成
-        let visualText = `このユニットは、主に「${top5[0].name}」の特性をベースに構成されています。`;
-        if (user_vits.C > 1500) visualText += " 表面は眩いばかりのクリスタル状の結晶に覆われており、";
-        else if (user_vits.A > 2000) visualText += " 深いオレンジ色の滑らかな外殻を持ち、";
-        else visualText += " 複雑な繊維構造が入り混じる有機的なフォルムをしており、";
-        
-        visualText += ` 合計${top5.length}種のバイオ素材が複雑に融合した、次世代の生体外観を有しています。`;
-        document.getElementById('unit-visual-text').innerText = visualText;
-
-        let advice = "標準的なバイオバランスを維持。汎用型の個体です。";
-        if (user_vits.C > 1500) advice = "高濃度ビタミンCによる抗酸化フィールドを展開。劣化しにくい個体です。";
-        else if (user_vits.A > 2500) advice = "視覚処理能力が極限まで高められています。暗所での錬成に有利です。";
-        document.getElementById('ai-advice').innerText = advice;
-
-        const shareText = `【Vitanic】新種「${name}」を錬成！\n構成比：${top5[0].name} ${Math.round((top5[0].score/total_score)*100)}% ほか\n#Vitanic #ねこたスタジオ`;
+        const shareText = `【Vitanic】新種「${name}」を錬成！\nメイン素材：${main.name} (${Math.round((main.score/total)*100)}%)\n#Vitanic #ねこたスタジオ`;
         document.getElementById('x-share-link').href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(window.location.href)}`;
-        
-        resultArea.scrollIntoView({ behavior: 'smooth' });
     }
 </script>
 </body>
