@@ -48,26 +48,11 @@
         
         .promo-tag { font-size: 10px; color: #999; margin: 20px 0 -10px 0; text-align: center; }
         .tabelog-note { font-size: 9px; color: #aaa; margin-top: 5px; line-height: 1.3; }
-
-        #help-trigger { position: absolute; right: 15px; top: 15px; cursor: pointer; background: #d9534f; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-        #help-popup { display: none; position: absolute; top: 50px; right: 10px; width: 260px; background: white; border: 2px solid #d9534f; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); z-index: 1000; padding: 15px; text-align: left; font-size: 13px; line-height: 1.5; }
-        #help-popup b { color: #d9534f; }
     </style>
 </head>
 <body>
     
 <div class="card">
-    <div id="help-trigger" onclick="toggleHelp()"><i class="fas fa-question"></i></div>
-    <div id="help-popup">
-        <p style="margin-top:0;">🍜 <b>使いかたの手引き</b></p>
-        <ul style="padding-left: 18px; margin: 0;">
-            <li><b>モード：</b>「お店を探す」か「コンビニ」を選びます。</li>
-            <li><b>おみくじ：</b>真ん中のアイコンをタップして振ります！</li>
-            <li><b>おひる：</b>結果が出たら、そのままGoogleマップや食べログで場所を探せます。</li>
-        </ul>
-        <button onclick="toggleHelp()" style="margin-top:12px; width:100%; border:none; background:#d9534f; color:white; padding:5px; border-radius:10px; cursor:pointer; font-weight:bold;">わかった！</button>
-    </div>
-
     <h2>ひるめしえらんで</h2>
     <div class="mode-selector">
         <button id="normal-btn" class="mode-btn active-mode" onclick="setMode('normal')">みせをえらぶ</button>
@@ -93,25 +78,19 @@
         <a id="tabelog-link" href="https://tabelog.com/" class="btn btn-tabelog" target="_blank" rel="nofollow noopener">
             <i class="fas fa-utensils"></i> 食べログで人気店を予約
         </a>
-        <p class="tabelog-note">
-            失敗しないお店選び！食べログなら周辺の人気店をチェックして、そのままネット予約も可能です。
-        </p>
+        <p class="tabelog-note">失敗しないお店選び！ネット予約も可能です。</p>
 
         <button class="btn btn-retry" onclick="reset()">
             <i class="fas fa-redo"></i> もういちど ひく
         </button>
 
         <a id="x-share-btn" class="btn btn-x" target="_blank">
-            <i class="fa-brands fa-x-twitter"></i> 結果を報告する
+            <i class="fa-brands fa-x-twitter"></i> 結果を報告
         </a>
     </div>
 
     <div class="studio-nav">
         <a href="index.html" class="btn-back">ねこたスタジオへ戻る</a>
-        <div class="sns-group">
-            <a href="https://x.com/necotatu2" target="_blank" class="btn-sns btn-x">公式X</a>
-            <a href="https://www.instagram.com/necotastudio" target="_blank" class="btn-sns btn-insta">公式Insta</a>
-        </div>
     </div>
 </div>
 
@@ -119,42 +98,19 @@
     const APP_URL = "https://necotastudio.com/app.html"; 
     let currentMode = 'normal';
 
-    function toggleHelp() {
-        const popup = document.getElementById('help-popup');
-        popup.style.display = (popup.style.display === 'block') ? 'none' : 'block';
-    }
-
     const normalMenus = [
-        { luck: "大大吉", food: "特選！厚切りステーキ", keyword: "ステーキ", desc: "自分へのご褒美！午後も無敵のパワーです。", add: "ガーリックライス" },
-        { luck: "大大吉", food: "回らないお寿司", keyword: "寿司", desc: "旬のネタで贅沢に。至福のひとときを。", add: "あおさの味噌汁" },
+        { luck: "大大吉", food: "特選！厚切りステーキ", keyword: "ステーキ", desc: "自分へのご褒美！パワー全開です。", add: "ガーリックライス" },
+        { luck: "大大吉", food: "回らないお寿司", keyword: "寿司", desc: "旬のネタで贅沢に。至福の時間を。", add: "あおさの味噌汁" },
         { luck: "大吉", food: "肉汁あふれるハンバーグ", keyword: "ハンバーグ", desc: "鉄板の熱々を楽しんで！", add: "目玉焼き" },
-        { luck: "大吉", food: "本格スパイスカレー", keyword: "カレー", desc: "五感を刺激して午後もシャキッと！", add: "ナン" },
-        { luck: "大吉", food: "揚げたて天丼", keyword: "天丼", desc: "大きなエビが運気を上げます。", add: "小うどん" },
-        { luck: "大吉", food: "特上うな重", keyword: "うなぎ", desc: "スタミナ全開！今日は特別な日ですね。", add: "肝吸い" },
+        { luck: "大吉", food: "本格スパイスカレー", keyword: "カレー", desc: "五感を刺激してリフレッシュ！", add: "ナン" },
         { luck: "中吉", food: "濃厚こってりラーメン", keyword: "ラーメン", desc: "スープが体に染み渡る一杯。", add: "味付け玉子" },
-        { luck: "中吉", food: "とろとろ親子丼", keyword: "親子丼", desc: "出汁の旨味でホッとする時間を。", add: "お漬物" },
-        { luck: "中吉", food: "パラパラ黄金チャーハン", keyword: "チャーハン", desc: "強火で炒めたプロの味を。", add: "焼き餃子" },
-        { luck: "中吉", food: "本格ガパオライス", keyword: "ガパオライス", desc: "バジルの香りが食欲をそそります。", add: "目玉焼き追加" },
-        { luck: "中吉", food: "石焼ビビンバ", keyword: "ビビンバ", desc: "おこげの香ばしさがたまりません！", add: "わかめスープ" },
         { luck: "吉", food: "ジューシー唐揚げ定食", keyword: "唐揚げ", desc: "揚げたてにレモンを搾って！", add: "ポテトサラダ" },
-        { luck: "吉", food: "生パスタのボロネーゼ", keyword: "ボロネーゼ", desc: "モチモチ食感がクセになります。", add: "バゲット" },
-        { luck: "吉", food: "ふわとろオムライス", keyword: "オムライス", desc: "卵の優しさに包まれてください。", add: "コンソメスープ" },
-        { luck: "末吉", food: "サッパリ冷やしうどん", keyword: "うどん", desc: "コシのある麺で軽やかに。", add: "ちくわ天" },
-        { luck: "末吉", food: "具だくさんサンドイッチ", keyword: "サンドイッチ", desc: "片手で食べられる、午後への味方。", add: "野菜スープ" },
-        { luck: "末吉", food: "ソース焼きそば", keyword: "焼きそば", desc: "屋台のような懐かしい味わい。", add: "紅生姜" }
+        { luck: "末吉", food: "サッパリ冷やしうどん", keyword: "うどん", desc: "コシのある麺で軽やかに。", add: "ちくわ天" }
     ];
 
     const conveniMenus = [
-        { luck: "大大吉", food: "高級幕の内 ＆ デザート", keyword: "コンビニ", desc: "コンビニ界の王族のようなセット。", add: "挽きたてコーヒー" },
-        { luck: "大吉", food: "ガッツリ！カツカレー", keyword: "カツカレー", desc: "勝負の日はカツで決まり！", add: "飲むヨーグルト" },
-        { luck: "大吉", food: "二郎系まぜそば", keyword: "ラーメン", desc: "コンビニでこのパンチ力。最高です。", add: "生卵" },
-        { luck: "中吉", food: "明太クリームパスタ", keyword: "パスタ", desc: "濃厚さと満足感を両立！", add: "サラダチキン" },
-        { luck: "中吉", food: "ネギ塩牛タン弁当", keyword: "牛タン", desc: "香ばしい香りが食欲をブースト！", add: "麦茶" },
-        { luck: "中吉", food: "具たっぷり海鮮ドリア", keyword: "ドリア", desc: "とろーりチーズで心も温まる。", add: "コールスロー" },
-        { luck: "吉", food: "おにぎりとカップ味噌汁", keyword: "おにぎり", desc: "シンプルイズベスト！", add: "半熟ゆで卵" },
-        { luck: "吉", food: "旨辛担々麺", keyword: "担々麺", desc: "刺激が欲しいあなたの午後に。", add: "おにぎり（白飯）" },
-        { luck: "末吉", food: "新作カップヌードル", keyword: "カップラーメン", desc: "新商品はとりあえず試すのが吉！", add: "食後のアイス" },
-        { luck: "末吉", food: "冷製パスタ ＆ スープ", keyword: "パスタ", desc: "オシャレに軽く済ませたい時に。", add: "杏仁豆腐" }
+        { luck: "大大吉", food: "高級幕の内 ＆ デザート", keyword: "コンビニ弁当", desc: "コンビニの贅沢セット。", add: "挽きたてコーヒー" },
+        { luck: "大吉", food: "ガッツリ！カツカレー", keyword: "カツカレー", desc: "勝負の日はカツで決まり！", add: "飲むヨーグルト" }
     ];
 
     function setMode(mode) {
@@ -174,26 +130,21 @@
             const list = currentMode === 'normal' ? normalMenus : conveniMenus;
             const res = list[Math.floor(Math.random() * list.length)];
             
-            const luckLabel = `【${res.luck}】`;
-            document.getElementById('luck').innerText = luckLabel;
+            document.getElementById('luck').innerText = `【${res.luck}】`;
             document.getElementById('food').innerText = res.food;
             document.getElementById('desc').innerText = res.desc;
             document.getElementById('add-on').innerText = res.add;
             
-            // Xシェア
-            const tweetText = `今日のおみくじの結果は…\n${luckLabel}ランチは「${res.food}」に決定！\n\n✨ラッキーアイテム: ${res.add}\n\n#ひるめしえらんで #ねこたスタジオ`;
-            document.getElementById('x-share-btn').href = `https://x.com/intent/tweet?text=${encodeURIComponent(tweetText)}&url=${encodeURIComponent(APP_URL)}`;
-
             // Googleマップ
             const mapKeyword = currentMode === 'conveni' ? "近くのコンビニ" : "近くの" + res.keyword;
             document.getElementById('map-link').href = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(mapKeyword);
 
-            // 食べログリンク生成 & LinkSwitch手動実行
+            // 【修正版】食べログURL（最もシンプルな形式）
             const tabelogSearchUrl = `https://tabelog.com/rst/rstlst/?sw=${encodeURIComponent(res.keyword)}`;
             const tabelogBtn = document.getElementById('tabelog-link');
             tabelogBtn.href = tabelogSearchUrl;
             
-            // LinkSwitchの関数が存在すれば実行して即座にアフィリエイト化
+            // LinkSwitch手動実行
             if (typeof vc_sw === 'function') {
                 vc_sw(tabelogBtn);
             }
