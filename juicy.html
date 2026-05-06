@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <!-- 【必須修正】Google Tag (gtag.js) - GA4 -->
+    <!-- Google Tag (gtag.js) - GA4 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-7S6PB8B6N0"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -13,13 +13,13 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <!-- 【必須修正】SEO対策 -->
     <meta name="description" content="JUICY RIDER（ジューシーライダー）は、食べたフルーツの「果汁×荷重」を推進力に変えて爆走する、新感覚のフルーツ摂取記録・バイク育成アプリです。">
     
     <title>JUICY RIDER | necotastudio</title>
     <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Noto+Sans+JP:wght@900&display=swap" rel="stylesheet">
     <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCjHURgB5A-iLwJ8sG3_KXSrdTXZEAg7Ms&callback=initMap&libraries=marker&v=beta" async defer></script>
+    <!-- 【修正】callbackを削除し、内部ロジックで制御 -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCjHURgB5A-iLwJ8sG3_KXSrdTXZEAg7Ms&libraries=marker&v=beta" async defer></script>
     <style>
         :root { --comic-yellow: #ffde00; --comic-red: #e60012; --black: #000; --neon-green: #00ff00; }
         body { background: #ddd; background-image: radial-gradient(var(--black) 10%, transparent 11%); background-size: 15px 15px; font-family: 'Noto Sans JP', sans-serif; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
@@ -88,7 +88,6 @@
 
     <div class="header">
         <div id="help-trigger" onclick="toggleHelp()">?</div>
-        <!-- 【必須修正】公式サイトへのパスを固定 -->
         <div class="back-btn" onclick="location.href='https://necotastudio.com/'">← BACK</div>
         
         <h1>JUICY RIDER</h1>
@@ -196,16 +195,25 @@
         bg.style.display = isShow ? 'none' : 'block';
     }
 
+    // 【修正】確実に初期化されるようasync/awaitとグローバル登録を整理
     window.initMap = async function() {
-        if (!window.google || !google.maps.importLibrary) return;
-        const { Map } = await google.maps.importLibrary("maps");
-        const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
-        const startPos = { lat: 35.6812, lng: 139.7671 };
+        if (!window.google || !google.maps) return;
         try {
-            map = new Map(document.getElementById("map"), { center: startPos, zoom: 12, disableDefaultUI: true, mapId: "DEMO_MAP_ID" });
+            const { Map } = await google.maps.importLibrary("maps");
+            const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+            const startPos = { lat: 35.6812, lng: 139.7671 };
+            
+            map = new Map(document.getElementById("map"), { 
+                center: startPos, 
+                zoom: 12, 
+                disableDefaultUI: true, 
+                mapId: "DEMO_MAP_ID" 
+            });
             marker = new AdvancedMarkerElement({ position: startPos, map: map });
             updateMapPosition();
-        } catch(e) { console.error(e); }
+        } catch(e) { 
+            console.error("Map initialization failed:", e); 
+        }
     };
 
     function updateMapPosition() {
@@ -241,7 +249,6 @@
         const name = document.getElementById('fruit-select-box').value;
         const amount = parseFloat(document.getElementById('amount-in').value);
         if (!amount || amount <= 0) return;
-        // セキュリティ：innerTextで表示
         document.getElementById('current-fruit-name').innerText = name;
         const data = fruitDB[name] || { weight: 100, rare: 1.0, part: "none" };
         const grams = data.isLiquid ? amount : (amount * data.weight);
@@ -268,7 +275,6 @@
         window.open(finalUrl, '_blank');
     };
 
-    // 【必須修正】x.comへのドメイン統一
     window.shareX = () => {
         const todayDist = document.getElementById('today-val').innerText;
         const odo = document.getElementById('dist-val').innerText;
@@ -307,7 +313,6 @@
     function updateHistoryUI() {
         const filtered = history.filter(i => i.date === selectedDate);
         document.getElementById('selected-day-summary').innerText = `${selectedDate} : ${Math.round(filtered.reduce((s,i)=>s+i.grams,0))}g`;
-        // セキュリティ：構造は維持しつつサニタイズ
         document.getElementById('history-list').innerHTML = filtered.map(i => `<div class="history-item"><div>${i.name} <span style="color:red; margin-left:10px;">+${i.km}km</span></div><div onclick="deleteItem(${i.id})" style="cursor:pointer; color:red; font-size:20px;">×</div></div>`).join('') || '<div style="text-align:center; opacity:0.5; padding:30px;">記録なし</div>';
     }
 
@@ -339,12 +344,16 @@
     };
 
     window.onload = () => {
+        // フルーツセレクトボックスの初期化
         const select = document.getElementById('fruit-select-box');
         Object.keys(fruitDB).forEach(f => {
             const opt = document.createElement('option'); opt.value = f; opt.innerText = f; select.appendChild(opt);
         });
         updateUnit();
         updateUI();
+        
+        // 【重要修正】地図とGoogleログインボタンを初期化
+        window.initMap();
         window.initGoogleBtn();
     };
 </script>
