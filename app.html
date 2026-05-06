@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
+    
+    <!-- セキュリティ & 収益化：LinkSwitch設定 -->
+    <script type="text/javascript" language="javascript">
+        var vc_pid = "892607513";
+    </script>
+    <script type="text/javascript" src="//aml.valuecommerce.com/vcdal.js" async></script>
+
     <title>ひるめしえらんで | ねこたスタジオ</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -26,7 +33,8 @@
         
         .btn { color: white; border: none; padding: 15px 25px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; margin-top: 15px; font-size: 16px; width: 100%; box-sizing: border-box; }
         .btn-map { background: #4285F4; }
-        .btn-uber { background: #06C167; }
+        /* 食べログ用にボタン色をオレンジ系へ変更 */
+        .btn-tabelog { background: #ff9900; } 
         .btn-retry { background: #f0ad4e; }
         .btn-x { background: #000; }
         
@@ -40,9 +48,8 @@
         .btn-insta { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
         
         .promo-tag { font-size: 10px; color: #999; margin: 20px 0 -10px 0; text-align: center; }
-        .uber-note { font-size: 9px; color: #aaa; margin-top: 5px; line-height: 1.3; }
+        .tabelog-note { font-size: 9px; color: #aaa; margin-top: 5px; line-height: 1.3; }
 
-        /* 追加：ヘルプポップアップのスタイル */
         #help-trigger { position: absolute; right: 15px; top: 15px; cursor: pointer; background: #d9534f; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
         #help-popup { display: none; position: absolute; top: 50px; right: 10px; width: 260px; background: white; border: 2px solid #d9534f; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); z-index: 1000; padding: 15px; text-align: left; font-size: 13px; line-height: 1.5; }
         #help-popup b { color: #d9534f; }
@@ -51,15 +58,15 @@
 <body>
     
 <div class="card">
-    <!-- 追加：ヘルプボタン -->
+    <!-- ヘルプボタン -->
     <div id="help-trigger" onclick="toggleHelp()"><i class="fas fa-question"></i></div>
-    <!-- 追加：ポップアップ中身 -->
+    <!-- ポップアップ中身 -->
     <div id="help-popup">
         <p style="margin-top:0;">🍜 <b>使いかたの手引き</b></p>
         <ul style="padding-left: 18px; margin: 0;">
             <li><b>モード：</b>「お店を探す」か「コンビニ」を選びます。</li>
             <li><b>おみくじ：</b>真ん中のアイコンをタップして振ります！</li>
-            <li><b>おひる：</b>結果が出たら、そのままGoogleマップで場所を探したり、UberEatsで注文できます。</li>
+            <li><b>おひる：</b>結果が出たら、そのままGoogleマップで場所を探したり、食べログで予約も可能です。</li>
         </ul>
         <button onclick="toggleHelp()" style="margin-top:12px; width:100%; border:none; background:#d9534f; color:white; padding:5px; border-radius:10px; cursor:pointer; font-weight:bold;">わかった！</button>
     </div>
@@ -85,13 +92,13 @@
             <i class="fas fa-map-marker-alt"></i> 近くの店をさがす
         </a>
 
-        <p class="promo-tag">本ページはプロモーションです</p>
-        <a id="uber-link" href="https://www.ubereats.com/jp" class="btn btn-uber" target="_blank" rel="nofollow noopener">
-            <i class="fas fa-motorcycle"></i> Uber Eats(ウーバーイーツ)
+        <!-- 食べログセクション（ウーバーイーツから差し替え） -->
+        <p class="promo-tag">本ページはプロモーションが含まれています</p>
+        <a id="tabelog-link" href="#" class="btn btn-tabelog" target="_blank" rel="nofollow noopener">
+            <i class="fas fa-utensils"></i> 食べログで人気店を予約
         </a>
-        <p class="uber-note">
-            Uber Eats(ウーバーイーツ)なら、アプリやウェブサイトから簡単にお好きな料理を注文できます。レストランから配達パートナーがお届けします。
-            <br>※配送手数料等、詳細はカート内でご確認ください。
+        <p class="tabelog-note">
+            失敗しないお店選び！食べログなら周辺の人気店や口コミをチェックして、そのままネット予約も可能です。
         </p>
 
         <button class="btn btn-retry" onclick="reset()">
@@ -116,13 +123,13 @@
     const APP_URL = "https://necotastudio.com/app.html"; 
     let currentMode = 'normal';
 
-    /* 追加：ヘルプ表示・非表示の関数 */
+    /* ヘルプ表示・非表示の関数 */
     function toggleHelp() {
         const popup = document.getElementById('help-popup');
         popup.style.display = (popup.style.display === 'block') ? 'none' : 'block';
     }
 
-    /* 以下、既存のロジック（一切変更なし） */
+    /* 既存のロジック（変更なし） */
     const normalMenus = [
         { luck: "大大吉", food: "特選！厚切りステーキ", keyword: "ステーキ", desc: "自分へのご褒美！午後も無敵のパワーです。", add: "ガーリックライス" },
         { luck: "大大吉", food: "回らないお寿司", keyword: "寿司", desc: "旬のネタで贅沢に。至福のひとときを。", add: "あおさの味噌汁" },
@@ -179,14 +186,17 @@
             document.getElementById('desc').innerText = res.desc;
             document.getElementById('add-on').innerText = res.add;
             
-            const tweetText = encodeURIComponent(`今日のおみくじの結果は…\n${luckLabel}ランチは「${res.food}」に決定！\n\n✨ラッキーアイテム: ${res.add}\n\n#ひるめしえらんで #ねこたスタジオ`);
-            document.getElementById('x-share-btn').href = `https://twitter.com/intent/tweet?text=${tweetText}&url=${encodeURIComponent(APP_URL)}`;
+            // セキュリティ：Xシェアリンク (x.comドメイン & 適切なエンコード)
+            const tweetText = `今日のおみくじの結果は…\n${luckLabel}ランチは「${res.food}」に決定！\n\n✨ラッキーアイテム: ${res.add}\n\n#ひるめしえらんで #ねこたスタジオ`;
+            document.getElementById('x-share-btn').href = `https://x.com/intent/tweet?text=${encodeURIComponent(tweetText)}&url=${encodeURIComponent(APP_URL)}`;
 
+            // Googleマップリンク
             const mapKeyword = currentMode === 'conveni' ? "近くのコンビニ" : "近くの" + res.keyword;
             document.getElementById('map-link').href = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(mapKeyword);
 
-            const uberKeyword = encodeURIComponent(res.food);
-            document.getElementById('uber-link').href = `https://www.ubereats.com/jp/search?q=${uberKeyword}`;
+            // 収益化：食べログリンク（LinkSwitchにより自動アフィリエイト化）
+            const tabelogSearchUrl = `https://tabelog.com/rst/rstlst/?sw=${encodeURIComponent(res.keyword)}&voluntary_search=1`;
+            document.getElementById('tabelog-link').href = tabelogSearchUrl;
             
             document.getElementById('result-area').style.display = 'block';
             document.getElementById('main-view').style.display = 'none';
