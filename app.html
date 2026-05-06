@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="apple-mobile-web-app-capable" content="yes">
     
-    <!-- 収益化：LinkSwitch設定 -->
+    <!-- 収益化：LinkSwitch -->
     <script type="text/javascript" language="javascript">
         var vc_pid = "892607513";
     </script>
@@ -15,31 +15,24 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         body { font-family: 'Hiragino Kaku Gothic ProN', sans-serif; text-align: center; background: #f9f1e6; padding: 20px; color: #333; margin: 0; }
-        .card { background: white; padding: 30px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); display: inline-block; width: 90%; max-width: 380px; border: 4px solid #d9534f; margin-top: 20px; box-sizing: border-box; position: relative; }
+        .card { background: white; padding: 30px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); display: inline-block; width: 90%; max-width: 380px; border: 4px solid #d9534f; margin-top: 20px; box-sizing: border-box; }
         h2 { color: #d9534f; margin-bottom: 20px; font-size: 26px; letter-spacing: 2px; }
         #omikuji-box { font-size: 100px; cursor: pointer; margin: 20px 0; transition: transform 0.1s; user-select: none; }
         .shake { animation: shake 0.5s infinite; }
-        @keyframes shake {
-            0% { transform: rotate(0deg); } 25% { transform: rotate(8deg); }
-            50% { transform: rotate(0deg); } 75% { transform: rotate(-8deg); }
-            100% { transform: rotate(0deg); }
-        }
+        @keyframes shake { 0% { transform: rotate(0deg); } 25% { transform: rotate(8deg); } 50% { transform: rotate(0deg); } 75% { transform: rotate(-8deg); } 100% { transform: rotate(0deg); } }
         .mode-selector { margin-bottom: 25px; display: flex; justify-content: center; }
         .mode-btn { border: 2px solid #d9534f; padding: 10px 15px; cursor: pointer; background: white; border-radius: 25px; font-size: 14px; margin: 0 5px; color: #d9534f; font-weight: bold; flex: 1; transition: 0.3s; }
         .active-mode { background: #d9534f; color: white; }
-        #result-area { display: none; background: #fffcf0; border: 2px dashed #f0ad4e; padding: 20px; border-radius: 15px; margin-top: 20px; animation: fadeIn 0.5s; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        
-        .btn { color: white; border: none; padding: 15px 25px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; margin-top: 15px; font-size: 16px; width: 100%; box-sizing: border-box; }
+        #result-area { display: none; background: #fffcf0; border: 2px dashed #f0ad4e; padding: 20px; border-radius: 15px; margin-top: 20px; }
+        .btn { color: white; border: none; padding: 15px 20px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; margin-top: 12px; font-size: 15px; width: 100%; box-sizing: border-box; }
         .btn-map { background: #4285F4; }
         .btn-tabelog { background: #ff9900; } 
+        .btn-uber { background: #06C167; }
         .btn-retry { background: #f0ad4e; }
-        .btn-x { background: #000; }
-        
         .lucky-item { color: #e67e22; font-weight: bold; font-size: 0.95em; margin-top: 15px; background: #fff; border-radius: 10px; padding: 5px; }
         .studio-nav { margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; width: 100%; }
-        .btn-back { background: #888; color: white; border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; font-size: 14px; width: 100%; box-sizing: border-box; }
-        .promo-tag { font-size: 10px; color: #999; margin: 20px 0 -10px 0; text-align: center; }
+        .btn-back { background: #888; color: white; text-decoration: none; padding: 10px 20px; border-radius: 50px; display: inline-block; font-size: 14px; width: 100%; box-sizing: border-box; }
+        .promo { font-size: 10px; color: #999; margin-top: 15px; }
     </style>
 </head>
 <body>
@@ -53,31 +46,32 @@
 
     <div id="main-view">
         <div id="omikuji-box" onclick="draw()">🍱</div>
-        <p style="color:#888; font-size:14px;">タップしておみくじを振る！</p>
+        <p style="color:#888; font-size:14px;">タップでおみくじを振る！</p>
     </div>
 
     <div id="result-area">
         <div id="luck" style="font-size: 22px; font-weight: bold; color: #d9534f;"></div>
         <h2 id="food" style="margin: 15px 0; font-size: 24px;"></h2>
-        <p id="desc" style="font-size: 15px; color: #555; line-height: 1.6;"></p>
+        <p id="desc" style="font-size: 15px; color: #555;"></p>
         <div class="lucky-item">✨ラッキー買い足し: <span id="add-on"></span></div>
         
         <a id="map-link" class="btn btn-map" target="_blank" rel="noopener noreferrer">
-            <i class="fas fa-map-marker-alt"></i> Googleマップで場所を確認
+            <i class="fas fa-map-marker-alt"></i> 地図で近くを探す
         </a>
 
-        <p class="promo-tag">本ページはプロモーションが含まれています</p>
-        <a id="tabelog-link" href="#" class="btn btn-tabelog" target="_blank" rel="nofollow noopener">
-            <i class="fas fa-utensils"></i> 食べログで人気店を探す
+        <!-- コンビニ時のみ表示されるUberリンク -->
+        <a id="uber-link" class="btn btn-uber" target="_blank" style="display:none;">
+            <i class="fab fa-uber"></i> Uber Eatsで注文
         </a>
+
+        <a id="tabelog-link" href="#" class="btn btn-tabelog" target="_blank" rel="nofollow noopener">
+            <i class="fas fa-utensils"></i> 食べログで詳細を見る
+        </a>
+        <p class="promo">※本ページはプロモーションが含まれています</p>
 
         <button class="btn btn-retry" onclick="reset()">
             <i class="fas fa-redo"></i> もういちど引く
         </button>
-
-        <a id="x-share-btn" class="btn btn-x" target="_blank">
-            <i class="fa-brands fa-x-twitter"></i> 結果を報告
-        </a>
     </div>
 
     <div class="studio-nav">
@@ -94,13 +88,12 @@
         { luck: "大吉", food: "肉汁あふれるハンバーグ", keyword: "ハンバーグ", desc: "鉄板の熱々を楽しんで！", add: "目玉焼き" },
         { luck: "大吉", food: "本格スパイスカレー", keyword: "カレー", desc: "五感を刺激してリフレッシュ！", add: "ナン" },
         { luck: "中吉", food: "濃厚こってりラーメン", keyword: "ラーメン", desc: "スープが体に染み渡る一杯。", add: "味付け玉子" },
-        { luck: "吉", food: "ジューシー唐揚げ定食", keyword: "唐揚げ", desc: "揚げたてにレモンを搾って！", add: "ポテトサラダ" },
-        { luck: "末吉", food: "サッパリ冷やしうどん", keyword: "うどん", desc: "コシのある麺で軽やかに。", add: "ちくわ天" }
+        { luck: "吉", food: "ジューシー唐揚げ定食", keyword: "唐揚げ", desc: "揚げたてにレモンを搾って！", add: "ポテトサラダ" }
     ];
 
     const conveniMenus = [
-        { luck: "大吉", food: "高級幕の内 ＆ デザート", keyword: "コンビニ", desc: "コンビニの贅沢セット。", add: "挽きたてコーヒー" },
-        { luck: "吉", food: "ガッツリ！カツカレー", keyword: "カツカレー", desc: "勝負の日はカツで決まり！", add: "飲むヨーグルト" }
+        { luck: "大吉", food: "コンビニ新作お弁当", keyword: "コンビニ 弁当", desc: "手軽に楽しむ贅沢ランチ！", add: "挽きたてコーヒー" },
+        { luck: "吉", food: "ホカホカのカツカレー", keyword: "カツカレー", desc: "迷ったらコレ！間違いなし。", add: "飲むヨーグルト" }
     ];
 
     function setMode(mode) {
@@ -124,23 +117,25 @@
             document.getElementById('desc').innerText = res.desc;
             document.getElementById('add-on').innerText = res.add;
             
-            // 1. Googleマップ（これは安定）
-            const mapQuery = currentMode === 'conveni' ? "近くのコンビニ" : "近くの" + res.keyword;
-            document.getElementById('map-link').href = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(mapQuery);
+            // Google Map
+            const q = encodeURIComponent("近くの " + res.keyword);
+            document.getElementById('map-link').href = `https://www.google.com/maps/search/?api=1&query=${q}`;
 
-            // 2. 食べログ（PC版エラー回避策）
-            // 検索パラメータを整理し、ブラウザの「戻る」などで弾かれにくい形式に
+            // 食べログ：最も安全な「検索リクエスト形式」のURL
             const tabelogBtn = document.getElementById('tabelog-link');
-            const searchKeyword = encodeURIComponent(res.keyword);
-            
-            // 近くの店を探すため、あえて「現在地周辺」を含めた検索クエリに
-            tabelogBtn.href = `https://tabelog.com/rstlst/?sk=${searchKeyword}&sa=%E7%8F%BE%E5%9C%A8%E5%9C%B0`;
+            tabelogBtn.href = `https://tabelog.com/rst/rstlst/?sk=${encodeURIComponent(res.keyword)}&sa=%E7%8F%BE%E5%9C%A8%E5%9C%B0&vs=1`;
+
+            // Uber Eats (コンビニモード時のみ)
+            const uberBtn = document.getElementById('uber-link');
+            if (currentMode === 'conveni') {
+                uberBtn.style.display = 'inline-block';
+                uberBtn.href = `https://www.ubereats.com/search?q=${encodeURIComponent(res.keyword)}`;
+            } else {
+                uberBtn.style.display = 'none';
+            }
 
             if (typeof vc_sw === 'function') vc_sw(tabelogBtn);
-            
-            // X共有
-            const tweetText = `今日のおみくじの結果は…\n【${res.luck}】ランチは「${res.food}」に決定！\n\n#ひるめしえらんで #ねこたスタジオ`;
-            document.getElementById('x-share-btn').href = `https://x.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
+            if (typeof vc_sw === 'function') vc_sw(uberBtn);
 
             document.getElementById('result-area').style.display = 'block';
             document.getElementById('main-view').style.display = 'none';
@@ -153,6 +148,5 @@
         document.getElementById('omikuji-box').innerText = currentMode === 'normal' ? "🍱" : "🏪";
     }
 </script>
-
 </body>
 </html>
