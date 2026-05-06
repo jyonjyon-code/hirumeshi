@@ -4,6 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ひるめしえらんで | ねこたスタジオ</title>
+    
+    <!-- 追加：Googleアナリティクス (GA4) タグ -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXXXXX');
+    </script>
+
+    <!-- 追加：meta description (検索結果の説明文) -->
+    <meta name="description" content="今日のお昼ご飯、何食べる？『ひるめしえらんで』は、今の気分に合わせてランチを提案するおみくじアプリです。コンビニ飯から外食まで、ねこたスタジオが楽しくサポート！">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         body { font-family: 'Hiragino Kaku Gothic ProN', sans-serif; text-align: center; background: #f9f1e6; padding: 20px; color: #333; margin: 0; }
@@ -22,7 +35,6 @@
         .btn-uber { background: #06C167; }
         .btn-retry { background: #f0ad4e; }
         
-        /* 広告バナーを中央寄せにし、隙間を調整 */
         .ad-banner-area { margin-top: 15px; min-height: 60px; display: flex; justify-content: center; align-items: center; flex-direction: column; }
         .ad-label { font-size: 10px; color: #999; margin-bottom: 5px; }
 
@@ -116,7 +128,6 @@
             
             document.getElementById('map-link').href = `https://www.google.com/maps/search/近くの${encodeURIComponent(res.keyword)}`;
 
-            // モードに応じたボタン・広告の出し分け
             const adBox = document.getElementById('tabelog-ad-box');
             const uberBtn = document.getElementById('uber-link');
 
