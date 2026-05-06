@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
     
     <!-- 収益化：LinkSwitch設定 -->
     <script type="text/javascript" language="javascript">
@@ -38,11 +37,9 @@
         .btn-x { background: #000; }
         
         .lucky-item { color: #e67e22; font-weight: bold; font-size: 0.95em; margin-top: 15px; background: #fff; border-radius: 10px; padding: 5px; }
-        #hint { font-size: 14px; color: #888; margin-top: 10px; }
         .studio-nav { margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; width: 100%; }
-        .btn-back { background: #888; color: white; border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; font-size: 14px; margin-bottom: 10px; width: 100%; box-sizing: border-box; }
+        .btn-back { background: #888; color: white; border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; font-size: 14px; width: 100%; box-sizing: border-box; }
         .promo-tag { font-size: 10px; color: #999; margin: 20px 0 -10px 0; text-align: center; }
-        .tabelog-note { font-size: 9px; color: #aaa; margin-top: 5px; line-height: 1.3; }
     </style>
 </head>
 <body>
@@ -56,7 +53,7 @@
 
     <div id="main-view">
         <div id="omikuji-box" onclick="draw()">🍱</div>
-        <p id="hint">タップして おみくじを ふる！</p>
+        <p style="color:#888; font-size:14px;">タップしておみくじを振る！</p>
     </div>
 
     <div id="result-area">
@@ -66,17 +63,16 @@
         <div class="lucky-item">✨ラッキー買い足し: <span id="add-on"></span></div>
         
         <a id="map-link" class="btn btn-map" target="_blank" rel="noopener noreferrer">
-            <i class="fas fa-map-marker-alt"></i> 近くの店をさがす
+            <i class="fas fa-map-marker-alt"></i> Googleマップで場所を確認
         </a>
 
         <p class="promo-tag">本ページはプロモーションが含まれています</p>
         <a id="tabelog-link" href="#" class="btn btn-tabelog" target="_blank" rel="nofollow noopener">
-            <i class="fas fa-utensils"></i> 食べログで人気店を確認
+            <i class="fas fa-utensils"></i> 食べログで人気店を探す
         </a>
-        <p class="tabelog-note">失敗しないお店選び！ネット予約も可能です。</p>
 
         <button class="btn btn-retry" onclick="reset()">
-            <i class="fas fa-redo"></i> もういちど ひく
+            <i class="fas fa-redo"></i> もういちど引く
         </button>
 
         <a id="x-share-btn" class="btn btn-x" target="_blank">
@@ -90,7 +86,6 @@
 </div>
 
 <script>
-    const APP_URL = "https://necotastudio.com/app.html"; 
     let currentMode = 'normal';
 
     const normalMenus = [
@@ -104,8 +99,8 @@
     ];
 
     const conveniMenus = [
-        { luck: "大大吉", food: "高級幕の内 ＆ デザート", keyword: "コンビニ弁当", desc: "コンビニの贅沢セット。", add: "挽きたてコーヒー" },
-        { luck: "大吉", food: "ガッツリ！カツカレー", keyword: "カツカレー", desc: "勝負の日はカツで決まり！", add: "飲むヨーグルト" }
+        { luck: "大吉", food: "高級幕の内 ＆ デザート", keyword: "コンビニ", desc: "コンビニの贅沢セット。", add: "挽きたてコーヒー" },
+        { luck: "吉", food: "ガッツリ！カツカレー", keyword: "カツカレー", desc: "勝負の日はカツで決まり！", add: "飲むヨーグルト" }
     ];
 
     function setMode(mode) {
@@ -118,7 +113,6 @@
     function draw() {
         const box = document.getElementById('omikuji-box');
         box.classList.add('shake');
-        document.getElementById('hint').innerText = "シャカシャカ...";
 
         setTimeout(() => {
             box.classList.remove('shake');
@@ -130,27 +124,23 @@
             document.getElementById('desc').innerText = res.desc;
             document.getElementById('add-on').innerText = res.add;
             
-            const mapKeyword = currentMode === 'conveni' ? "近くのコンビニ" : "近くの" + res.keyword;
-            document.getElementById('map-link').href = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(mapKeyword);
+            // 1. Googleマップ（これは安定）
+            const mapQuery = currentMode === 'conveni' ? "近くのコンビニ" : "近くの" + res.keyword;
+            document.getElementById('map-link').href = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(mapQuery);
 
-            // 【ハイブリッドURL生成】PCとスマホで挙動を分ける
+            // 2. 食べログ（PC版エラー回避策）
+            // 検索パラメータを整理し、ブラウザの「戻る」などで弾かれにくい形式に
             const tabelogBtn = document.getElementById('tabelog-link');
-            const isMobile = /iPhone|Android|Mobile/i.test(navigator.userAgent);
+            const searchKeyword = encodeURIComponent(res.keyword);
+            
+            // 近くの店を探すため、あえて「現在地周辺」を含めた検索クエリに
+            tabelogBtn.href = `https://tabelog.com/rstlst/?sk=${searchKeyword}&sa=%E7%8F%BE%E5%9C%A8%E5%9C%B0`;
 
-            if (isMobile) {
-                // スマホは食べログ直通（キーワードページ）
-                tabelogBtn.href = `https://tabelog.com/keywords/${encodeURIComponent(res.keyword)}/rstlst/`;
-            } else {
-                // PCはGoogle経由（エラーを100%回避）
-                tabelogBtn.href = `https://www.google.com/search?q=${encodeURIComponent(res.keyword + ' 食べログ 人気')}`;
-            }
+            if (typeof vc_sw === 'function') vc_sw(tabelogBtn);
             
-            if (typeof vc_sw === 'function') {
-                vc_sw(tabelogBtn);
-            }
-            
-            const tweetText = `今日のおみくじの結果は…\n【${res.luck}】ランチは「${res.food}」に決定！\n\n✨ラッキーアイテム: ${res.add}\n\n#ひるめしえらんで #ねこたスタジオ`;
-            document.getElementById('x-share-btn').href = `https://x.com/intent/tweet?text=${encodeURIComponent(tweetText)}&url=${encodeURIComponent(APP_URL)}`;
+            // X共有
+            const tweetText = `今日のおみくじの結果は…\n【${res.luck}】ランチは「${res.food}」に決定！\n\n#ひるめしえらんで #ねこたスタジオ`;
+            document.getElementById('x-share-btn').href = `https://x.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
 
             document.getElementById('result-area').style.display = 'block';
             document.getElementById('main-view').style.display = 'none';
@@ -161,7 +151,6 @@
         document.getElementById('result-area').style.display = 'none';
         document.getElementById('main-view').style.display = 'block';
         document.getElementById('omikuji-box').innerText = currentMode === 'normal' ? "🍱" : "🏪";
-        document.getElementById('hint').innerText = "タップして おみくじを ふる！";
     }
 </script>
 
