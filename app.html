@@ -6,7 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     
-    <!-- セキュリティ & 収益化：LinkSwitch設定 -->
+    <!-- 収益化：LinkSwitch設定（遵さんのPID: 892607513 を適用） -->
     <script type="text/javascript" language="javascript">
         var vc_pid = "892607513";
     </script>
@@ -33,7 +33,6 @@
         
         .btn { color: white; border: none; padding: 15px 25px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; margin-top: 15px; font-size: 16px; width: 100%; box-sizing: border-box; }
         .btn-map { background: #4285F4; }
-        /* 食べログ用にボタン色をオレンジ系へ変更 */
         .btn-tabelog { background: #ff9900; } 
         .btn-retry { background: #f0ad4e; }
         .btn-x { background: #000; }
@@ -58,15 +57,13 @@
 <body>
     
 <div class="card">
-    <!-- ヘルプボタン -->
     <div id="help-trigger" onclick="toggleHelp()"><i class="fas fa-question"></i></div>
-    <!-- ポップアップ中身 -->
     <div id="help-popup">
         <p style="margin-top:0;">🍜 <b>使いかたの手引き</b></p>
         <ul style="padding-left: 18px; margin: 0;">
             <li><b>モード：</b>「お店を探す」か「コンビニ」を選びます。</li>
             <li><b>おみくじ：</b>真ん中のアイコンをタップして振ります！</li>
-            <li><b>おひる：</b>結果が出たら、そのままGoogleマップで場所を探したり、食べログで予約も可能です。</li>
+            <li><b>おひる：</b>結果が出たら、Googleマップや食べログで場所を探せます。</li>
         </ul>
         <button onclick="toggleHelp()" style="margin-top:12px; width:100%; border:none; background:#d9534f; color:white; padding:5px; border-radius:10px; cursor:pointer; font-weight:bold;">わかった！</button>
     </div>
@@ -92,13 +89,13 @@
             <i class="fas fa-map-marker-alt"></i> 近くの店をさがす
         </a>
 
-        <!-- 食べログセクション（ウーバーイーツから差し替え） -->
         <p class="promo-tag">本ページはプロモーションが含まれています</p>
-        <a id="tabelog-link" href="#" class="btn btn-tabelog" target="_blank" rel="nofollow noopener">
+        <!-- 食べログボタン：初期hrefを空にしてJSで設定 -->
+        <a id="tabelog-link" href="https://tabelog.com/" class="btn btn-tabelog" target="_blank" rel="nofollow noopener">
             <i class="fas fa-utensils"></i> 食べログで人気店を予約
         </a>
         <p class="tabelog-note">
-            失敗しないお店選び！食べログなら周辺の人気店や口コミをチェックして、そのままネット予約も可能です。
+            失敗しないお店選び！食べログなら周辺の人気店をチェックして、そのままネット予約も可能です。
         </p>
 
         <button class="btn btn-retry" onclick="reset()">
@@ -123,13 +120,11 @@
     const APP_URL = "https://necotastudio.com/app.html"; 
     let currentMode = 'normal';
 
-    /* ヘルプ表示・非表示の関数 */
     function toggleHelp() {
         const popup = document.getElementById('help-popup');
         popup.style.display = (popup.style.display === 'block') ? 'none' : 'block';
     }
 
-    /* 既存のロジック（変更なし） */
     const normalMenus = [
         { luck: "大大吉", food: "特選！厚切りステーキ", keyword: "ステーキ", desc: "自分へのご褒美！午後も無敵のパワーです。", add: "ガーリックライス" },
         { luck: "大大吉", food: "回らないお寿司", keyword: "寿司", desc: "旬のネタで贅沢に。至福のひとときを。", add: "あおさの味噌汁" },
@@ -186,7 +181,7 @@
             document.getElementById('desc').innerText = res.desc;
             document.getElementById('add-on').innerText = res.add;
             
-            // セキュリティ：Xシェアリンク (x.comドメイン & 適切なエンコード)
+            // Xシェアリンク
             const tweetText = `今日のおみくじの結果は…\n${luckLabel}ランチは「${res.food}」に決定！\n\n✨ラッキーアイテム: ${res.add}\n\n#ひるめしえらんで #ねこたスタジオ`;
             document.getElementById('x-share-btn').href = `https://x.com/intent/tweet?text=${encodeURIComponent(tweetText)}&url=${encodeURIComponent(APP_URL)}`;
 
@@ -194,8 +189,8 @@
             const mapKeyword = currentMode === 'conveni' ? "近くのコンビニ" : "近くの" + res.keyword;
             document.getElementById('map-link').href = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(mapKeyword);
 
-            // 収益化：食べログリンク（LinkSwitchにより自動アフィリエイト化）
-            const tabelogSearchUrl = `https://tabelog.com/rst/rstlst/?sw=${encodeURIComponent(res.keyword)}&voluntary_search=1`;
+            // 【修正ポイント】食べログのURL構造をアフィリエイト認識されやすい形式に
+            const tabelogSearchUrl = `https://tabelog.com/rst/rstlst/?sw=${encodeURIComponent(res.keyword)}`;
             document.getElementById('tabelog-link').href = tabelogSearchUrl;
             
             document.getElementById('result-area').style.display = 'block';
