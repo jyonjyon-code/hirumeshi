@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="apple-mobile-web-app-capable" content="yes">
     
-    <!-- 収益化：LinkSwitch -->
     <script type="text/javascript" language="javascript">
         var vc_pid = "892607513";
     </script>
@@ -59,15 +58,14 @@
             <i class="fas fa-map-marker-alt"></i> 地図で近くを探す
         </a>
 
-        <!-- コンビニ時のみ表示されるUberリンク -->
-        <a id="uber-link" class="btn btn-uber" target="_blank" style="display:none;">
-            <i class="fab fa-uber"></i> Uber Eatsで注文
+        <a id="uber-link" class="btn btn-uber" target="_blank">
+            <i class="fab fa-uber"></i> Uber Eatsで探す
         </a>
 
         <a id="tabelog-link" href="#" class="btn btn-tabelog" target="_blank" rel="nofollow noopener">
-            <i class="fas fa-utensils"></i> 食べログで詳細を見る
+            <i class="fas fa-utensils"></i> 食べログでランキングを見る
         </a>
-        <p class="promo">※本ページはプロモーションが含まれています</p>
+        <p id="promo-text" class="promo">※本ページはプロモーションが含まれています</p>
 
         <button class="btn btn-retry" onclick="reset()">
             <i class="fas fa-redo"></i> もういちど引く
@@ -92,8 +90,9 @@
     ];
 
     const conveniMenus = [
-        { luck: "大吉", food: "コンビニ新作お弁当", keyword: "コンビニ 弁当", desc: "手軽に楽しむ贅沢ランチ！", add: "挽きたてコーヒー" },
-        { luck: "吉", food: "ホカホカのカツカレー", keyword: "カツカレー", desc: "迷ったらコレ！間違いなし。", add: "飲むヨーグルト" }
+        { luck: "大吉", food: "コンビニお弁当", keyword: "お弁当", desc: "今だけの新作をチェック！", add: "挽きたてコーヒー" },
+        { luck: "吉", food: "カツカレー", keyword: "カツカレー", desc: "ガッツリ食べて午後も頑張る。", add: "飲むヨーグルト" },
+        { luck: "中吉", food: "冷やし中華・麺類", keyword: "冷やし中華", desc: "ツルッとさっぱり栄養補給。", add: "サラダチキン" }
     ];
 
     function setMode(mode) {
@@ -117,25 +116,29 @@
             document.getElementById('desc').innerText = res.desc;
             document.getElementById('add-on').innerText = res.add;
             
-            // Google Map
-            const q = encodeURIComponent("近くの " + res.keyword);
-            document.getElementById('map-link').href = `https://www.google.com/maps/search/?api=1&query=${q}`;
+            // Google Map (共通)
+            const mapQ = encodeURIComponent("近くの " + res.keyword);
+            document.getElementById('map-link').href = `https://www.google.com/maps/search/${mapQ}`;
 
-            // 食べログ：最も安全な「検索リクエスト形式」のURL
             const tabelogBtn = document.getElementById('tabelog-link');
-            tabelogBtn.href = `https://tabelog.com/rst/rstlst/?sk=${encodeURIComponent(res.keyword)}&sa=%E7%8F%BE%E5%9C%A8%E5%9C%B0&vs=1`;
-
-            // Uber Eats (コンビニモード時のみ)
             const uberBtn = document.getElementById('uber-link');
-            if (currentMode === 'conveni') {
+            const promoText = document.getElementById('promo-text');
+
+            if (currentMode === 'normal') {
+                // 通常モード：食べログを表示（最も弾かれにくいURL形式）
+                tabelogBtn.style.display = 'inline-block';
+                tabelogBtn.href = `https://tabelog.com/keywords/${encodeURIComponent(res.keyword)}/rstlst/`;
+                uberBtn.style.display = 'none';
+                promoText.style.display = 'block';
+                if (typeof vc_sw === 'function') vc_sw(tabelogBtn);
+            } else {
+                // コンビニモード：食べログを隠し、Uberを表示
+                tabelogBtn.style.display = 'none';
                 uberBtn.style.display = 'inline-block';
                 uberBtn.href = `https://www.ubereats.com/search?q=${encodeURIComponent(res.keyword)}`;
-            } else {
-                uberBtn.style.display = 'none';
+                promoText.style.display = 'none';
+                if (typeof vc_sw === 'function') vc_sw(uberBtn);
             }
-
-            if (typeof vc_sw === 'function') vc_sw(tabelogBtn);
-            if (typeof vc_sw === 'function') vc_sw(uberBtn);
 
             document.getElementById('result-area').style.display = 'block';
             document.getElementById('main-view').style.display = 'none';
