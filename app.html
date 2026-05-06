@@ -3,13 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    
-    <script type="text/javascript" language="javascript">
-        var vc_pid = "892607513";
-    </script>
-    <script type="text/javascript" src="//aml.valuecommerce.com/vcdal.js" async></script>
-
     <title>ひるめしえらんで | ねこたスタジオ</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -23,15 +16,19 @@
         .mode-btn { border: 2px solid #d9534f; padding: 10px 15px; cursor: pointer; background: white; border-radius: 25px; font-size: 14px; margin: 0 5px; color: #d9534f; font-weight: bold; flex: 1; transition: 0.3s; }
         .active-mode { background: #d9534f; color: white; }
         #result-area { display: none; background: #fffcf0; border: 2px dashed #f0ad4e; padding: 20px; border-radius: 15px; margin-top: 20px; }
+        
         .btn { color: white; border: none; padding: 15px 20px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; margin-top: 12px; font-size: 15px; width: 100%; box-sizing: border-box; }
         .btn-map { background: #4285F4; }
-        .btn-tabelog { background: #ff9900; } 
         .btn-uber { background: #06C167; }
         .btn-retry { background: #f0ad4e; }
+        
+        /* 広告バナーを中央寄せにし、隙間を調整 */
+        .ad-banner-area { margin-top: 15px; min-height: 60px; display: flex; justify-content: center; align-items: center; flex-direction: column; }
+        .ad-label { font-size: 10px; color: #999; margin-bottom: 5px; }
+
         .lucky-item { color: #e67e22; font-weight: bold; font-size: 0.95em; margin-top: 15px; background: #fff; border-radius: 10px; padding: 5px; }
         .studio-nav { margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; width: 100%; }
         .btn-back { background: #888; color: white; text-decoration: none; padding: 10px 20px; border-radius: 50px; display: inline-block; font-size: 14px; width: 100%; box-sizing: border-box; }
-        .promo { font-size: 10px; color: #999; margin-top: 15px; }
     </style>
 </head>
 <body>
@@ -54,18 +51,21 @@
         <p id="desc" style="font-size: 15px; color: #555;"></p>
         <div class="lucky-item">✨ラッキー買い足し: <span id="add-on"></span></div>
         
-        <a id="map-link" class="btn btn-map" target="_blank" rel="noopener noreferrer">
+        <a id="map-link" class="btn btn-map" target="_blank">
             <i class="fas fa-map-marker-alt"></i> 地図で近くを探す
         </a>
 
+        <!-- コンビニ時のみ表示 -->
         <a id="uber-link" class="btn btn-uber" target="_blank">
             <i class="fab fa-uber"></i> Uber Eatsで探す
         </a>
 
-        <a id="tabelog-link" href="#" class="btn btn-tabelog" target="_blank" rel="nofollow noopener">
-            <i class="fas fa-utensils"></i> 食べログでランキングを見る
-        </a>
-        <p id="promo-text" class="promo">※本ページはプロモーションが含まれています</p>
+        <!-- 食べログバナー広告（通常モード時のみ） -->
+        <div id="tabelog-ad-box" class="ad-banner-area">
+            <div class="ad-label">PR 詳しい情報をチェック</div>
+            <script language="javascript" src="//ad.jp.ap.valuecommerce.com/servlet/jsbanner?sid=3767676&pid=892607567"></script>
+            <noscript><a href="//ck.jp.ap.valuecommerce.com/servlet/referral?sid=3767676&pid=892607567" rel="nofollow"><img src="//ad.jp.ap.valuecommerce.com/servlet/gifbanner?sid=3767676&pid=892607567" border="0"></a></noscript>
+        </div>
 
         <button class="btn btn-retry" onclick="reset()">
             <i class="fas fa-redo"></i> もういちど引く
@@ -80,20 +80,18 @@
 <script>
     let currentMode = 'normal';
 
-    const normalMenus = [
-        { luck: "大大吉", food: "特選！厚切りステーキ", keyword: "ステーキ", desc: "自分へのご褒美！パワー全開です。", add: "ガーリックライス" },
-        { luck: "大大吉", food: "回らないお寿司", keyword: "寿司", desc: "旬のネタで贅沢に。至福の時間を。", add: "あおさの味噌汁" },
-        { luck: "大吉", food: "肉汁あふれるハンバーグ", keyword: "ハンバーグ", desc: "鉄板の熱々を楽しんで！", add: "目玉焼き" },
-        { luck: "大吉", food: "本格スパイスカレー", keyword: "カレー", desc: "五感を刺激してリフレッシュ！", add: "ナン" },
-        { luck: "中吉", food: "濃厚こってりラーメン", keyword: "ラーメン", desc: "スープが体に染み渡る一杯。", add: "味付け玉子" },
-        { luck: "吉", food: "ジューシー唐揚げ定食", keyword: "唐揚げ", desc: "揚げたてにレモンを搾って！", add: "ポテトサラダ" }
-    ];
-
-    const conveniMenus = [
-        { luck: "大吉", food: "コンビニお弁当", keyword: "お弁当", desc: "今だけの新作をチェック！", add: "挽きたてコーヒー" },
-        { luck: "吉", food: "カツカレー", keyword: "カツカレー", desc: "ガッツリ食べて午後も頑張る。", add: "飲むヨーグルト" },
-        { luck: "中吉", food: "冷やし中華・麺類", keyword: "冷やし中華", desc: "ツルッとさっぱり栄養補給。", add: "サラダチキン" }
-    ];
+    const menus = {
+        normal: [
+            { luck: "大大吉", food: "特選ステーキ", keyword: "ステーキ", desc: "自分へのご褒美！", add: "ライス大盛" },
+            { luck: "大吉", food: "本格カレー", keyword: "カレー", desc: "スパイスで元気注入！", add: "ラッシー" },
+            { luck: "中吉", food: "濃厚ラーメン", keyword: "ラーメン", desc: "至福の一杯をどうぞ。", add: "味付け玉子" },
+            { luck: "吉", food: "揚げたて唐揚げ", keyword: "唐揚げ", desc: "サクサク食感がたまらない！", add: "レモンサワー" }
+        ],
+        conveni: [
+            { luck: "大吉", food: "カツカレー", keyword: "カツカレー", desc: "ガッツリ食べてパワー補給！", add: "お茶" },
+            { luck: "吉", food: "おにぎりセット", keyword: "おにぎり", desc: "手軽に美味しく！", add: "お味噌汁" }
+        ]
+    };
 
     function setMode(mode) {
         currentMode = mode;
@@ -108,7 +106,7 @@
 
         setTimeout(() => {
             box.classList.remove('shake');
-            const list = currentMode === 'normal' ? normalMenus : conveniMenus;
+            const list = menus[currentMode];
             const res = list[Math.floor(Math.random() * list.length)];
             
             document.getElementById('luck').innerText = `【${res.luck}】`;
@@ -116,28 +114,19 @@
             document.getElementById('desc').innerText = res.desc;
             document.getElementById('add-on').innerText = res.add;
             
-            // Google Map (共通)
-            const mapQ = encodeURIComponent("近くの " + res.keyword);
-            document.getElementById('map-link').href = `https://www.google.com/maps/search/${mapQ}`;
+            document.getElementById('map-link').href = `https://www.google.com/maps/search/近くの${encodeURIComponent(res.keyword)}`;
 
-            const tabelogBtn = document.getElementById('tabelog-link');
+            // モードに応じたボタン・広告の出し分け
+            const adBox = document.getElementById('tabelog-ad-box');
             const uberBtn = document.getElementById('uber-link');
-            const promoText = document.getElementById('promo-text');
 
             if (currentMode === 'normal') {
-                // 通常モード：食べログを表示（最も弾かれにくいURL形式）
-                tabelogBtn.style.display = 'inline-block';
-                tabelogBtn.href = `https://tabelog.com/keywords/${encodeURIComponent(res.keyword)}/rstlst/`;
+                adBox.style.display = 'flex';
                 uberBtn.style.display = 'none';
-                promoText.style.display = 'block';
-                if (typeof vc_sw === 'function') vc_sw(tabelogBtn);
             } else {
-                // コンビニモード：食べログを隠し、Uberを表示
-                tabelogBtn.style.display = 'none';
-                uberBtn.style.display = 'inline-block';
+                adBox.style.display = 'none';
+                uberBtn.style.display = 'block';
                 uberBtn.href = `https://www.ubereats.com/search?q=${encodeURIComponent(res.keyword)}`;
-                promoText.style.display = 'none';
-                if (typeof vc_sw === 'function') vc_sw(uberBtn);
             }
 
             document.getElementById('result-area').style.display = 'block';
