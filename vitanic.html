@@ -1,8 +1,21 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+    <!-- 【必須修正1】Google Tag (gtag.js) - GA4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-7S6PB8B6N0"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-7S6PB8B6N0');
+    </script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- 【必須修正2】SEO対策: meta description -->
+    <meta name="description" content="VITANIC（ビタニック）は、13種類のビタミンパラメータを調整して未知の生体ユニットを錬成する、Bio-Vitamin Mechanicsシミュレーターです。">
+    
     <title>Vitanic v1.0 - Bio-Vitamin Mechanics</title>
     <style>
         :root {
@@ -28,6 +41,7 @@
             top: 0;
             z-index: 100;
         }
+        /* 【必須修正3】ロゴリンクを公式サイトへ */
         .site-logo { font-weight: bold; color: var(--dark-text); text-decoration: none; font-size: 1.1em; }
         .site-logo span { color: var(--vitanic-green); }
 
@@ -36,7 +50,6 @@
         h1 { text-align: center; color: var(--dark-text); letter-spacing: 2px; margin-bottom: 5px; font-size: 2em; }
         .subtitle { text-align: center; color: #7f8c8d; font-size: 0.9em; margin-bottom: 30px; text-transform: uppercase; }
 
-        /* ABOUTセクションの改行調整 */
         .about-section { background: #fdfefe; border: 1px solid #e5e8e8; padding: 20px; margin-bottom: 30px; border-radius: 12px; font-size: 0.88em; }
         .about-section h3 { margin-top: 0; color: var(--vitanic-blue); font-size: 1.1em; border-bottom: 1px solid #eee; padding-bottom: 8px; margin-bottom: 12px; }
 
@@ -69,7 +82,6 @@
 
         .visual-description-box { background: #fdfefe; border: 1px solid #eee; padding: 15px; margin: 20px 0; border-radius: 10px; font-size: 0.9em; color: #666; }
         
-        /* マッチバーの文字重なり防止 */
         .match-bar { height: 30px; background: #eee; border-radius: 15px; margin-bottom: 12px; position: relative; overflow: hidden; }
         .match-bar-fill { height: 100%; border-radius: 15px; width: 0%; transition: width 1s ease-out; }
         .match-text { position: absolute; left: 15px; top: 0; font-size: 0.85em; line-height: 30px; font-weight: bold; color: #2c3e50; text-shadow: 0 0 3px rgba(255,255,255,0.5); }
@@ -92,7 +104,8 @@
 <body>
 
 <header class="site-header">
-    <a href="../index.html" class="site-logo">🐈 ねこたスタジオ <span>御品書き</span></a>
+    <!-- 【修正3徹底】公式サイトURLへリンク -->
+    <a href="https://necotastudio.com/" class="site-logo">🐈 ねこたスタジオ <span>御品書き</span></a>
     <div style="font-size: 0.8em; color: #95a5a6; font-weight: bold;">v1.0</div>
 </header>
 
@@ -105,8 +118,10 @@
         Vitanicは、13種類の必須ビタミンパラメータを自在に構成し、新たな生体ユニットを錬成するシミュレーターです。各数値を調整し、あなただけの「バイオユニット」を生成してください。
     </div>
 
+    <!-- 入力・結果エリア（スクリプトで制御） -->
     <div id="input-area">
         <div class="vitamin-controls">
+            <!-- 各コントロールは変更なし -->
             <div class="control-group"><label>ビタミンA <span id="val-A" class="val-display">500</span></label><input type="range" id="vit-A" min="0" max="3000" value="500" oninput="updateVal('A')"></div>
             <div class="control-group"><label>ビタミンD <span id="val-D" class="val-display">5</span></label><input type="range" id="vit-D" min="0" max="100" value="5" oninput="updateVal('D')"></div>
             <div class="control-group"><label>ビタミンE <span id="val-E" class="val-display">7</span></label><input type="range" id="vit-E" min="0" max="100" value="7" oninput="updateVal('E')"></div>
@@ -138,6 +153,7 @@
         </div>
         <div id="match-results"></div>
         <div class="share-section">
+            <!-- 【修正4徹底】X（x.com）リンクをスクリプト側で生成 -->
             <a id="x-share-link" href="#" target="_blank" class="x-share-btn">𝕏 で報告する</a>
             <button class="back-btn" onclick="goBack()">↺ パラメータを再調整</button>
         </div>
@@ -227,10 +243,10 @@
                 </div>`;
         });
 
-        // Xシェアリンクの構築（URLを含める）
+        // 【修正4徹底】X（x.com）シェアリンクの構築
         const shareText = `【Vitanic】新種ユニット「${name}」を錬成！\nメイン素材：${main.name} (${Math.round((main.score/total)*100)}%)\n#Vitanic #ねこたスタジオ`;
         const shareUrl = window.location.href;
-        document.getElementById('x-share-link').href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
+        document.getElementById('x-share-link').href = `https://x.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
         
         resultArea.scrollIntoView({ behavior: 'smooth' });
     }
