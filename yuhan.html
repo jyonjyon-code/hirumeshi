@@ -27,29 +27,26 @@
         .sns-group { display: flex; gap: 10px; }
         .btn-sns { color: white; border: none; padding: 12px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px; flex: 1; }
         .btn-insta { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
-        #hint { font-size: 13px; color: #7f8c8d; margin-top: 12px; line-height: 1.5; }
-        #food-desc { font-size: 14px; color: #555; margin-bottom: 15px; line-height: 1.6; }
-        .promo-tag { font-size: 10px; color: #999; margin: 20px 0 -10px 0; text-align: center; }
+        .promo-tag { font-size: 10px; color: #999; margin: 20px 0 5px 0; text-align: center; }
         .ad-note { font-size: 9px; color: #aaa; margin-top: 10px; line-height: 1.4; text-align: left; background: #fff; padding: 8px; border-radius: 8px; border: 1px solid #eee; }
+        
+        /* 食べログバナー用スタイル */
+        .ad-banner-area { margin-top: 12px; min-height: 60px; display: flex; justify-content: center; align-items: center; }
 
-        /* 追加：ヘルプポップアップのスタイル */
         #help-trigger { position: absolute; right: 15px; top: 15px; cursor: pointer; background: #f39c12; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         #help-popup { display: none; position: absolute; top: 50px; right: 10px; width: 260px; background: white; border: 2px solid #f39c12; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); z-index: 1000; padding: 15px; text-align: left; font-size: 13px; line-height: 1.5; }
-        #help-popup b { color: #f39c12; }
     </style>
 </head>
 <body>
 
 <div class="card">
-    <!-- 追加：ヘルプボタン -->
     <div id="help-trigger" onclick="toggleHelp()"><i class="fas fa-question"></i></div>
-    <!-- 追加：ポップアップ中身 -->
     <div id="help-popup">
         <p style="margin-top:0;">🌃 <b>使いかたの手引き</b></p>
         <ul style="padding-left: 18px; margin: 0;">
-            <li><b>モード選択：</b>「自炊」「買う」「外食」の気分を選びます。</li>
-            <li><b>スロット回転：</b>ボタンを押すとメニューが決まります！</li>
-            <li><b>アクション：</b>結果に合わせて、レシピ検索や地図検索、デリバリー注文が可能です。</li>
+            <li><b>モード選択：</b>「自炊」「買う」「外食」を選びます。</li>
+            <li><b>メニュー決定：</b>ボタンを押すとスロットが回ります。</li>
+            <li><b>お店探し：</b>外食モードなら食べログで人気店をチェック！</li>
         </ul>
         <button onclick="toggleHelp()" style="margin-top:12px; width:100%; border:none; background:#f39c12; color:white; padding:5px; border-radius:10px; cursor:pointer; font-weight:bold;">わかった！</button>
     </div>
@@ -65,7 +62,6 @@
     <div id="main-view">
         <div id="slot-display">🍳</div>
         <button id="start-btn" class="btn btn-action" onclick="startSlot()">メニューを決める！</button>
-        <p id="hint">今夜の気分を選んで<br>ボタンを押してね！</p>
     </div>
     
     <div id="result-area">
@@ -78,19 +74,27 @@
         <div id="ad-section">
             <p class="promo-tag">本ページはプロモーションが含まれています</p>
             
+            <!-- 買ってくるモード時に表示 -->
             <div id="uber-content" style="display: none;">
                 <a id="uber-link" href="https://www.ubereats.com/jp" class="btn btn-uber" target="_blank" rel="nofollow noopener">
                     <i class="fas fa-motorcycle"></i> Uber Eats(ウーバーイーツ)
                 </a>
             </div>
 
+            <!-- 自炊するモード時に表示 -->
             <a id="oisix-link" class="btn btn-oisix" target="_blank" rel="nofollow sponsored noopener" style="display: none;">
                 <i class="fa-solid fa-leaf"></i> 買い物不要！Oisixでお試し
             </a>
 
+            <!-- 外食するモード時に表示：食べログ広告 -->
+            <div id="tabelog-ad-content" class="ad-banner-area" style="display: none;">
+                <script language="javascript" src="//ad.jp.ap.valuecommerce.com/servlet/jsbanner?sid=3767676&pid=892607567"></script>
+                <noscript><a href="//ck.jp.ap.valuecommerce.com/servlet/referral?sid=3767676&pid=892607567" rel="nofollow"><img src="//ad.jp.ap.valuecommerce.com/servlet/gifbanner?sid=3767676&pid=892607567" border="0"></a></noscript>
+            </div>
+
             <div class="ad-note">
                 ※コンテンツ内容は「ねこたスタジオ」の独自判断に基づき制作されています。<br>
-                ※Uber Eats(ウーバーイーツ)をご利用の際は配送手数料等が別途発生します。詳細はカート内でご確認ください。商品はレストランから配達パートナーがお届けします。
+                ※Uber Eats(ウーバーイーツ)をご利用の際は配送手数料等が別途発生します。
             </div>
         </div>
 
@@ -119,7 +123,6 @@
     let currentMode = 'cook';
     const emojis = ["🍳", "🍱", "🍕", "🍜", "🍛", "🥘", "🍖", "🥗", "🍣", "🍔", "🍝", "🥟"];
     
-    /* 追加：ヘルプ表示・非表示の関数 */
     function toggleHelp() {
         const popup = document.getElementById('help-popup');
         popup.style.display = (popup.style.display === 'block') ? 'none' : 'block';
@@ -129,33 +132,16 @@
         cook: [
             { name: "ハンバーグ", desc: "ふっくらジューシーに<br>焼いちゃおう！" },
             { name: "生姜焼き", desc: "ご飯がすすむ<br>最強の定番メニュー！" },
-            { name: "麻婆豆腐", desc: "ピリ辛ミンチで<br>スタミナアップ！" },
-            { name: "カルボナーラ", desc: "卵とチーズのコクで<br>リッチな気分に。" },
-            { name: "オムライス", desc: "ケチャップで可愛く<br>メッセージを書く？" },
-            { name: "親子丼", desc: "とろとろ卵と鶏肉の<br>優しいハーモニー。" },
-            { name: "チャーハン", desc: "強火で一気に！<br>パラパラを目指して。" },
-            { name: "お好み焼き", desc: "キャベツたっぷりで<br>ヘルシー＆お腹いっぱいに！" },
-            { name: "回鍋肉", desc: "甘辛い味噌で<br>野菜もモリモリ食べよう！" }
+            { name: "麻婆豆腐", desc: "ピリ辛ミンチで<br>スタミナアップ！" }
         ],
         buy: [
-            { name: "お惣菜盛り合わせ", keyword: "スーパー お惣菜", desc: "スーパーの特売品を<br>賢くゲットしよう！" },
-            { name: "デリバリーピザ", keyword: "ピザ 宅配", desc: "たまには楽して<br>おうちパーティー気分。" },
-            { name: "お寿司パック", keyword: "スーパー 寿司", desc: "今日もお疲れ様。<br>ご褒美にお寿司はどう？" },
-            { name: "冷凍餃子", keyword: "冷凍 餃子", desc: "今の冷凍食品は<br>プロ級の美味しさ！" },
-            { name: "コンビニ弁当", keyword: "コンビニ 弁当", desc: "手軽さNo.1！<br>新作があるかチェック。" },
-            { name: "ほか弁", keyword: "弁当屋", desc: "注文してから作る<br>温かさが嬉しい。" },
-            { name: "フライドチキン", keyword: "ケンタッキー", desc: "無性に食べたくなる！<br>今夜はジャンキーに。" },
-            { name: "牛丼テイクアウト", keyword: "牛丼", desc: "早くて旨い！<br>つゆだくにする？" }
+            { name: "お惣菜", keyword: "スーパー お惣菜", desc: "スーパーの特売品を<br>賢くゲットしよう！" },
+            { name: "デリバリーピザ", keyword: "ピザ 宅配", desc: "たまには楽して<br>パーティー気分。" }
         ],
         out: [
             { name: "焼肉", keyword: "焼肉", desc: "パワー全開！<br>お肉を食べて元気になろう。" },
             { name: "ラーメン", keyword: "ラーメン", desc: "こだわりの一杯を<br>探しに行こう！" },
-            { name: "ファミレス", keyword: "ファミレス", desc: "メニューが豊富！<br>今の気分で選んじゃおう。" },
-            { name: "イタリアン", keyword: "イタリアン", desc: "おしゃれな空間で<br>ゆっくりディナー。" },
-            { name: "回転寿司", keyword: "回転寿司", desc: "好きなネタを<br>好きなだけ楽しもう！" },
-            { name: "しゃぶしゃぶ", keyword: "しゃぶしゃぶ", desc: "お肉も野菜もたっぷり！<br>ヘルシーに大満足。" },
-            { name: "居酒屋ごはん", keyword: "居酒屋", desc: "おつまみ系を並べて<br>楽しく夕飯タイム！" },
-            { name: "とんかつ屋", keyword: "とんかつ", desc: "サクサクの衣と<br>ジューシーな豚肉！" }
+            { name: "寿司", keyword: "回転寿司", desc: "好きなネタを<br>好きなだけ楽しもう！" }
         ]
     };
 
@@ -168,8 +154,7 @@
 
     function startSlot() {
         const display = document.getElementById('slot-display');
-        const startBtn = document.getElementById('start-btn');
-        startBtn.style.visibility = 'hidden';
+        document.getElementById('start-btn').style.visibility = 'hidden';
         let count = 0;
         const timer = setInterval(() => {
             display.innerText = emojis[Math.floor(Math.random() * emojis.length)];
@@ -178,7 +163,7 @@
                 clearInterval(timer);
                 showResult();
             }
-        }, 800 / 12);
+        }, 65);
     }
 
     function showResult() {
@@ -193,25 +178,32 @@
         const actionLink = document.getElementById('action-link');
         const oisixLink = document.getElementById('oisix-link');
         const uberContent = document.getElementById('uber-content');
-        const uberLink = document.getElementById('uber-link');
-        
+        const tabelogContent = document.getElementById('tabelog-ad-content');
+
+        // モード別の表示制御
         if (currentMode === 'cook') {
             actionLink.innerHTML = '<i class="fas fa-utensils"></i> レシピを検索する';
             actionLink.href = "https://www.google.com/search?q=" + encodeURIComponent(res.name + " レシピ");
             oisixLink.style.display = 'inline-block';
-            oisixLink.href = OISIX_URL;
             uberContent.style.display = 'none';
-        } else {
-            const mapKeyword = currentMode === 'buy' ? res.keyword : res.name;
-            actionLink.innerHTML = currentMode === 'buy' ? '<i class="fas fa-shopping-cart"></i> 近くの買えるお店を探す' : '<i class="fas fa-map-marker-alt"></i> 近くの食べられるお店';
-            actionLink.href = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(mapKeyword);
+            tabelogContent.style.display = 'none';
+        } else if (currentMode === 'buy') {
+            actionLink.innerHTML = '<i class="fas fa-shopping-cart"></i> 近くの買えるお店';
+            actionLink.href = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(res.keyword);
             oisixLink.style.display = 'none';
             uberContent.style.display = 'block';
-            uberLink.href = `https://www.ubereats.com/jp/search?q=${encodeURIComponent(res.name)}`;
+            tabelogContent.style.display = 'none';
+            document.getElementById('uber-link').href = `https://www.ubereats.com/jp/search?q=${encodeURIComponent(res.name)}`;
+        } else if (currentMode === 'out') {
+            actionLink.innerHTML = '<i class="fas fa-map-marker-alt"></i> 近くのお店を地図で見る';
+            actionLink.href = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(res.name);
+            oisixLink.style.display = 'none';
+            uberContent.style.display = 'none';
+            tabelogContent.style.display = 'flex'; // 食べログ広告を表示
         }
 
         const modeText = currentMode === 'cook' ? '自炊' : currentMode === 'buy' ? '買い出し' : '外食';
-        const tweetText = encodeURIComponent(`今夜の夕食は…\n【 ${res.name} 】に決定！\n\n（${modeText}モードで選びました🍴）\n\n#ゆうはんなにしよ #ねこたスタジオ`);
+        const tweetText = encodeURIComponent(`今夜の夕食は…\n【 ${res.name} 】に決定！\n\n#ゆうはんなにしよ #ねこたスタジオ`);
         document.getElementById('x-share-btn').href = `https://twitter.com/intent/tweet?text=${tweetText}&url=${encodeURIComponent(APP_URL)}`;
     }
 
