@@ -39,8 +39,10 @@
         
         .lucky-item { color: #e67e22; font-weight: bold; font-size: 0.95em; margin-top: 15px; background: #fff; border-radius: 10px; padding: 5px; }
         #hint { font-size: 14px; color: #888; margin-top: 10px; }
+
         .studio-nav { margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; width: 100%; }
         .btn-back { background: #888; color: white; border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; font-size: 14px; margin-bottom: 10px; width: 100%; box-sizing: border-box; }
+        
         .promo-tag { font-size: 10px; color: #999; margin: 20px 0 -10px 0; text-align: center; }
         .tabelog-note { font-size: 9px; color: #aaa; margin-top: 5px; line-height: 1.3; }
     </style>
@@ -70,8 +72,7 @@
         </a>
 
         <p class="promo-tag">本ページはプロモーションが含まれています</p>
-        <!-- 【解決策】LinkSwitchを介さず、公式アフィリエイトツールで生成したベースURLを使用 -->
-        <a id="tabelog-link" href="https://tabelog.com/" class="btn btn-tabelog" target="_blank" rel="nofollow noopener">
+        <a id="tabelog-link" href="#" class="btn btn-tabelog" target="_blank" rel="nofollow noopener">
             <i class="fas fa-utensils"></i> 食べログで人気店を確認
         </a>
         <p class="tabelog-note">失敗しないお店選び！ネット予約も可能です。</p>
@@ -86,7 +87,8 @@
     </div>
 
     <div class="studio-nav">
-        <a href="index.html" class="btn-back">ねこたスタジオへ戻る</a>
+        <!-- 修正：ねこたスタジオの公式リンクへ -->
+        <a href="https://necotastudio.com/" class="btn-back">ねこたスタジオへ戻る</a>
     </div>
 </div>
 
@@ -131,17 +133,21 @@
             document.getElementById('desc').innerText = res.desc;
             document.getElementById('add-on').innerText = res.add;
             
-            // Googleマップ：これは安定
+            // Googleマップ：安定動作
             const mapKeyword = currentMode === 'conveni' ? "近くのコンビニ" : "近くの" + res.keyword;
             document.getElementById('map-link').href = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(mapKeyword);
 
-            // 【超安定策】Google検索を介して食べログ内のキーワード検索結果に飛ばす
-            // 食べログ直のURLでエラーが出る場合の回避策として最強です
-            const safeSearchUrl = `https://www.google.com/search?q=${encodeURIComponent(res.keyword + ' 食べログ 人気')}`;
+            // 【PC/スマホ共通・最終解決URL】
+            // keywords エンドポイントを使用し、LinkSwitchの自動変換を最大限に活かす形式
             const tabelogBtn = document.getElementById('tabelog-link');
-            tabelogBtn.href = safeSearchUrl;
+            tabelogBtn.href = `https://tabelog.com/keywords/${encodeURIComponent(res.keyword)}/rstlst/`;
             
-            // X共有
+            // LinkSwitchの動的発火
+            if (typeof vc_sw === 'function') {
+                vc_sw(tabelogBtn);
+            }
+            
+            // X共有：ハッシュタグに「ねこたスタジオ」を追加
             const tweetText = `今日のおみくじの結果は…\n【${res.luck}】ランチは「${res.food}」に決定！\n\n✨ラッキーアイテム: ${res.add}\n\n#ひるめしえらんで #ねこたスタジオ`;
             document.getElementById('x-share-btn').href = `https://x.com/intent/tweet?text=${encodeURIComponent(tweetText)}&url=${encodeURIComponent(APP_URL)}`;
 
