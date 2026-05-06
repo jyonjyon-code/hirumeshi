@@ -28,7 +28,7 @@
         .btn-sns { color: white; border: none; padding: 12px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px; flex: 1; }
         .btn-insta { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
         .promo-tag { font-size: 10px; color: #999; margin: 20px 0 5px 0; text-align: center; }
-        .ad-note { font-size: 9px; color: #aaa; margin-top: 10px; line-height: 1.4; text-align: left; background: #fff; padding: 8px; border-radius: 8px; border: 1px solid #eee; }
+        .ad-note { font-size: 10px; color: #aaa; margin-top: 10px; line-height: 1.4; text-align: center; background: #fff; padding: 8px; border-radius: 8px; border: 1px solid #eee; }
         
         /* 食べログバナー用スタイル */
         .ad-banner-area { margin-top: 12px; min-height: 60px; display: flex; justify-content: center; align-items: center; }
@@ -93,8 +93,7 @@
             </div>
 
             <div class="ad-note">
-                ※コンテンツ内容は「ねこたスタジオ」の独自判断に基づき制作されています。<br>
-                ※Uber Eats(ウーバーイーツ)をご利用の際は配送手数料等が別途発生します。
+                ※コンテンツ内容は「ねこたスタジオ」の独自判断に基づき制作されています。
             </div>
         </div>
 
@@ -180,7 +179,6 @@
         const uberContent = document.getElementById('uber-content');
         const tabelogContent = document.getElementById('tabelog-ad-content');
 
-        // モード別の表示制御
         if (currentMode === 'cook') {
             actionLink.innerHTML = '<i class="fas fa-utensils"></i> レシピを検索する';
             actionLink.href = "https://www.google.com/search?q=" + encodeURIComponent(res.name + " レシピ");
@@ -199,10 +197,9 @@
             actionLink.href = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(res.name);
             oisixLink.style.display = 'none';
             uberContent.style.display = 'none';
-            tabelogContent.style.display = 'flex'; // 食べログ広告を表示
+            tabelogContent.style.display = 'flex';
         }
 
-        const modeText = currentMode === 'cook' ? '自炊' : currentMode === 'buy' ? '買い出し' : '外食';
         const tweetText = encodeURIComponent(`今夜の夕食は…\n【 ${res.name} 】に決定！\n\n#ゆうはんなにしよ #ねこたスタジオ`);
         document.getElementById('x-share-btn').href = `https://twitter.com/intent/tweet?text=${tweetText}&url=${encodeURIComponent(APP_URL)}`;
     }
