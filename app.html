@@ -6,7 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     
-    <!-- 収益化：LinkSwitch設定（遵さんのPID: 892607513 を適用） -->
+    <!-- 収益化：LinkSwitch設定 -->
     <script type="text/javascript" language="javascript">
         var vc_pid = "892607513";
     </script>
@@ -63,7 +63,7 @@
         <ul style="padding-left: 18px; margin: 0;">
             <li><b>モード：</b>「お店を探す」か「コンビニ」を選びます。</li>
             <li><b>おみくじ：</b>真ん中のアイコンをタップして振ります！</li>
-            <li><b>おひる：</b>結果が出たら、Googleマップや食べログで場所を探せます。</li>
+            <li><b>おひる：</b>結果が出たら、そのままGoogleマップや食べログで場所を探せます。</li>
         </ul>
         <button onclick="toggleHelp()" style="margin-top:12px; width:100%; border:none; background:#d9534f; color:white; padding:5px; border-radius:10px; cursor:pointer; font-weight:bold;">わかった！</button>
     </div>
@@ -90,7 +90,6 @@
         </a>
 
         <p class="promo-tag">本ページはプロモーションが含まれています</p>
-        <!-- 食べログボタン：初期hrefを空にしてJSで設定 -->
         <a id="tabelog-link" href="https://tabelog.com/" class="btn btn-tabelog" target="_blank" rel="nofollow noopener">
             <i class="fas fa-utensils"></i> 食べログで人気店を予約
         </a>
@@ -181,17 +180,23 @@
             document.getElementById('desc').innerText = res.desc;
             document.getElementById('add-on').innerText = res.add;
             
-            // Xシェアリンク
+            // Xシェア
             const tweetText = `今日のおみくじの結果は…\n${luckLabel}ランチは「${res.food}」に決定！\n\n✨ラッキーアイテム: ${res.add}\n\n#ひるめしえらんで #ねこたスタジオ`;
             document.getElementById('x-share-btn').href = `https://x.com/intent/tweet?text=${encodeURIComponent(tweetText)}&url=${encodeURIComponent(APP_URL)}`;
 
-            // Googleマップリンク
+            // Googleマップ
             const mapKeyword = currentMode === 'conveni' ? "近くのコンビニ" : "近くの" + res.keyword;
             document.getElementById('map-link').href = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(mapKeyword);
 
-            // 【修正ポイント】食べログのURL構造をアフィリエイト認識されやすい形式に
+            // 食べログリンク生成 & LinkSwitch手動実行
             const tabelogSearchUrl = `https://tabelog.com/rst/rstlst/?sw=${encodeURIComponent(res.keyword)}`;
-            document.getElementById('tabelog-link').href = tabelogSearchUrl;
+            const tabelogBtn = document.getElementById('tabelog-link');
+            tabelogBtn.href = tabelogSearchUrl;
+            
+            // LinkSwitchの関数が存在すれば実行して即座にアフィリエイト化
+            if (typeof vc_sw === 'function') {
+                vc_sw(tabelogBtn);
+            }
             
             document.getElementById('result-area').style.display = 'block';
             document.getElementById('main-view').style.display = 'none';
