@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ゆうはんなにしよ | ねこたスタジオ</title>
 
-    <!-- Googleアナリティクス (GA4) タグ：スタジオ共通IDを反映 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-6LK2VK60B1"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -14,7 +13,6 @@
       gtag('config', 'G-6LK2VK60B1');
     </script>
 
-    <!-- meta description：検索結果での見え方を最適化 -->
     <meta name="description" content="献立スロットで今日の夕飯を提案！『ゆうはんなにしよ』は、自炊・買い出し・外食の3モードから今夜のメニューを決定するアプリです。レシピ検索やデリバリー、店舗検索もスムーズにサポート。">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -35,6 +33,7 @@
         .btn-uber { background: #06C167; }
         .btn-retry { background: #95a5a6; }
         .btn-x { background: #000; }
+        .btn-copy { background: #E1306C; } /* インスタ投稿補助用 */
         .studio-nav { margin-top: 25px; border-top: 1px solid #ddd; padding-top: 20px; width: 100%; }
         .btn-back { background: #888; color: white; border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; font-size: 14px; margin-bottom: 15px; width: 100%; box-sizing: border-box; }
         .sns-group { display: flex; gap: 10px; }
@@ -42,8 +41,6 @@
         .btn-insta { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
         .promo-tag { font-size: 10px; color: #999; margin: 20px 0 5px 0; text-align: center; }
         .ad-note { font-size: 10px; color: #aaa; margin-top: 10px; line-height: 1.4; text-align: center; background: #fff; padding: 8px; border-radius: 8px; border: 1px solid #eee; }
-        
-        /* 食べログバナー用スタイル */
         .ad-banner-area { margin-top: 12px; min-height: 60px; display: flex; justify-content: center; align-items: center; }
 
         #help-trigger { position: absolute; right: 15px; top: 15px; cursor: pointer; background: #f39c12; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
@@ -87,19 +84,16 @@
         <div id="ad-section">
             <p class="promo-tag">本ページはプロモーションが含まれています</p>
             
-            <!-- 買ってくるモード時に表示 -->
             <div id="uber-content" style="display: none;">
                 <a id="uber-link" href="https://www.ubereats.com/jp" class="btn btn-uber" target="_blank" rel="nofollow noopener">
                     <i class="fas fa-motorcycle"></i> Uber Eats(ウーバーイーツ)
                 </a>
             </div>
 
-            <!-- 自炊するモード時に表示 -->
             <a id="oisix-link" class="btn btn-oisix" target="_blank" rel="nofollow sponsored noopener" style="display: none;">
                 <i class="fa-solid fa-leaf"></i> 買い物不要！Oisixでお試し
             </a>
 
-            <!-- 外食するモード時に表示：食べログ広告 -->
             <div id="tabelog-ad-content" class="ad-banner-area" style="display: none;">
                 <script language="javascript" src="//ad.jp.ap.valuecommerce.com/servlet/jsbanner?sid=3767676&pid=892607567"></script>
                 <noscript><a href="//ck.jp.ap.valuecommerce.com/servlet/referral?sid=3767676&pid=892607567" rel="nofollow"><img src="//ad.jp.ap.valuecommerce.com/servlet/gifbanner?sid=3767676&pid=892607567" border="0"></a></noscript>
@@ -110,13 +104,18 @@
             </div>
         </div>
 
+        <div style="display: flex; gap: 8px; margin-top: 12px;">
+            <a id="x-share-btn" class="btn btn-x" target="_blank" style="margin-top: 0; flex: 1;">
+                <i class="fa-brands fa-x-twitter"></i> 報告
+            </a>
+            <button id="copy-btn" class="btn btn-copy" onclick="copyResult()" style="margin-top: 0; flex: 1;">
+                <i class="fas fa-copy"></i> 結果をコピー
+            </button>
+        </div>
+
         <button class="btn btn-retry" onclick="reset()">
             <i class="fas fa-redo"></i> もういちど引く
         </button>
-
-        <a id="x-share-btn" class="btn btn-x" target="_blank">
-            <i class="fa-brands fa-x-twitter"></i> 結果を報告する
-        </a>
     </div>
 
     <div class="studio-nav">
@@ -130,7 +129,6 @@
 
 <script>
     const APP_URL = "https://necotastudio.com/yuhan.html"; 
-    const OISIX_URL = "https://px.a8.net/svt/ejp?a8mat=4AZBO2+81COS2+3RK+2THRHV";
 
     let currentMode = 'cook';
     const emojis = ["🍳", "🍱", "🍕", "🍜", "🍛", "🥘", "🍖", "🥗", "🍣", "🍔", "🍝", "🥟"];
@@ -200,14 +198,14 @@
             tabelogContent.style.display = 'none';
         } else if (currentMode === 'buy') {
             actionLink.innerHTML = '<i class="fas fa-shopping-cart"></i> 近くの買えるお店';
-            actionLink.href = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(res.keyword);
+            actionLink.href = "https://www.google.com/maps/search/" + encodeURIComponent(res.keyword);
             oisixLink.style.display = 'none';
             uberContent.style.display = 'block';
             tabelogContent.style.display = 'none';
             document.getElementById('uber-link').href = `https://www.ubereats.com/jp/search?q=${encodeURIComponent(res.name)}`;
         } else if (currentMode === 'out') {
             actionLink.innerHTML = '<i class="fas fa-map-marker-alt"></i> 近くのお店を地図で見る';
-            actionLink.href = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(res.name);
+            actionLink.href = "https://www.google.com/maps/search/" + encodeURIComponent(res.name);
             oisixLink.style.display = 'none';
             uberContent.style.display = 'none';
             tabelogContent.style.display = 'flex';
@@ -215,6 +213,22 @@
 
         const tweetText = encodeURIComponent(`今夜の夕食は…\n【 ${res.name} 】に決定！\n\n#ゆうはんなにしよ #ねこたスタジオ`);
         document.getElementById('x-share-btn').href = `https://twitter.com/intent/tweet?text=${tweetText}&url=${encodeURIComponent(APP_URL)}`;
+        
+        // コピーボタンのテキストをリセット
+        document.getElementById('copy-btn').innerHTML = '<i class="fas fa-copy"></i> 結果をコピー';
+    }
+
+    function copyResult() {
+        const food = document.getElementById('food-result').innerText;
+        const shareText = `今夜の夕食は【 ${food} 】に決定！✨\n#ゆうはんなにしよ\n${APP_URL}`;
+        
+        navigator.clipboard.writeText(shareText).then(() => {
+            const btn = document.getElementById('copy-btn');
+            btn.innerHTML = '<i class="fas fa-check"></i> コピー完了！';
+            setTimeout(() => {
+                btn.innerHTML = '<i class="fas fa-copy"></i> 結果をコピー';
+            }, 2000);
+        });
     }
 
     function reset() {
