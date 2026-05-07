@@ -31,7 +31,8 @@
         .btn { color: white; border: none; padding: 15px 20px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; margin-top: 12px; font-size: 15px; width: 100%; box-sizing: border-box; }
         .btn-map { background: #4285F4; }
         .btn-uber { background: #06C167; }
-        .btn-x { background: #000; } /* 𝕏用スタイル追加 */
+        .btn-x { background: #000; }
+        .btn-copy { background: #E1306C; } 
         .btn-retry { background: #f0ad4e; }
         
         .ad-banner-area { margin-top: 15px; min-height: 60px; display: flex; justify-content: center; align-items: center; flex-direction: column; }
@@ -70,14 +71,19 @@
             <i class="fab fa-uber"></i> Uber Eatsで探す
         </a>
 
-        <button id="x-share-btn" class="btn btn-x" onclick="shareX()">
-            <i class="fab fa-x-twitter"></i> 𝕏で結果を報告
-        </button>
-
         <div id="tabelog-ad-box" class="ad-banner-area">
             <div class="ad-label">PR 詳しい情報をチェック</div>
             <script language="javascript" src="//ad.jp.ap.valuecommerce.com/servlet/jsbanner?sid=3767676&pid=892607567"></script>
             <noscript><a href="//ck.jp.ap.valuecommerce.com/servlet/referral?sid=3767676&pid=892607567" rel="nofollow"><img src="//ad.jp.ap.valuecommerce.com/servlet/gifbanner?sid=3767676&pid=892607567" border="0"></a></noscript>
+        </div>
+
+        <div style="display: flex; gap: 8px;">
+            <button class="btn btn-x" onclick="shareX()" style="flex: 1;">
+                <i class="fab fa-x-twitter"></i> 𝕏シェア
+            </button>
+            <button id="copy-btn" class="btn btn-copy" onclick="copyResult()" style="flex: 1;">
+                <i class="fas fa-copy"></i> 結果をコピー
+            </button>
         </div>
 
         <button class="btn btn-retry" onclick="reset()">
@@ -127,8 +133,7 @@
             document.getElementById('desc').innerText = res.desc;
             document.getElementById('add-on').innerText = res.add;
             
-            // Mapリンクの修正
-            document.getElementById('map-link').href = `https://www.google.com/maps/search/${encodeURIComponent(res.keyword)}`;
+            document.getElementById('map-link').href = `http://googleusercontent.com/maps.google.com/3{encodeURIComponent(res.keyword)}`;
 
             const adBox = document.getElementById('tabelog-ad-box');
             const uberBtn = document.getElementById('uber-link');
@@ -144,19 +149,32 @@
 
             document.getElementById('result-area').style.display = 'block';
             document.getElementById('main-view').style.display = 'none';
+            document.getElementById('copy-btn').innerHTML = '<i class="fas fa-copy"></i> 結果をコピー';
         }, 800);
     }
 
-    // 【修正】𝕏シェア関数の実装
     function shareX() {
         const luck = document.getElementById('luck').innerText;
         const food = document.getElementById('food').innerText;
         const addOn = document.getElementById('add-on').innerText;
-        const mode = currentMode === 'normal' ? 'お店' : 'コンビニ';
-        
         const text = `今日のひるめしは…\n${luck}！「${food}」に決まり！\n✨ラッキー買い足し: ${addOn}\n\n#ひるめしえらんで #ねこたスタジオ #ランチ`;
         const url = `https://x.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(location.href)}`;
         window.open(url, '_blank');
+    }
+
+    function copyResult() {
+        const luck = document.getElementById('luck').innerText;
+        const food = document.getElementById('food').innerText;
+        const addOn = document.getElementById('add-on').innerText;
+        const shareText = `今日のひるめしは【${luck}】${food}！✨ラッキー買い足し：${addOn}\n${location.href}`;
+        
+        navigator.clipboard.writeText(shareText).then(() => {
+            const btn = document.getElementById('copy-btn');
+            btn.innerHTML = '<i class="fas fa-check"></i> コピー完了！';
+            setTimeout(() => {
+                btn.innerHTML = '<i class="fas fa-copy"></i> 結果をコピー';
+            }, 2000);
+        });
     }
 
     function reset() {
