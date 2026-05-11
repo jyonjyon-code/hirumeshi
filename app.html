@@ -7,10 +7,10 @@
 
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-6LK2VK60B1"></script>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-6LK2VK60B1');
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-6LK2VK60B1');
     </script>
 
     <meta name="description" content="今日のお昼ご飯を「おみくじ」で楽しく決定！『ひるめしえらんで』は、今の気分に合わせてランチを提案する無料ツールです。コンビニ飯から外食まで、マップ連携で近くの店もすぐに見つかります。">
@@ -30,7 +30,7 @@
         
         .btn { color: white; border: none; padding: 15px 20px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; margin-top: 12px; font-size: 15px; width: 100%; box-sizing: border-box; }
         .btn-map { background: #4285F4; }
-        .btn-uber { background: #06C167; }
+        .btn-demae { background: #ff3300; } /* 出前館カラー */
         .btn-x { background: #000; }
         .btn-copy { background: #E1306C; } 
         .btn-retry { background: #f0ad4e; }
@@ -67,8 +67,9 @@
             <i class="fas fa-map-marker-alt"></i> 地図で近くを探す
         </a>
 
-        <a id="uber-link" class="btn btn-uber" target="_blank">
-            <i class="fab fa-uber"></i> Uber Eatsで探す
+        <a id="uber-link" href="https://px.a8.net/svt/ejp?a8mat=4B3K2L+2BCPGY+5W08+5ZEMP" class="btn btn-demae" target="_blank" rel="nofollow">
+            <i class="fas fa-motorcycle"></i> 出前館で探す
+            <img border="0" width="1" height="1" src="https://www17.a8.net/0.gif?a8mat=4B3K2L+2BCPGY+5W08+5ZEMP" alt="">
         </a>
 
         <div id="tabelog-ad-box" class="ad-banner-area">
@@ -133,18 +134,17 @@
             document.getElementById('desc').innerText = res.desc;
             document.getElementById('add-on').innerText = res.add;
             
-            document.getElementById('map-link').href = `http://googleusercontent.com/maps.google.com/3{encodeURIComponent(res.keyword)}`;
+            document.getElementById('map-link').href = `https://www.google.com/maps/search/{encodeURIComponent(res.keyword)}`;
 
             const adBox = document.getElementById('tabelog-ad-box');
-            const uberBtn = document.getElementById('uber-link');
+            const dBtn = document.getElementById('uber-link');
 
             if (currentMode === 'normal') {
                 adBox.style.display = 'flex';
-                uberBtn.style.display = 'none';
+                dBtn.style.display = 'none';
             } else {
                 adBox.style.display = 'none';
-                uberBtn.style.display = 'block';
-                uberBtn.href = `https://www.ubereats.com/search?q=${encodeURIComponent(res.keyword)}`;
+                dBtn.style.display = 'block';
             }
 
             document.getElementById('result-area').style.display = 'block';
