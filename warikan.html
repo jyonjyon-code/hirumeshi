@@ -40,6 +40,14 @@
         .flex-inputs > div { flex: 1; }
         .flex-inputs input { width: 100%; padding: 10px; border: 2px solid #bdc3c7; border-radius: 10px; box-sizing: border-box; font-size: 16px; font-family: inherit; }
 
+        /* 動的追加される先払いリスト */
+        .prepaid-list-item { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; }
+        .prepaid-list-item input { padding: 8px; border: 2px solid #bdc3c7; border-radius: 8px; font-size: 14px; box-sizing: border-box; }
+        .prepaid-name { flex: 1; }
+        .prepaid-amount { flex: 1.2; }
+        .btn-remove-prepaid { background: #e74c3c; color: white; border: none; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+        .btn-add-prepaid { background: #27ae60; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: bold; margin-top: 5px; display: inline-flex; align-items: center; gap: 4px; }
+
         /* ボタン関係 */
         .btn-footer { display: flex; gap: 10px; margin-top: 20px; }
         .btn-nav { padding: 13px; border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 16px; flex: 1; border: none; text-align: center; transition: 0.2s; }
@@ -68,6 +76,7 @@
 <div class="card">
     <h2><i class="fas fa-calculator"></i> わりかんしといた</h2>
     
+    <!-- ステップ進捗バー -->
     <div class="step-progress" id="step-bar">
         <div class="step-dot active"></div>
         <div class="step-dot"></div>
@@ -75,26 +84,34 @@
         <div class="step-dot"></div>
     </div>
 
+    <!-- ステップ1: 基本情報（会計・合計人数・買い出し返金） -->
     <div class="step-content active" id="step-1">
-        <div class="question-title"><i class="fas fa-beer-mug-empty"></i> Q1. 今回の飲み会の総額と、全体の人数（通常メンバー）を教えてください。</div>
+        <div class="question-title"><i class="fas fa-beer-mug-empty"></i> Q1. 会計の総額と、参加する全体の合計人数を教えてください。</div>
         <div class="input-group">
             <label>会計の総額 (円)</label>
             <input type="number" id="total-amount" placeholder="例: 25000" min="0">
         </div>
         <div class="input-group">
-            <label>通常の支払いをする人数 (人)</label>
-            <input type="number" id="normal-count" placeholder="例: 4" min="1" value="1">
+            <label>全体の合計人数 (人)</label>
+            <input type="number" id="total-people-count" placeholder="例: 6" min="1" oninput="updateNormalCountPlaceholder()">
         </div>
-        <div class="input-group" style="border-top: 1px dashed #ccc; padding-top: 15px; margin-top: 15px;">
-            <label>先に一部（買い出し等）を支払ってくれた人がいる場合、その合計金額 (円) ※いなければ0</label>
-            <input type="number" id="prepaid-amount" placeholder="例: 3000" min="0" value="0">
+        
+        <!-- 複数人の買い出し返金機能 -->
+        <div class="sub-group" style="margin-top: 20px;">
+            <label style="font-weight:bold; font-size:13px; color:#2c3e50; display:block; margin-bottom:8px;">🛒 先に買い出し等で自腹を切った人（返金が必要な人）</label>
+            <div id="prepaid-container">
+                <!-- ここに動的に入力欄が追加されます -->
+            </div>
+            <button class="btn-add-prepaid" onclick="addPrepaidInput()"><i class="fas fa-plus"></i> 支払った人を追加する</button>
         </div>
+
         <div class="btn-footer">
             <div></div>
             <button class="btn-nav btn-next" onclick="nextStep(2)">次へ進む <i class="fas fa-arrow-right"></i></button>
         </div>
     </div>
 
+    <!-- ステップ2: 少なくしたい人 -->
     <div class="step-content" id="step-2">
         <div class="question-title"><i class="fas fa-wine-glass"></i> Q2. 飲まなかった人など、金額を「少なくしたい人」はいますか？（いなければそのまま次へ）</div>
         
@@ -132,6 +149,7 @@
         </div>
     </div>
 
+    <!-- ステップ3: 多く払いたい人 -->
     <div class="step-content" id="step-3">
         <div class="question-title"><i class="fas fa-crown"></i> Q3. 幹事や先輩など、金額を「多く払いたい人」はいますか？（いなければそのまま計算へ）</div>
         
@@ -155,6 +173,7 @@
         </div>
     </div>
 
+    <!-- ステップ4: 総括・結果表示エリア -->
     <div class="step-content" id="step-4">
         <div id="result-area">
             <div class="result-title">🎉 今回の割り勘総括</div>
@@ -165,6 +184,7 @@
         </div>
     </div>
 
+    <!-- ねこたスタジオ ナビゲーション -->
     <div class="studio-nav">
         <a href="index.html" class="btn-back">ねこたスタジオへ戻る</a>
         <div class="sns-group">
@@ -175,6 +195,23 @@
 </div>
 
 <script>
+    // 先払い用の入力欄を動的に増やす仕組み
+    function addPrepaidInput() {
+        const container = document.getElementById('prepaid-container');
+        const item = document.createElement('div');
+        item.className = 'prepaid-list-item';
+        item.innerHTML = `
+            <input type="text" class="prepaid-name" placeholder="名前 (例: Aさん)">
+            <input type="number" class="prepaid-amount" placeholder="金額 (円)" min="0">
+            <button class="btn-remove-prepaid" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>
+        `;
+        container.appendChild(item);
+    }
+
+    function updateNormalCountPlaceholder() {
+        // プレースホルダーの連動処理（必要に応じて拡張可能）
+    }
+
     // 画面切り替え制御
     function showStep(stepNum) {
         document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
@@ -188,8 +225,13 @@
     function nextStep(stepNum) {
         if (stepNum === 2) {
             const totalAmount = parseInt(document.getElementById('total-amount').value) || 0;
+            const totalPeople = parseInt(document.getElementById('total-people-count').value) || 0;
             if (totalAmount <= 0) {
                 alert("会計総額を正しく入力してください。");
+                return;
+            }
+            if (totalPeople <= 0) {
+                alert("全体の合計人数を正しく入力してください。");
                 return;
             }
         }
@@ -203,8 +245,7 @@
     // 割り勘の計算と総括表示
     function calculate() {
         const totalAmount = parseInt(document.getElementById('total-amount').value) || 0;
-        const normalCount = parseInt(document.getElementById('normal-count').value) || 0;
-        const prepaidAmount = parseInt(document.getElementById('prepaid-amount').value) || 0;
+        const totalPeople = parseInt(document.getElementById('total-people-count').value) || 0;
         
         const ratioCount = parseInt(document.getElementById('ratio-count').value) || 0;
         const ratioVal = parseFloat(document.getElementById('ratio-val').value) || 0;
@@ -215,11 +256,30 @@
         const heavyCount = parseInt(document.getElementById('heavy-count').value) || 0;
         const heavyVal = parseFloat(document.getElementById('heavy-val').value) || 1.0;
 
-        if ((normalCount + ratioCount + fixedCount + heavyCount) === 0) {
-            alert("合計人数が0人になっています。");
+        // 全体人数から特定枠の人数を引いて、通常メンバーの人数を自動算出
+        const normalCount = totalPeople - ratioCount - fixedCount - heavyCount;
+
+        if (normalCount < 0) {
+            alert("少なく調整した人と多く調整した人の合計人数が、全体の合計人数を超えています！やり直してください。");
             return;
         }
 
+        // 先払いリストデータの全集計
+        let prepaidTotal = 0;
+        const prepaidItems = [];
+        const names = document.querySelectorAll('.prepaid-name');
+        const amounts = document.querySelectorAll('.prepaid-amount');
+        
+        for (let i = 0; i < amounts.length; i++) {
+            const amt = parseInt(amounts[i].value) || 0;
+            const name = names[i].value.trim() || `支払人${i+1}`;
+            if (amt > 0) {
+                prepaidTotal += amt;
+                prepaidItems.push({ name: name, amount: amt });
+            }
+        }
+
+        // 1. 固定額メンバーの合計を引く
         const totalFixed = fixedCount * fixedAmount;
         let remAmount = totalAmount - totalFixed;
 
@@ -228,6 +288,7 @@
             return;
         }
 
+        // 2. 比率からベース（通常メンバー1人あたり）の金額を計算
         const totalShares = (normalCount * 1.0) + (ratioCount * ratioVal) + (heavyCount * heavyVal);
         
         let basePrice = 0;
@@ -240,14 +301,17 @@
             heavyPrice = basePrice * heavyVal;
         }
 
+        // 3. 100円単位で切り上げ処理
         const ceilNormal = Math.ceil(basePrice / 100) * 100;
         const ceilRatio = Math.ceil(ratioPrice / 100) * 100;
         const ceilHeavy = Math.ceil(heavyPrice / 100) * 100;
         const ceilFixed = fixedAmount;
 
+        // 4. 合計と余り（お釣り）の計算
         const collectedTotal = (ceilNormal * normalCount) + (ceilRatio * ratioCount) + (ceilFixed * fixedCount) + (ceilHeavy * heavyCount);
         let overflow = collectedTotal - totalAmount;
 
+        // 5. 総括画面への出力
         const resultList = document.getElementById('result-list');
         resultList.innerHTML = "";
 
@@ -264,8 +328,12 @@
             html += `<div class="result-item"><span>金額を多くした人 (${heavyCount}人)</span><span class="price-text">${ceilHeavy.toLocaleString()} 円</span></div>`;
         }
         
-        if (prepaidAmount > 0) {
-            html += `<div class="result-item" style="background: #e8f8f5; padding: 10px; border-radius: 5px; margin-top: 5px; border: 1px dashed #2ecc71;"><span>💡 先払いした人への返金合計</span><span class="price-text" style="color: #27ae60;">${prepaidAmount.toLocaleString()} 円</span></div>`;
+        // 複数人の買い出し返金リストを総括に描画
+        if (prepaidItems.length > 0) {
+            html += `<div style="margin-top: 15px; padding: 5px 0; border-top: 1px dashed #f1c40f; font-weight: bold; color: #27ae60; font-size:14px;">🛍️ 各自への返金案内</div>`;
+            prepaidItems.forEach(item => {
+                html += `<div class="result-item" style="background: #e8f8f5; border: none; padding: 6px 10px; border-radius: 5px; margin-bottom: 4px;"><span>${item.name} さんへ</span><span class="price-text" style="color: #27ae60;">${item.amount.toLocaleString()} 円 返金</span></div>`;
+            });
         }
 
         html += `<div class="result-item" style="margin-top:15px;"><span>お釣り・余り（幹事の手元へ）</span><span>${overflow.toLocaleString()} 円</span></div>`;
