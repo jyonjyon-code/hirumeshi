@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>割り勘計算ツール | ねこたスタジオ</title>
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6LK2VK60B1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-6LK2VK60B1');
+    </script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { font-family: 'Hiragino Kaku Gothic ProN', sans-serif; text-align: center; background: #eef2f3; padding: 15px; color: #333; margin: 0; }
+        .card { background: white; padding: 25px 20px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); display: inline-block; width: 100%; max-width: 400px; border: 4px solid #2c3e50; margin-top: 10px; box-sizing: border-box; text-align: left; position: relative; }
+        h2 { color: #2c3e50; text-align: center; margin-top: 0; margin-bottom: 20px; font-size: 24px; }
+        
+        .input-group { margin-bottom: 15px; }
+        .input-group label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 14px; color: #555; }
+        .input-group input { width: 100%; padding: 10px; border: 2px solid #bdc3c7; border-radius: 10px; box-sizing: border-box; font-size: 16px; font-family: inherit; }
+        .input-group input:focus { border-color: #2c3e50; outline: none; }
+
+        .sub-group { background: #f8f9fa; padding: 15px; border-radius: 15px; border: 1px dashed #bdc3c7; margin-bottom: 15px; }
+        .sub-title { font-weight: bold; font-size: 14px; color: #2c3e50; margin-bottom: 10px; display: flex; align-items: center; gap: 5px; }
+        .flex-inputs { display: flex; gap: 10px; margin-bottom: 10px; }
+        .flex-inputs > div { flex: 1; }
+
+        .btn-calc { background: #2c3e50; color: white; border: none; padding: 15px; border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 18px; width: 100%; box-sizing: border-box; margin-top: 10px; transition: 0.2s; text-align: center; }
+        .btn-calc:hover { opacity: 0.9; }
+
+        #result-area { display: none; background: #fffdf0; border: 2px solid #f1c40f; padding: 15px; border-radius: 15px; margin-top: 20px; }
+        .result-title { font-weight: bold; color: #d35400; font-size: 16px; margin-bottom: 10px; text-align: center; }
+        .result-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f1c40f; font-size: 15px; }
+        .result-item:last-child { border-bottom: none; font-weight: bold; color: #c0392b; }
+        .price-text { font-size: 18px; font-weight: bold; color: #2c3e50; }
+
+        .studio-nav { margin-top: 25px; border-top: 1px solid #ddd; padding-top: 20px; text-align: center; }
+        .btn-back { background: #888; color: white; padding: 10px 20px; border-radius: 50px; text-decoration: none; display: inline-block; font-size: 14px; width: 100%; box-sizing: border-box; margin-bottom: 15px; }
+        .sns-group { display: flex; gap: 10px; }
+        .btn-sns { color: white; border: none; padding: 12px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px; flex: 1; }
+        .btn-x { background: #000; }
+        .btn-insta { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2><i class="fas fa-calculator"></i> 割り勘計算ツール</h2>
+
+    <div class="input-group">
+        <label>会計総額 (円)</label>
+        <input type="number" id="total-amount" placeholder="例: 25000" min="0">
+    </div>
+
+    <div class="input-group">
+        <label>通常メンバーの人数 (人)</label>
+        <input type="number" id="normal-count" placeholder="例: 4" min="1" value="1">
+    </div>
+
+    <div class="sub-group">
+        <div class="sub-title"><i class="fas fa-venus"></i> 特定メンバー（半額など）</div>
+        <div class="flex-inputs">
+            <div>
+                <label style="font-size: 12px; color: #777;">人数 (人)</label>
+                <input type="number" id="ratio-count" value="0" min="0">
+            </div>
+            <div>
+                <label style="font-size: 12px; color: #777;">支払比率 (倍)</label>
+                <input type="number" id="ratio-val" value="0.5" step="0.1" min="0">
+            </div>
+        </div>
+    </div>
+
+    <div class="sub-group">
+        <div class="sub-title"><i class="fas fa-glass-water"></i> 特定メンバー（固定額）</div>
+        <div class="flex-inputs">
+            <div>
+                <label style="font-size: 12px; color: #777;">人数 (人)</label>
+                <input type="number" id="fixed-count" value="0" min="0">
+            </div>
+            <div>
+                <label style="font-size: 12px; color: #777;">固定金額 (円)</label>
+                <input type="number" id="fixed-amount" value="3000" step="500" min="0">
+            </div>
+        </div>
+    </div>
+
+    <button class="btn-calc" onclick="calculate()">計算する！</button>
+
+    <div id="result-area">
+        <div class="result-title">💰 計算結果 (100円単位切り上げ)</div>
+        <div id="result-list"></div>
+    </div>
+
+    <div class="studio-nav">
+        <a href="index.html" class="btn-back">ねこたスタジオへ戻る</a>
+        <div class="sns-group">
+            <a href="https://x.com/necotatu2" target="_blank" class="btn-sns btn-x">公式X</a>
+            <a href="https://www.instagram.com/necotastudio" target="_blank" class="btn-sns btn-insta">公式Insta</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    function calculate() {
+        const totalAmount = parseInt(document.getElementById('total-amount').value) || 0;
+        const normalCount = parseInt(document.getElementById('normal-count').value) || 0;
+        
+        const ratioCount = parseInt(document.getElementById('ratio-count').value) || 0;
+        const ratioVal = parseFloat(document.getElementById('ratio-val').value) || 0;
+        
+        const fixedCount = parseInt(document.getElementById('fixed-count').value) || 0;
+        const fixedAmount = parseInt(document.getElementById('fixed-amount').value) || 0;
+
+        if (totalAmount <= 0 || (normalCount + ratioCount + fixedCount) === 0) {
+            alert("正しい金額と人数を入力してください。");
+            return;
+        }
+
+        // 1. 固定額メンバーの合計を引く
+        const totalFixed = fixedCount * fixedAmount;
+        let remAmount = totalAmount - totalFixed;
+
+        if (remAmount < 0) {
+            alert("固定額の合計が総額を超えています！");
+            return;
+        }
+
+        // 2. 比率からベース（通常メンバー1人あたり）の金額を計算
+        const totalShares = (normalCount * 1.0) + (ratioCount * ratioVal);
+        
+        let basePrice = 0;
+        let ratioPrice = 0;
+        
+        if (totalShares > 0) {
+            basePrice = remAmount / totalShares;
+            ratioPrice = basePrice * ratioVal;
+        }
+
+        // 3. 100円単位で切り上げ処理
+        const ceilNormal = Math.ceil(basePrice / 100) * 100;
+        const ceilRatio = Math.ceil(ratioPrice / 100) * 100;
+        const ceilFixed = fixedAmount;
+
+        // 4. 合計と余りの計算
+        const collectedTotal = (ceilNormal * normalCount) + (ceilRatio * ratioCount) + (ceilFixed * fixedCount);
+        const overflow = collectedTotal - totalAmount;
+
+        // 5. 結果出力
+        const resultArea = document.getElementById('result-area');
+        const resultList = document.getElementById('result-list');
+        resultList.innerHTML = "";
+
+        let html = "";
+        html += `<div class="result-item"><span>通常メンバー (${normalCount}人)</span><span class="price-text">${ceilNormal.toLocaleString()} 円</span></div>`;
+        
+        if (ratioCount > 0) {
+            html += `<div class="result-item"><span>比率調整メンバー (${ratioCount}人)</span><span class="price-text">${ceilRatio.toLocaleString()} 円</span></div>`;
+        }
+        if (fixedCount > 0) {
+            html += `<div class="result-item"><span>固定額メンバー (${fixedCount}人)</span><span class="price-text">${ceilFixed.toLocaleString()} 円</span></div>`;
+        }
+        
+        html += `<div class="result-item" style="margin-top:10px;"><span>お釣り・余り（幹事へ）</span><span>${overflow.toLocaleString()} 円</span></div>`;
+        
+        resultList.innerHTML = html;
+        resultArea.style.display = 'block';
+    }
+</script>
+</body>
+</html>
