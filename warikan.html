@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>割り勘計算ツール | ねこたスタジオ</title>
     
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-6LK2VK60B1"></script>
@@ -17,25 +17,42 @@
     <style>
         body { font-family: 'Hiragino Kaku Gothic ProN', sans-serif; text-align: center; background: #eef2f3; padding: 15px; color: #333; margin: 0; }
         .card { background: white; padding: 25px 20px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); display: inline-block; width: 100%; max-width: 400px; border: 4px solid #2c3e50; margin-top: 10px; box-sizing: border-box; text-align: left; position: relative; }
-        h2 { color: #2c3e50; text-align: center; margin-top: 0; margin-bottom: 20px; font-size: 24px; }
+        h2 { color: #2c3e50; text-align: center; margin-top: 0; margin-bottom: 10px; font-size: 24px; }
+        
+        /* ステップバー */
+        .step-progress { display: flex; justify-content: space-between; margin-bottom: 25px; background: #eee; height: 4px; border-radius: 2px; position: relative; margin-top: 15px; }
+        .step-dot { width: 12px; height: 12px; background: #bdc3c7; border-radius: 50%; position: relative; top: -4px; transition: 0.3s; }
+        .step-dot.active { background: #2c3e50; transform: scale(1.3); }
+
+        /* タブ（ステップ）の表示制御 */
+        .step-content { display: none; }
+        .step-content.active { display: block; }
+        
+        .question-title { font-weight: bold; font-size: 16px; color: #2c3e50; margin-bottom: 15px; line-height: 1.4; display: flex; align-items: center; gap: 8px; }
         
         .input-group { margin-bottom: 15px; }
-        .input-group label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 14px; color: #555; }
-        .input-group input { width: 100%; padding: 10px; border: 2px solid #bdc3c7; border-radius: 10px; box-sizing: border-box; font-size: 16px; font-family: inherit; }
+        .input-group label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 13px; color: #666; }
+        .input-group input { width: 100%; padding: 11px; border: 2px solid #bdc3c7; border-radius: 10px; box-sizing: border-box; font-size: 16px; font-family: inherit; }
         .input-group input:focus { border-color: #2c3e50; outline: none; }
 
-        .sub-group { background: #f8f9fa; padding: 15px; border-radius: 15px; border: 1px dashed #bdc3c7; margin-bottom: 15px; }
-        .sub-title { font-weight: bold; font-size: 14px; color: #2c3e50; margin-bottom: 10px; display: flex; align-items: center; gap: 5px; }
-        .flex-inputs { display: flex; gap: 10px; margin-bottom: 10px; }
+        .sub-group { background: #f8f9fa; padding: 15px; border-radius: 15px; border: 1px dashed #bdc3c7; margin-bottom: 15px; box-sizing: border-box; }
+        .flex-inputs { display: flex; gap: 10px; }
         .flex-inputs > div { flex: 1; }
+        .flex-inputs input { width: 100%; padding: 10px; border: 2px solid #bdc3c7; border-radius: 10px; box-sizing: border-box; font-size: 16px; font-family: inherit; }
 
-        .btn-calc { background: #2c3e50; color: white; border: none; padding: 15px; border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 18px; width: 100%; box-sizing: border-box; margin-top: 10px; transition: 0.2s; text-align: center; }
-        .btn-calc:hover { opacity: 0.9; }
+        /* ボタン関係 */
+        .btn-footer { display: flex; gap: 10px; margin-top: 20px; }
+        .btn-nav { padding: 13px; border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 16px; flex: 1; border: none; text-align: center; transition: 0.2s; }
+        .btn-next { background: #2c3e50; color: white; }
+        .btn-prev { background: #bdc3c7; color: #333; }
+        .btn-calc { background: #e74c3c; color: white; }
+        .btn-nav:hover { opacity: 0.9; }
 
-        #result-area { display: none; background: #fffdf0; border: 2px solid #f1c40f; padding: 15px; border-radius: 15px; margin-top: 20px; }
-        .result-title { font-weight: bold; color: #d35400; font-size: 16px; margin-bottom: 10px; text-align: center; }
-        .result-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f1c40f; font-size: 15px; }
-        .result-item:last-child { border-bottom: none; font-weight: bold; color: #c0392b; }
+        /* 総括・結果画面 */
+        #result-area { background: #fffdf0; border: 3px solid #f1c40f; padding: 20px 15px; border-radius: 15px; box-sizing: border-box; }
+        .result-title { font-weight: bold; color: #d35400; font-size: 18px; margin-bottom: 15px; text-align: center; border-bottom: 2px dashed #f1c40f; padding-bottom: 8px; }
+        .result-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f1c40f; font-size: 15px; align-items: center; }
+        .result-item:last-child { border-bottom: none; font-weight: bold; color: #c0392b; background: #fff9d0; margin-top: 5px; padding: 10px; border-radius: 5px; }
         .price-text { font-size: 18px; font-weight: bold; color: #2c3e50; }
 
         .studio-nav { margin-top: 25px; border-top: 1px solid #ddd; padding-top: 20px; text-align: center; }
@@ -50,52 +67,110 @@
 
 <div class="card">
     <h2><i class="fas fa-calculator"></i> 割り勘計算ツール</h2>
-
-    <div class="input-group">
-        <label>会計総額 (円)</label>
-        <input type="number" id="total-amount" placeholder="例: 25000" min="0">
+    
+    <!-- ステップ進捗バー -->
+    <div class="step-progress" id="step-bar">
+        <div class="step-dot active"></div>
+        <div class="step-dot"></div>
+        <div class="step-dot"></div>
+        <div class="step-dot"></div>
     </div>
 
-    <div class="input-group">
-        <label>通常メンバーの人数 (人)</label>
-        <input type="number" id="normal-count" placeholder="例: 4" min="1" value="1">
-    </div>
-
-    <div class="sub-group">
-        <div class="sub-title"><i class="fas fa-venus"></i> 特定メンバー（半額など）</div>
-        <div class="flex-inputs">
-            <div>
-                <label style="font-size: 12px; color: #777;">人数 (人)</label>
-                <input type="number" id="ratio-count" value="0" min="0">
-            </div>
-            <div>
-                <label style="font-size: 12px; color: #777;">支払比率 (倍)</label>
-                <input type="number" id="ratio-val" value="0.5" step="0.1" min="0">
-            </div>
+    <!-- ステップ1: 基本情報 -->
+    <div class="step-content active" id="step-1">
+        <div class="question-title"><i class="fas fa-beer-mug-empty"></i> Q1. 今回の飲み会の総額と、全体の人数（通常メンバー）を教えてください。</div>
+        <div class="input-group">
+            <label>会計の総額 (円)</label>
+            <input type="number" id="total-amount" placeholder="例: 25000" min="0">
+        </div>
+        <div class="input-group">
+            <label>通常の支払いをする人数 (人)</label>
+            <input type="number" id="normal-count" placeholder="例: 4" min="1" value="1">
+        </div>
+        <div class="input-group" style="border-top: 1px dashed #ccc; padding-top: 15px; margin-top: 15px;">
+            <label>先に一部（買い出し等）を支払ってくれた人がいる場合、その合計金額 (円) ※いなければ0</label>
+            <input type="number" id="prepaid-amount" placeholder="例: 3000" min="0" value="0">
+        </div>
+        <div class="btn-footer">
+            <div></div><!-- 空白埋め -->
+            <button class="btn-nav btn-next" onclick="nextStep(2)">次へ進む <i class="fas fa-arrow-right"></i></button>
         </div>
     </div>
 
-    <div class="sub-group">
-        <div class="sub-title"><i class="fas fa-glass-water"></i> 特定メンバー（固定額）</div>
-        <div class="flex-inputs">
-            <div>
-                <label style="font-size: 12px; color: #777;">人数 (人)</label>
-                <input type="number" id="fixed-count" value="0" min="0">
+    <!-- ステップ2: 少なくしたい人 -->
+    <div class="step-content" id="step-2">
+        <div class="question-title"><i class="fas fa-wine-glass"></i> Q2. 飲まなかった人など、金額を「少なくしたい人」はいますか？（いなければそのまま次へ）</div>
+        
+        <div class="sub-group">
+            <label style="font-weight:bold; font-size:13px; color:#2c3e50; display:block; margin-bottom:8px;">💡 比率で減らしたい人（女性・後輩など）</label>
+            <div class="flex-inputs">
+                <div>
+                    <label style="font-size: 11px; color: #777;">人数 (人)</label>
+                    <input type="number" id="ratio-count" value="0" min="0">
+                </div>
+                <div>
+                    <label style="font-size: 11px; color: #777;">支払比率 (倍)</label>
+                    <input type="number" id="ratio-val" value="0.5" step="0.1" min="0">
+                </div>
             </div>
-            <div>
-                <label style="font-size: 12px; color: #777;">固定金額 (円)</label>
-                <input type="number" id="fixed-amount" value="3000" step="500" min="0">
+        </div>
+
+        <div class="sub-group">
+            <label style="font-weight:bold; font-size:13px; color:#2c3e50; display:block; margin-bottom:8px;">💡 固定金額にしたい人（ノンアルコールなど）</label>
+            <div class="flex-inputs">
+                <div>
+                    <label style="font-size: 11px; color: #777;">人数 (人)</label>
+                    <input type="number" id="fixed-count" value="0" min="0">
+                </div>
+                <div>
+                    <label style="font-size: 11px; color: #777;">固定金額 (円)</label>
+                    <input type="number" id="fixed-amount" value="3000" step="500" min="0">
+                </div>
             </div>
+        </div>
+
+        <div class="btn-footer">
+            <button class="btn-nav btn-prev" onclick="prevStep(1)"><i class="fas fa-arrow-left"></i> 戻る</button>
+            <button class="btn-nav btn-next" onclick="nextStep(3)">次へ進む <i class="fas fa-arrow-right"></i></button>
         </div>
     </div>
 
-    <button class="btn-calc" onclick="calculate()">計算する！</button>
+    <!-- ステップ3: 多く払いたい人 -->
+    <div class="step-content" id="step-3">
+        <div class="question-title"><i class="fas fa-crown"></i> Q3. 幹事や先輩など、金額を「多く払いたい人」はいますか？（いなければそのまま計算へ）</div>
+        
+        <div class="sub-group">
+            <label style="font-weight:bold; font-size:13px; color:#2c3e50; display:block; margin-bottom:8px;">💡 比率で多くしたい人（先輩・上司など）</label>
+            <div class="flex-inputs">
+                <div>
+                    <label style="font-size: 11px; color: #777;">人数 (人)</label>
+                    <input type="number" id="heavy-count" value="0" min="0">
+                </div>
+                <div>
+                    <label style="font-size: 11px; color: #777;">支払比率 (倍)</label>
+                    <input type="number" id="heavy-val" value="1.5" step="0.1" min="1.0">
+                </div>
+            </div>
+        </div>
 
-    <div id="result-area">
-        <div class="result-title">💰 計算結果 (100円単位切り上げ)</div>
-        <div id="result-list"></div>
+        <div class="btn-footer">
+            <button class="btn-nav btn-prev" onclick="prevStep(2)"><i class="fas fa-arrow-left"></i> 戻る</button>
+            <button class="btn-nav btn-calc" onclick="calculate()">総括を表示する！ <i class="fas fa-check"></i></button>
+        </div>
     </div>
 
+    <!-- ステップ4: 総括・結果表示エリア -->
+    <div class="step-content" id="step-4">
+        <div id="result-area">
+            <div class="result-title">🎉 今回の割り勘総括</div>
+            <div id="result-list"></div>
+        </div>
+        <div class="btn-footer">
+            <button class="btn-nav btn-prev" onclick="prevStep(1)" style="background:#2c3e50; color:white;"><i class="fas fa-redo"></i> 最初から計算し直す</button>
+        </div>
+    </div>
+
+    <!-- ねこたスタジオ ナビゲーション -->
     <div class="studio-nav">
         <a href="index.html" class="btn-back">ねこたスタジオへ戻る</a>
         <div class="sns-group">
@@ -106,9 +181,36 @@
 </div>
 
 <script>
+    // 画面切り替え制御
+    function showStep(stepNum) {
+        document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.step-dot').forEach((el, index) => {
+            if (index < stepNum) el.classList.add('active');
+            else el.classList.remove('active');
+        });
+        document.getElementById('step-' + stepNum).classList.add('active');
+    }
+
+    function nextStep(stepNum) {
+        if (stepNum === 2) {
+            const totalAmount = parseInt(document.getElementById('total-amount').value) || 0;
+            if (totalAmount <= 0) {
+                alert("会計総額を正しく入力してください。");
+                return;
+            }
+        }
+        showStep(stepNum);
+    }
+
+    function prevStep(stepNum) {
+        showStep(stepNum);
+    }
+
+    // 割り勘の計算と総括表示
     function calculate() {
         const totalAmount = parseInt(document.getElementById('total-amount').value) || 0;
         const normalCount = parseInt(document.getElementById('normal-count').value) || 0;
+        const prepaidAmount = parseInt(document.getElementById('prepaid-amount').value) || 0;
         
         const ratioCount = parseInt(document.getElementById('ratio-count').value) || 0;
         const ratioVal = parseFloat(document.getElementById('ratio-val').value) || 0;
@@ -116,8 +218,11 @@
         const fixedCount = parseInt(document.getElementById('fixed-count').value) || 0;
         const fixedAmount = parseInt(document.getElementById('fixed-amount').value) || 0;
 
-        if (totalAmount <= 0 || (normalCount + ratioCount + fixedCount) === 0) {
-            alert("正しい金額と人数を入力してください。");
+        const heavyCount = parseInt(document.getElementById('heavy-count').value) || 0;
+        const heavyVal = parseFloat(document.getElementById('heavy-val').value) || 1.0;
+
+        if ((normalCount + ratioCount + fixedCount + heavyCount) === 0) {
+            alert("合計人数が0人になっています。");
             return;
         }
 
@@ -126,49 +231,68 @@
         let remAmount = totalAmount - totalFixed;
 
         if (remAmount < 0) {
-            alert("固定額の合計が総額を超えています！");
+            alert("固定額の合計が総額を超えています！ステップ2に戻って調整してください。");
             return;
         }
 
         // 2. 比率からベース（通常メンバー1人あたり）の金額を計算
-        const totalShares = (normalCount * 1.0) + (ratioCount * ratioVal);
+        const totalShares = (normalCount * 1.0) + (ratioCount * ratioVal) + (heavyCount * heavyVal);
         
         let basePrice = 0;
         let ratioPrice = 0;
+        let heavyPrice = 0;
         
         if (totalShares > 0) {
             basePrice = remAmount / totalShares;
             ratioPrice = basePrice * ratioVal;
+            heavyPrice = basePrice * heavyVal;
         }
 
         // 3. 100円単位で切り上げ処理
         const ceilNormal = Math.ceil(basePrice / 100) * 100;
         const ceilRatio = Math.ceil(ratioPrice / 100) * 100;
+        const ceilHeavy = Math.ceil(heavyPrice / 100) * 100;
         const ceilFixed = fixedAmount;
 
-        // 4. 合計と余りの計算
-        const collectedTotal = (ceilNormal * normalCount) + (ceilRatio * ratioCount) + (ceilFixed * fixedCount);
-        const overflow = collectedTotal - totalAmount;
+        // 4. 合計と余り（お釣り）の計算
+        const collectedTotal = (ceilNormal * normalCount) + (ceilRatio * ratioCount) + (ceilFixed * fixedCount) + (ceilHeavy * heavyCount);
+        
+        // お釣り・端数の基本計算
+        let overflow = collectedTotal - totalAmount;
 
-        // 5. 結果出力
-        const resultArea = document.getElementById('result-area');
+        // 5. 総括画面（ステップ4）への出力
         const resultList = document.getElementById('result-list');
         resultList.innerHTML = "";
 
         let html = "";
+        
+        // 先払いがある場合は、通常メンバーの集めるベースからその分を引き算して表示をわかりやすく調整
+        let finalNormalShow = ceilNormal;
+        if (prepaidAmount > 0 && normalCount > 0) {
+            // 先払い分を通常メンバーの支払いから引く（もし相殺する場合の参考値用、今回は純粋な一人あたりの計算額を出しつつ、総括で個別案内します）
+        }
+
         html += `<div class="result-item"><span>通常メンバー (${normalCount}人)</span><span class="price-text">${ceilNormal.toLocaleString()} 円</span></div>`;
         
         if (ratioCount > 0) {
-            html += `<div class="result-item"><span>比率調整メンバー (${ratioCount}人)</span><span class="price-text">${ceilRatio.toLocaleString()} 円</span></div>`;
+            html += `<div class="result-item"><span>金額を少なくした人 (${ratioCount}人)</span><span class="price-text">${ceilRatio.toLocaleString()} 円</span></div>`;
         }
         if (fixedCount > 0) {
-            html += `<div class="result-item"><span>固定額メンバー (${fixedCount}人)</span><span class="price-text">${ceilFixed.toLocaleString()} 円</span></div>`;
+            html += `<div class="result-item"><span>固定額の人 (${fixedCount}人)</span><span class="price-text">${ceilFixed.toLocaleString()} 円</span></div>`;
+        }
+        if (heavyCount > 0) {
+            html += `<div class="result-item"><span>金額を多くした人 (${heavyCount}人)</span><span class="price-text">${ceilHeavy.toLocaleString()} 円</span></div>`;
         }
         
-        html += `<div class="result-item" style="margin-top:10px;"><span>お釣り・余り（幹事へ）</span><span>${overflow.toLocaleString()} 円</span></div>`;
+        // 先払いしてくれた人への清算案内
+        if (prepaidAmount > 0) {
+            html += `<div class="result-item" style="background: #e8f8f5; padding: 10px; border-radius: 5px; margin-top: 5px; border: 1px dashed #2ecc71;"><span>💡 先払いした人への返金合計</span><span class="price-text" style="color: #27ae60;">${prepaidAmount.toLocaleString()} 円</span></div>`;
+        }
+
+        html += `<div class="result-item" style="margin-top:15px;"><span>お釣り・余り（幹事の手元へ）</span><span>${overflow.toLocaleString()} 円</span></div>`;
         
         resultList.innerHTML = html;
-        resultArea.style.display = 'block';
+        showStep(4);
     }
 </script>
 </body>
