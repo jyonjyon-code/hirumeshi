@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>割り勘計算ツール | ねこたスタジオ</title>
+    <title>わりかんしといた | ねこたスタジオ</title>
     
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-6LK2VK60B1"></script>
     <script>
@@ -66,9 +66,8 @@
 <body>
 
 <div class="card">
-    <h2><i class="fas fa-calculator"></i> 割り勘計算ツール</h2>
+    <h2><i class="fas fa-calculator"></i> わりかんしといた</h2>
     
-    <!-- ステップ進捗バー -->
     <div class="step-progress" id="step-bar">
         <div class="step-dot active"></div>
         <div class="step-dot"></div>
@@ -76,7 +75,6 @@
         <div class="step-dot"></div>
     </div>
 
-    <!-- ステップ1: 基本情報 -->
     <div class="step-content active" id="step-1">
         <div class="question-title"><i class="fas fa-beer-mug-empty"></i> Q1. 今回の飲み会の総額と、全体の人数（通常メンバー）を教えてください。</div>
         <div class="input-group">
@@ -92,12 +90,11 @@
             <input type="number" id="prepaid-amount" placeholder="例: 3000" min="0" value="0">
         </div>
         <div class="btn-footer">
-            <div></div><!-- 空白埋め -->
+            <div></div>
             <button class="btn-nav btn-next" onclick="nextStep(2)">次へ進む <i class="fas fa-arrow-right"></i></button>
         </div>
     </div>
 
-    <!-- ステップ2: 少なくしたい人 -->
     <div class="step-content" id="step-2">
         <div class="question-title"><i class="fas fa-wine-glass"></i> Q2. 飲まなかった人など、金額を「少なくしたい人」はいますか？（いなければそのまま次へ）</div>
         
@@ -135,7 +132,6 @@
         </div>
     </div>
 
-    <!-- ステップ3: 多く払いたい人 -->
     <div class="step-content" id="step-3">
         <div class="question-title"><i class="fas fa-crown"></i> Q3. 幹事や先輩など、金額を「多く払いたい人」はいますか？（いなければそのまま計算へ）</div>
         
@@ -159,7 +155,6 @@
         </div>
     </div>
 
-    <!-- ステップ4: 総括・結果表示エリア -->
     <div class="step-content" id="step-4">
         <div id="result-area">
             <div class="result-title">🎉 今回の割り勘総括</div>
@@ -170,7 +165,6 @@
         </div>
     </div>
 
-    <!-- ねこたスタジオ ナビゲーション -->
     <div class="studio-nav">
         <a href="index.html" class="btn-back">ねこたスタジオへ戻る</a>
         <div class="sns-group">
@@ -226,7 +220,6 @@
             return;
         }
 
-        // 1. 固定額メンバーの合計を引く
         const totalFixed = fixedCount * fixedAmount;
         let remAmount = totalAmount - totalFixed;
 
@@ -235,7 +228,6 @@
             return;
         }
 
-        // 2. 比率からベース（通常メンバー1人あたり）の金額を計算
         const totalShares = (normalCount * 1.0) + (ratioCount * ratioVal) + (heavyCount * heavyVal);
         
         let basePrice = 0;
@@ -248,30 +240,18 @@
             heavyPrice = basePrice * heavyVal;
         }
 
-        // 3. 100円単位で切り上げ処理
         const ceilNormal = Math.ceil(basePrice / 100) * 100;
         const ceilRatio = Math.ceil(ratioPrice / 100) * 100;
         const ceilHeavy = Math.ceil(heavyPrice / 100) * 100;
         const ceilFixed = fixedAmount;
 
-        // 4. 合計と余り（お釣り）の計算
         const collectedTotal = (ceilNormal * normalCount) + (ceilRatio * ratioCount) + (ceilFixed * fixedCount) + (ceilHeavy * heavyCount);
-        
-        // お釣り・端数の基本計算
         let overflow = collectedTotal - totalAmount;
 
-        // 5. 総括画面（ステップ4）への出力
         const resultList = document.getElementById('result-list');
         resultList.innerHTML = "";
 
         let html = "";
-        
-        // 先払いがある場合は、通常メンバーの集めるベースからその分を引き算して表示をわかりやすく調整
-        let finalNormalShow = ceilNormal;
-        if (prepaidAmount > 0 && normalCount > 0) {
-            // 先払い分を通常メンバーの支払いから引く（もし相殺する場合の参考値用、今回は純粋な一人あたりの計算額を出しつつ、総括で個別案内します）
-        }
-
         html += `<div class="result-item"><span>通常メンバー (${normalCount}人)</span><span class="price-text">${ceilNormal.toLocaleString()} 円</span></div>`;
         
         if (ratioCount > 0) {
@@ -284,7 +264,6 @@
             html += `<div class="result-item"><span>金額を多くした人 (${heavyCount}人)</span><span class="price-text">${ceilHeavy.toLocaleString()} 円</span></div>`;
         }
         
-        // 先払いしてくれた人への清算案内
         if (prepaidAmount > 0) {
             html += `<div class="result-item" style="background: #e8f8f5; padding: 10px; border-radius: 5px; margin-top: 5px; border: 1px dashed #2ecc71;"><span>💡 先払いした人への返金合計</span><span class="price-text" style="color: #27ae60;">${prepaidAmount.toLocaleString()} 円</span></div>`;
         }
