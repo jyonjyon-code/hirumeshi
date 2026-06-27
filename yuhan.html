@@ -199,13 +199,15 @@
             tabelogContent.style.display = 'none';
         } else if (currentMode === 'buy') {
             actionLink.innerHTML = '<i class="fas fa-shopping-cart"></i> 近くの買えるお店';
-            actionLink.href = "https://www.google.com/maps/search/" + encodeURIComponent(res.keyword);
+            // GoogleマップのURLを安定性の高い公式パラメータ形式に変更
+            actionLink.href = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(res.keyword);
             oisixLink.style.display = 'none';
             demaeContent.style.display = 'block';
             tabelogContent.style.display = 'none';
         } else if (currentMode === 'out') {
             actionLink.innerHTML = '<i class="fas fa-map-marker-alt"></i> 近くのお店を地図で見る';
-            actionLink.href = "https://www.google.com/maps/search/" + encodeURIComponent(res.name);
+            // GoogleマップのURLを安定性の高い公式パラメータ形式に変更
+            actionLink.href = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(res.name);
             oisixLink.style.display = 'none';
             demaeContent.style.display = 'none';
             tabelogContent.style.display = 'flex';
