@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>わりかんしといた | ねこたスタジオ</title>
+    <title>わりした！ - わりかん楽勝ツール | ねこたスタジオ</title>
     
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-6LK2VK60B1"></script>
     <script>
@@ -17,7 +17,11 @@
     <style>
         body { font-family: 'Hiragino Kaku Gothic ProN', sans-serif; text-align: center; background: #eef2f3; padding: 15px; color: #333; margin: 0; }
         .card { background: white; padding: 25px 20px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); display: inline-block; width: 100%; max-width: 400px; border: 4px solid #2c3e50; margin-top: 10px; box-sizing: border-box; text-align: left; position: relative; }
-        h2 { color: #2c3e50; text-align: center; margin-top: 0; margin-bottom: 10px; font-size: 24px; }
+        
+        /* タイトルエリアのおしゃれなスタイリング */
+        .header-container { text-align: center; margin-bottom: 20px; }
+        .sub-tagline { display: inline-block; background: #e74c3c; color: white; font-size: 11px; font-weight: bold; padding: 3px 10px; border-radius: 50px; letter-spacing: 1px; margin-bottom: 4px; }
+        h2 { color: #2c3e50; text-align: center; margin: 0; font-size: 28px; font-weight: 900; display: flex; align-items: center; justify-content: center; gap: 8px; }
         
         /* ステップバー */
         .step-progress { display: flex; justify-content: space-between; margin-bottom: 25px; background: #eee; height: 4px; border-radius: 2px; position: relative; margin-top: 15px; }
@@ -63,6 +67,9 @@
         .result-item:last-child { border-bottom: none; font-weight: bold; color: #c0392b; background: #fff9d0; margin-top: 5px; padding: 10px; border-radius: 5px; }
         .price-text { font-size: 18px; font-weight: bold; color: #2c3e50; }
 
+        /* 免責事項 */
+        .disclaimer { font-size: 11px; color: #7f8c8d; margin-top: 12px; text-align: justify; line-height: 1.4; padding: 0 5px; }
+
         .studio-nav { margin-top: 25px; border-top: 1px solid #ddd; padding-top: 20px; text-align: center; }
         .btn-back { background: #888; color: white; padding: 10px 20px; border-radius: 50px; text-decoration: none; display: inline-block; font-size: 14px; width: 100%; box-sizing: border-box; margin-bottom: 15px; }
         .sns-group { display: flex; gap: 10px; }
@@ -74,7 +81,11 @@
 <body>
 
 <div class="card">
-    <h2><i class="fas fa-calculator"></i> わりかんしといた</h2>
+    <!-- ヘッダーエリア -->
+    <div class="header-container">
+        <span class="sub-tagline">わりかん楽勝ツール</span>
+        <h2><i class="fas fa-calculator" style="font-size: 24px; color: #e74c3c;"></i> わりした！</h2>
+    </div>
     
     <!-- ステップ進捗バー -->
     <div class="step-progress" id="step-bar">
@@ -84,7 +95,7 @@
         <div class="step-dot"></div>
     </div>
 
-    <!-- ステップ1: 基本情報（会計・合計人数・買い出し返金） -->
+    <!-- ステップ1: 基本情報 -->
     <div class="step-content active" id="step-1">
         <div class="question-title"><i class="fas fa-beer-mug-empty"></i> Q1. 会計の総額と、参加する全体の合計人数を教えてください。</div>
         <div class="input-group">
@@ -96,12 +107,11 @@
             <input type="number" id="total-people-count" placeholder="例: 6" min="1" oninput="updateNormalCountPlaceholder()">
         </div>
         
-        <!-- 複数人の買い出し返金機能 -->
+        <!-- 先払い機能 -->
         <div class="sub-group" style="margin-top: 20px;">
             <label style="font-weight:bold; font-size:13px; color:#2c3e50; display:block; margin-bottom:8px;">🛒 先に買い出し等で自腹を切った人（返金が必要な人）</label>
             <div id="prepaid-container">
-                <!-- ここに動的に入力欄が追加されます -->
-            </div>
+                </div>
             <button class="btn-add-prepaid" onclick="addPrepaidInput()"><i class="fas fa-plus"></i> 支払った人を追加する</button>
         </div>
 
@@ -173,18 +183,21 @@
         </div>
     </div>
 
-    <!-- ステップ4: 総括・結果表示エリア -->
+    <!-- ステップ4: 結果表示 -->
     <div class="step-content" id="step-4">
         <div id="result-area">
             <div class="result-title">🎉 今回の割り勘総括</div>
             <div id="result-list"></div>
+        </div>
+        <div class="disclaimer">
+            ⚠️ 計算結果に誤りがないよう万全を期しておりますが、本ツールを利用したことにより生じたトラブルや損失等について、ねこたスタジオは一切の責任を負いかねます。必ず最終確認の上、ご精算ください。
         </div>
         <div class="btn-footer">
             <button class="btn-nav btn-prev" onclick="prevStep(1)" style="background:#2c3e50; color:white;"><i class="fas fa-redo"></i> 最初から計算し直す</button>
         </div>
     </div>
 
-    <!-- ねこたスタジオ ナビゲーション -->
+    <!-- フッターナビ -->
     <div class="studio-nav">
         <a href="index.html" class="btn-back">ねこたスタジオへ戻る</a>
         <div class="sns-group">
@@ -195,7 +208,6 @@
 </div>
 
 <script>
-    // 先払い用の入力欄を動的に増やす仕組み
     function addPrepaidInput() {
         const container = document.getElementById('prepaid-container');
         const item = document.createElement('div');
@@ -209,10 +221,8 @@
     }
 
     function updateNormalCountPlaceholder() {
-        // プレースホルダーの連動処理（必要に応じて拡張可能）
     }
 
-    // 画面切り替え制御
     function showStep(stepNum) {
         document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
         document.querySelectorAll('.step-dot').forEach((el, index) => {
@@ -242,7 +252,6 @@
         showStep(stepNum);
     }
 
-    // 割り勘の計算と総括表示
     function calculate() {
         const totalAmount = parseInt(document.getElementById('total-amount').value) || 0;
         const totalPeople = parseInt(document.getElementById('total-people-count').value) || 0;
@@ -256,7 +265,6 @@
         const heavyCount = parseInt(document.getElementById('heavy-count').value) || 0;
         const heavyVal = parseFloat(document.getElementById('heavy-val').value) || 1.0;
 
-        // 全体人数から特定枠の人数を引いて、通常メンバーの人数を自動算出
         const normalCount = totalPeople - ratioCount - fixedCount - heavyCount;
 
         if (normalCount < 0) {
@@ -264,7 +272,6 @@
             return;
         }
 
-        // 先払いリストデータの全集計
         let prepaidTotal = 0;
         const prepaidItems = [];
         const names = document.querySelectorAll('.prepaid-name');
@@ -279,7 +286,6 @@
             }
         }
 
-        // 1. 固定額メンバーの合計を引く
         const totalFixed = fixedCount * fixedAmount;
         let remAmount = totalAmount - totalFixed;
 
@@ -288,7 +294,6 @@
             return;
         }
 
-        // 2. 比率からベース（通常メンバー1人あたり）の金額を計算
         const totalShares = (normalCount * 1.0) + (ratioCount * ratioVal) + (heavyCount * heavyVal);
         
         let basePrice = 0;
@@ -301,17 +306,14 @@
             heavyPrice = basePrice * heavyVal;
         }
 
-        // 3. 100円単位で切り上げ処理
         const ceilNormal = Math.ceil(basePrice / 100) * 100;
         const ceilRatio = Math.ceil(ratioPrice / 100) * 100;
         const ceilHeavy = Math.ceil(heavyPrice / 100) * 100;
         const ceilFixed = fixedAmount;
 
-        // 4. 合計と余り（お釣り）の計算
         const collectedTotal = (ceilNormal * normalCount) + (ceilRatio * ratioCount) + (ceilFixed * fixedCount) + (ceilHeavy * heavyCount);
         let overflow = collectedTotal - totalAmount;
 
-        // 5. 総括画面への出力
         const resultList = document.getElementById('result-list');
         resultList.innerHTML = "";
 
@@ -328,7 +330,6 @@
             html += `<div class="result-item"><span>金額を多くした人 (${heavyCount}人)</span><span class="price-text">${ceilHeavy.toLocaleString()} 円</span></div>`;
         }
         
-        // 複数人の買い出し返金リストを総括に描画
         if (prepaidItems.length > 0) {
             html += `<div style="margin-top: 15px; padding: 5px 0; border-top: 1px dashed #f1c40f; font-weight: bold; color: #27ae60; font-size:14px;">🛍️ 各自への返金案内</div>`;
             prepaidItems.forEach(item => {
