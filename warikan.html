@@ -50,16 +50,18 @@
         .flex-inputs > div { flex: 1; }
         .flex-inputs input { width: 100%; padding: 10px; border: 2px solid #bdc3c7; border-radius: 10px; box-sizing: border-box; font-size: 16px; font-family: inherit; }
 
-        /* 動的追加される先払いリスト */
-        .prepaid-list-item { display: flex; flex-direction: column; gap: 6px; background: white; padding: 10px; border-radius: 10px; border: 1px solid #ddd; margin-bottom: 8px; }
-        .prepaid-row-1 { display: flex; gap: 6px; align-items: center; }
-        .prepaid-row-2 { display: flex; gap: 6px; align-items: center; }
+        /* 動的追加される先払いリスト【枠はみ出し修正版】 */
+        .prepaid-list-item { display: flex; flex-direction: column; gap: 8px; background: white; padding: 12px; border-radius: 12px; border: 1px solid #ddd; margin-bottom: 10px; box-sizing: border-box; }
+        .prepaid-row-1 { display: flex; gap: 6px; align-items: center; width: 100%; box-sizing: border-box; }
+        .prepaid-row-2 { display: flex; gap: 6px; align-items: center; width: 100%; box-sizing: border-box; }
         .prepaid-list-item input, .prepaid-list-item select { padding: 8px; border: 2px solid #bdc3c7; border-radius: 8px; font-size: 14px; box-sizing: border-box; font-family: inherit; }
-        .prepaid-name { flex: 1; }
-        .prepaid-amount { flex: 1.2; }
-        .prepaid-type { flex: 1; background: white; }
-        .btn-remove-prepaid { background: #e74c3c; color: white; border: none; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px; }
-        .btn-add-prepaid { background: #27ae60; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: bold; margin-top: 5px; display: inline-flex; align-items: center; gap: 4px; }
+        
+        /* 横並びのバランスを画面幅に合わせて最適化 */
+        .prepaid-name { flex: 1; min-width: 0; }
+        .prepaid-amount { flex: 1.2; min-width: 0; }
+        .prepaid-type { width: 100%; background: white; }
+        .btn-remove-prepaid { background: #e74c3c; color: white; border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
+        .btn-add-prepaid { background: #27ae60; color: white; border: none; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: bold; margin-top: 5px; display: inline-flex; align-items: center; gap: 4px; }
 
         /* ボタン関係 */
         .btn-footer { display: flex; gap: 10px; margin-top: 20px; }
