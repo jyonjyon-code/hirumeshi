@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>わりした！ - わりかん楽勝ツール | ねこたスタジオ</title>
     
+    <link rel="icon" href="warikan.png" type="image/png">
+    <link rel="apple-touch-icon" href="warikan.png">
+    
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-6LK2VK60B1"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -21,7 +24,10 @@
         /* タイトルエリアのおしゃれなスタイリング */
         .header-container { text-align: center; margin-bottom: 20px; }
         .sub-tagline { display: inline-block; background: #e74c3c; color: white; font-size: 11px; font-weight: bold; padding: 3px 10px; border-radius: 50px; letter-spacing: 1px; margin-bottom: 4px; }
-        h2 { color: #2c3e50; text-align: center; margin: 0; font-size: 28px; font-weight: 900; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        h2 { color: #2c3e50; text-align: center; margin: 0; font-size: 28px; font-weight: 900; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        
+        /* アプリ内ヘッダーアイコンのスタイル調整 */
+        .header-icon { height: 32px; width: 32px; object-fit: contain; border-radius: 6px; vertical-align: middle; }
         
         /* ステップバー */
         .step-progress { display: flex; justify-content: space-between; margin-bottom: 25px; background: #eee; height: 4px; border-radius: 2px; position: relative; margin-top: 15px; }
@@ -81,13 +87,11 @@
 <body>
 
 <div class="card">
-    <!-- ヘッダーエリア -->
     <div class="header-container">
         <span class="sub-tagline">わりかん楽勝ツール</span>
-        <h2><i class="fas fa-calculator" style="font-size: 24px; color: #e74c3c;"></i> わりした！</h2>
+        <h2><img src="warikan.png" alt="アイコン" class="header-icon"> わりした！</h2>
     </div>
     
-    <!-- ステップ進捗バー -->
     <div class="step-progress" id="step-bar">
         <div class="step-dot active"></div>
         <div class="step-dot"></div>
@@ -95,7 +99,6 @@
         <div class="step-dot"></div>
     </div>
 
-    <!-- ステップ1: 基本情報 -->
     <div class="step-content active" id="step-1">
         <div class="question-title"><i class="fas fa-beer-mug-empty"></i> Q1. 会計の総額と、参加する全体の合計人数を教えてください。</div>
         <div class="input-group">
@@ -107,7 +110,6 @@
             <input type="number" id="total-people-count" placeholder="例: 6" min="1" oninput="updateNormalCountPlaceholder()">
         </div>
         
-        <!-- 先払い機能 -->
         <div class="sub-group" style="margin-top: 20px;">
             <label style="font-weight:bold; font-size:13px; color:#2c3e50; display:block; margin-bottom:8px;">🛒 先に買い出し等で自腹を切った人（返金が必要な人）</label>
             <div id="prepaid-container">
@@ -121,7 +123,6 @@
         </div>
     </div>
 
-    <!-- ステップ2: 少なくしたい人 -->
     <div class="step-content" id="step-2">
         <div class="question-title"><i class="fas fa-wine-glass"></i> Q2. 飲まなかった人など、金額を「少なくしたい人」はいますか？（いなければそのまま次へ）</div>
         
@@ -159,7 +160,6 @@
         </div>
     </div>
 
-    <!-- ステップ3: 多く払いたい人 -->
     <div class="step-content" id="step-3">
         <div class="question-title"><i class="fas fa-crown"></i> Q3. 幹事や先輩など、金額を「多く払いたい人」はいますか？（いなければそのまま計算へ）</div>
         
@@ -183,7 +183,6 @@
         </div>
     </div>
 
-    <!-- ステップ4: 結果表示 -->
     <div class="step-content" id="step-4">
         <div id="result-area">
             <div class="result-title">🎉 今回の割り勘総括</div>
@@ -197,7 +196,6 @@
         </div>
     </div>
 
-    <!-- フッターナビ -->
     <div class="studio-nav">
         <a href="index.html" class="btn-back">ねこたスタジオへ戻る</a>
         <div class="sns-group">
