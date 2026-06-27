@@ -51,10 +51,13 @@
         .flex-inputs input { width: 100%; padding: 10px; border: 2px solid #bdc3c7; border-radius: 10px; box-sizing: border-box; font-size: 16px; font-family: inherit; }
 
         /* 動的追加される先払いリスト */
-        .prepaid-list-item { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; }
-        .prepaid-list-item input { padding: 8px; border: 2px solid #bdc3c7; border-radius: 8px; font-size: 14px; box-sizing: border-box; }
+        .prepaid-list-item { display: flex; flex-direction: column; gap: 6px; background: white; padding: 10px; border-radius: 10px; border: 1px solid #ddd; margin-bottom: 8px; }
+        .prepaid-row-1 { display: flex; gap: 6px; align-items: center; }
+        .prepaid-row-2 { display: flex; gap: 6px; align-items: center; }
+        .prepaid-list-item input, .prepaid-list-item select { padding: 8px; border: 2px solid #bdc3c7; border-radius: 8px; font-size: 14px; box-sizing: border-box; font-family: inherit; }
         .prepaid-name { flex: 1; }
         .prepaid-amount { flex: 1.2; }
+        .prepaid-type { flex: 1; background: white; }
         .btn-remove-prepaid { background: #e74c3c; color: white; border: none; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px; }
         .btn-add-prepaid { background: #27ae60; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: bold; margin-top: 5px; display: inline-flex; align-items: center; gap: 4px; }
 
@@ -64,6 +67,7 @@
         .btn-next { background: #2c3e50; color: white; }
         .btn-prev { background: #bdc3c7; color: #333; }
         .btn-calc { background: #e74c3c; color: white; }
+        .btn-copy { background: #27ae60; color: white; width: 100%; box-sizing: border-box; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .btn-nav:hover { opacity: 0.9; }
 
         /* 総括・結果画面 */
@@ -113,7 +117,7 @@
         <div class="sub-group" style="margin-top: 20px;">
             <label style="font-weight:bold; font-size:13px; color:#2c3e50; display:block; margin-bottom:8px;">🛒 先に買い出し等で自腹を切った人（返金が必要な人）</label>
             <div id="prepaid-container">
-                </div>
+            </div>
             <button class="btn-add-prepaid" onclick="addPrepaidInput()"><i class="fas fa-plus"></i> 支払った人を追加する</button>
         </div>
 
@@ -188,6 +192,7 @@
             <div class="result-title">🎉 今回の割り勘総括</div>
             <div id="result-list"></div>
         </div>
+        <button class="btn-nav btn-copy" onclick="copyResultText()"><i class="fas fa-copy"></i> 結果をコピーしてLINE等に共有</button>
         <div class="disclaimer">
             ⚠️ 計算結果に誤りがないよう万全を期しておりますが、本ツールを利用したことにより生じたトラブルや損失等について、ねこたスタジオは一切の責任を負いかねます。必ず最終確認の上、ご精算ください。
         </div>
@@ -206,14 +211,26 @@
 </div>
 
 <script>
+    let globalShareText = ""; // コピー用のグローバル変数
+
     function addPrepaidInput() {
         const container = document.getElementById('prepaid-container');
         const item = document.createElement('div');
         item.className = 'prepaid-list-item';
         item.innerHTML = `
-            <input type="text" class="prepaid-name" placeholder="名前 (例: Aさん)">
-            <input type="number" class="prepaid-amount" placeholder="金額 (円)" min="0">
-            <button class="btn-remove-prepaid" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>
+            <div class="prepaid-row-1">
+                <input type="text" class="prepaid-name" placeholder="名前 (例: Aさん)">
+                <input type="number" class="prepaid-amount" placeholder="立替額 (円)" min="0">
+                <button class="btn-remove-prepaid" onclick="this.parentElement.parentElement.remove()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="prepaid-row-2">
+                <select class="prepaid-type" style="width: 100%;">
+                    <option value="normal">属性：通常メンバー</option>
+                    <option value="ratio">属性：金額を少なくしたい人(女性・後輩など)</option>
+                    <option value="heavy">属性：金額を多くしたい人(先輩・上司など)</option>
+                    <option value="fixed">属性：固定金額にする人(ノンアルなど)</option>
+                </select>
+            </div>
         `;
         container.appendChild(item);
     }
@@ -254,34 +271,39 @@
         const totalAmount = parseInt(document.getElementById('total-amount').value) || 0;
         const totalPeople = parseInt(document.getElementById('total-people-count').value) || 0;
         
-        const ratioCount = parseInt(document.getElementById('ratio-count').value) || 0;
+        let ratioCount = parseInt(document.getElementById('ratio-count').value) || 0;
         const ratioVal = parseFloat(document.getElementById('ratio-val').value) || 0;
         
-        const fixedCount = parseInt(document.getElementById('fixed-count').value) || 0;
+        let fixedCount = parseInt(document.getElementById('fixed-count').value) || 0;
         const fixedAmount = parseInt(document.getElementById('fixed-amount').value) || 0;
 
-        const heavyCount = parseInt(document.getElementById('heavy-count').value) || 0;
+        let heavyCount = parseInt(document.getElementById('heavy-count').value) || 0;
         const heavyVal = parseFloat(document.getElementById('heavy-val').value) || 1.0;
 
-        const normalCount = totalPeople - ratioCount - fixedCount - heavyCount;
-
-        if (normalCount < 0) {
-            alert("少なく調整した人と多く調整した人の合計人数が、全体の合計人数を超えています！やり直してください。");
-            return;
-        }
-
-        let prepaidTotal = 0;
+        // 先払い者リストのパースと、ステップ2・3の人数への自動追加反映
         const prepaidItems = [];
         const names = document.querySelectorAll('.prepaid-name');
         const amounts = document.querySelectorAll('.prepaid-amount');
+        const types = document.querySelectorAll('.prepaid-type');
         
         for (let i = 0; i < amounts.length; i++) {
             const amt = parseInt(amounts[i].value) || 0;
             const name = names[i].value.trim() || `支払人${i+1}`;
+            const type = types[i].value;
             if (amt > 0) {
-                prepaidTotal += amt;
-                prepaidItems.push({ name: name, amount: amt });
+                prepaidItems.push({ name: name, amount: amt, type: type });
+                // Q2、Q3の入力数に先払い者自身の属性分を自動加算
+                if (type === 'ratio') ratioCount++;
+                if (type === 'fixed') fixedCount++;
+                if (type === 'heavy') heavyCount++;
             }
+        }
+
+        const normalCount = totalPeople - ratioCount - fixedCount - heavyCount;
+
+        if (normalCount < 0) {
+            alert("各属性の合計人数が、全体の合計人数を超えています！最初のステップからやり直してください。");
+            return;
         }
 
         const totalFixed = fixedCount * fixedAmount;
@@ -315,30 +337,71 @@
         const resultList = document.getElementById('result-list');
         resultList.innerHTML = "";
 
+        // テキスト共有用の文字列作成開始
+        let txt = `🎉 【わりした！】割り勘総括\n`;
+        txt += `-------------------------\n`;
+        txt += `💰会計総額: ${totalAmount.toLocaleString()} 円\n\n`;
+        
         let html = "";
         html += `<div class="result-item"><span>通常メンバー (${normalCount}人)</span><span class="price-text">${ceilNormal.toLocaleString()} 円</span></div>`;
+        txt += `👤 通常メンバー: ${ceilNormal.toLocaleString()} 円\n`;
         
         if (ratioCount > 0) {
             html += `<div class="result-item"><span>金額を少なくした人 (${ratioCount}人)</span><span class="price-text">${ceilRatio.toLocaleString()} 円</span></div>`;
+            txt += `📉 金額を少なくした人: ${ceilRatio.toLocaleString()} 円\n`;
         }
         if (fixedCount > 0) {
             html += `<div class="result-item"><span>固定額の人 (${fixedCount}人)</span><span class="price-text">${ceilFixed.toLocaleString()} 円</span></div>`;
+            txt += `☕ 固定額の人: ${ceilFixed.toLocaleString()} 円\n`;
         }
         if (heavyCount > 0) {
             html += `<div class="result-item"><span>金額を多くした人 (${heavyCount}人)</span><span class="price-text">${ceilHeavy.toLocaleString()} 円</span></div>`;
+            txt += `👑 金額を多くした人: ${ceilHeavy.toLocaleString()} 円\n`;
         }
         
         if (prepaidItems.length > 0) {
-            html += `<div style="margin-top: 15px; padding: 5px 0; border-top: 1px dashed #f1c40f; font-weight: bold; color: #27ae60; font-size:14px;">🛍️ 各自への返金案内</div>`;
+            html += `<div style="margin-top: 15px; padding: 5px 0; border-top: 1px dashed #f1c40f; font-weight: bold; color: #27ae60; font-size:14px;">🛍️ 各自への精算案内（差引額）</div>`;
+            txt += `\n🛍️ 各自への精算案内（差引額）\n`;
+            
             prepaidItems.forEach(item => {
-                html += `<div class="result-item" style="background: #e8f8f5; border: none; padding: 6px 10px; border-radius: 5px; margin-bottom: 4px;"><span>${item.name} さんへ</span><span class="price-text" style="color: #27ae60;">${item.amount.toLocaleString()} 円 返金</span></div>`;
+                // その人自身の負担額を決定
+                let userCost = ceilNormal;
+                if (item.type === 'ratio') userCost = ceilRatio;
+                if (item.type === 'fixed') userCost = ceilFixed;
+                if (item.type === 'heavy') userCost = ceilHeavy;
+
+                // 差引精算（先払い立替額 - 本人負担額）
+                const finalBalance = item.amount - userCost;
+
+                if (finalBalance >= 0) {
+                    html += `<div class="result-item" style="background: #e8f8f5; border: none; padding: 6px 10px; border-radius: 5px; margin-bottom: 4px;"><span>${item.name} さんへ</span><span class="price-text" style="color: #27ae60;">${finalBalance.toLocaleString()} 円 返金</span></div>`;
+                    txt += `✅ ${item.name} さんへ: ${finalBalance.toLocaleString()} 円 返金 (立替:${item.amount.toLocaleString()}円 / 負担:${userCost.toLocaleString()}円)\n`;
+                } else {
+                    const absBalance = Math.abs(finalBalance);
+                    html += `<div class="result-item" style="background: #fce4d6; border: none; padding: 6px 10px; border-radius: 5px; margin-bottom: 4px;"><span>${item.name} さんは</span><span class="price-text" style="color: #e67e22;">${absBalance.toLocaleString()} 円 不足（要支払）</span></div>`;
+                    txt += `🔺 ${item.name} さんは: ${absBalance.toLocaleString()} 円 不足分を支払う (立替:${item.amount.toLocaleString()}円 / 負担:${userCost.toLocaleString()}円)\n`;
+                }
             });
         }
 
         html += `<div class="result-item" style="margin-top:15px;"><span>お釣り・余り（幹事の手元へ）</span><span>${overflow.toLocaleString()} 円</span></div>`;
+        txt += `\n🪙 お釣り・余り（幹事へ）: ${overflow.toLocaleString()} 円\n`;
+        txt += `-------------------------\n`;
+        txt += `by わりした！ | ねこたスタジオ`;
+
+        globalShareText = txt; // コピー用に保存
         
         resultList.innerHTML = html;
         showStep(4);
+    }
+
+    function copyResultText() {
+        if (!globalShareText) return;
+        navigator.clipboard.writeText(globalShareText).then(() => {
+            alert("割り勘結果をクリップボードにコピーしました！LINE等にそのまま貼り付けて共有してください。");
+        }).catch(err => {
+            alert("コピーに失敗しました。お手数ですが結果画面をスクリーンショット等で共有してください。");
+        });
     }
 </script>
 </body>
