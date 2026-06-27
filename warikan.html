@@ -29,7 +29,7 @@
         /* アプリ内ヘッダーアイコンのスタイル調整 */
         .header-icon { height: 32px; width: 32px; object-fit: contain; border-radius: 6px; vertical-align: middle; }
         
-        /* ステップバー */
+        /* ステップバー (5ステップに拡張) */
         .step-progress { display: flex; justify-content: space-between; margin-bottom: 25px; background: #eee; height: 4px; border-radius: 2px; position: relative; margin-top: 15px; }
         .step-dot { width: 12px; height: 12px; background: #bdc3c7; border-radius: 50%; position: relative; top: -4px; transition: 0.3s; }
         .step-dot.active { background: #2c3e50; transform: scale(1.3); }
@@ -70,12 +70,16 @@
         .btn-copy { background: #27ae60; color: white; width: 100%; box-sizing: border-box; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .btn-nav:hover { opacity: 0.9; }
 
-        /* 総括・結果画面 */
-        #result-area { background: #fffdf0; border: 3px solid #f1c40f; padding: 20px 15px; border-radius: 15px; box-sizing: border-box; }
-        .result-title { font-weight: bold; color: #d35400; font-size: 18px; margin-bottom: 15px; text-align: center; border-bottom: 2px dashed #f1c40f; padding-bottom: 8px; }
-        .result-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f1c40f; font-size: 15px; align-items: center; }
+        /* 総括・結果画面・確認画面 */
+        #confirm-area, #result-area { background: #fffdf0; border: 3px solid #f1c40f; padding: 20px 15px; border-radius: 15px; box-sizing: border-box; }
+        #confirm-area { background: #f4f6f7; border-color: #34495e; }
+        .result-title, .confirm-title { font-weight: bold; color: #d35400; font-size: 18px; margin-bottom: 15px; text-align: center; border-bottom: 2px dashed #f1c40f; padding-bottom: 8px; }
+        .confirm-title { color: #2c3e50; border-bottom-color: #34495e; }
+        .result-item, .confirm-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f1c40f; font-size: 15px; align-items: center; }
+        .confirm-item { border-bottom-color: #d5dbdb; }
         .result-item:last-child { border-bottom: none; font-weight: bold; color: #c0392b; background: #fff9d0; margin-top: 5px; padding: 10px; border-radius: 5px; }
-        .price-text { font-size: 18px; font-weight: bold; color: #2c3e50; }
+        .confirm-item:last-child { border-bottom: none; font-weight: bold; color: #2c3e50; background: #eaeded; margin-top: 5px; padding: 10px; border-radius: 5px; }
+        .price-text, .count-text { font-size: 18px; font-weight: bold; color: #2c3e50; }
 
         /* 免責事項 */
         .disclaimer { font-size: 11px; color: #7f8c8d; margin-top: 12px; text-align: justify; line-height: 1.4; padding: 0 5px; }
@@ -98,6 +102,7 @@
     
     <div class="step-progress" id="step-bar">
         <div class="step-dot active"></div>
+        <div class="step-dot"></div>
         <div class="step-dot"></div>
         <div class="step-dot"></div>
         <div class="step-dot"></div>
@@ -165,7 +170,7 @@
     </div>
 
     <div class="step-content" id="step-3">
-        <div class="question-title"><i class="fas fa-crown"></i> Q3. 幹事や先輩など、金額を「多く払いたい人」はいますか？（いなければそのまま計算へ）</div>
+        <div class="question-title"><i class="fas fa-crown"></i> Q3. 幹事や先輩など、金額を「多く払いたい人」はいますか？（いなければそのまま確認へ）</div>
         
         <div class="sub-group">
             <label style="font-weight:bold; font-size:13px; color:#2c3e50; display:block; margin-bottom:8px;">💡 比率で多くしたい人（先輩・上司など）</label>
@@ -183,11 +188,22 @@
 
         <div class="btn-footer">
             <button class="btn-nav btn-prev" onclick="prevStep(2)"><i class="fas fa-arrow-left"></i> 戻る</button>
-            <button class="btn-nav btn-calc" onclick="calculate()">総括を表示する！ <i class="fas fa-check"></i></button>
+            <button class="btn-nav btn-next" onclick="checkInputs()">確認画面へ <i class="fas fa-arrow-right"></i></button>
         </div>
     </div>
 
     <div class="step-content" id="step-4">
+        <div id="confirm-area">
+            <div class="confirm-title">📋 設定人数の最終確認</div>
+            <div id="confirm-list"></div>
+        </div>
+        <div class="btn-footer">
+            <button class="btn-nav btn-prev" onclick="prevStep(3)"><i class="fas fa-arrow-left"></i> 戻る</button>
+            <button class="btn-nav btn-calc" onclick="calculate()">これで計算する！ <i class="fas fa-check"></i></button>
+        </div>
+    </div>
+
+    <div class="step-content" id="step-5">
         <div id="result-area">
             <div class="result-title">🎉 今回の割り勘総括</div>
             <div id="result-list"></div>
@@ -267,20 +283,57 @@
         showStep(stepNum);
     }
 
+    // 新設：ステップ4へ進む前の人数チェック＆プレビュー生成
+    function checkInputs() {
+        const totalPeople = parseInt(document.getElementById('total-people-count').value) || 0;
+        const ratioCount = parseInt(document.getElementById('ratio-count').value) || 0;
+        const fixedCount = parseInt(document.getElementById('fixed-count').value) || 0;
+        const heavyCount = parseInt(document.getElementById('heavy-count').value) || 0;
+
+        // 通常メンバーを算出
+        const normalCount = totalPeople - ratioCount - fixedCount - heavyCount;
+
+        if (normalCount < 0) {
+            alert(`各グループの割り当て人数（計 ${ratioCount + fixedCount + heavyCount} 人）が、全体の合計人数（${totalPeople} 人）を超えています！\nステップ2やステップ3に戻って人数を調整してください。`);
+            return;
+        }
+
+        // 確認画面のHTMLを生成
+        const confirmList = document.getElementById('confirm-list');
+        let html = "";
+        html += `<div class="confirm-item"><span>👥 全体の合計人数</span><span class="count-text">${totalPeople} 人</span></div>`;
+        html += `<div style="margin: 10px 0; border-top: 1px dashed #34495e;"></div>`;
+        html += `<div class="confirm-item"><span>👤 通常メンバー</span><span class="count-text">${normalCount} 人</span></div>`;
+        if (ratioCount > 0) {
+            html += `<div class="confirm-item"><span>📉 金額を少なくしたい人</span><span class="count-text">${ratioCount} 人</span></div>`;
+        }
+        if (fixedCount > 0) {
+            html += `<div class="confirm-item"><span>☕ 固定金額の人</span><span class="count-text">${fixedCount} 人</span></div>`;
+        }
+        if (heavyCount > 0) {
+            html += `<div class="confirm-item"><span>👑 金額を多くしたい人</span><span class="count-text">${heavyCount} 人</span></div>`;
+        }
+
+        confirmList.innerHTML = html;
+        showStep(4);
+    }
+
     function calculate() {
         const totalAmount = parseInt(document.getElementById('total-amount').value) || 0;
         const totalPeople = parseInt(document.getElementById('total-people-count').value) || 0;
         
-        let ratioCount = parseInt(document.getElementById('ratio-count').value) || 0;
+        const ratioCount = parseInt(document.getElementById('ratio-count').value) || 0;
         const ratioVal = parseFloat(document.getElementById('ratio-val').value) || 0;
         
-        let fixedCount = parseInt(document.getElementById('fixed-count').value) || 0;
+        const fixedCount = parseInt(document.getElementById('fixed-count').value) || 0;
         const fixedAmount = parseInt(document.getElementById('fixed-amount').value) || 0;
 
-        let heavyCount = parseInt(document.getElementById('heavy-count').value) || 0;
+        const heavyCount = parseInt(document.getElementById('heavy-count').value) || 0;
         const heavyVal = parseFloat(document.getElementById('heavy-val').value) || 1.0;
 
-        // 先払い者リストのパースと、ステップ2・3の人数への自動追加反映
+        // 二重インクリメントバグを修正：Q2・Q3に入力された値をそのまま全体の人数とする
+        const normalCount = totalPeople - ratioCount - fixedCount - heavyCount;
+
         const prepaidItems = [];
         const names = document.querySelectorAll('.prepaid-name');
         const amounts = document.querySelectorAll('.prepaid-amount');
@@ -292,18 +345,7 @@
             const type = types[i].value;
             if (amt > 0) {
                 prepaidItems.push({ name: name, amount: amt, type: type });
-                // Q2、Q3の入力数に先払い者自身の属性分を自動加算
-                if (type === 'ratio') ratioCount++;
-                if (type === 'fixed') fixedCount++;
-                if (type === 'heavy') heavyCount++;
             }
-        }
-
-        const normalCount = totalPeople - ratioCount - fixedCount - heavyCount;
-
-        if (normalCount < 0) {
-            alert("各属性の合計人数が、全体の合計人数を超えています！最初のステップからやり直してください。");
-            return;
         }
 
         const totalFixed = fixedCount * fixedAmount;
@@ -364,13 +406,11 @@
             txt += `\n🛍️ 各自への精算案内（差引額）\n`;
             
             prepaidItems.forEach(item => {
-                // その人自身の負担額を決定
                 let userCost = ceilNormal;
                 if (item.type === 'ratio') userCost = ceilRatio;
                 if (item.type === 'fixed') userCost = ceilFixed;
                 if (item.type === 'heavy') userCost = ceilHeavy;
 
-                // 差引精算（先払い立替額 - 本人負担額）
                 const finalBalance = item.amount - userCost;
 
                 if (finalBalance >= 0) {
@@ -389,10 +429,10 @@
         txt += `-------------------------\n`;
         txt += `by わりした！ | ねこたスタジオ`;
 
-        globalShareText = txt; // コピー用に保存
+        globalShareText = txt;
         
         resultList.innerHTML = html;
-        showStep(4);
+        showStep(5); // 結果画面（ステップ5）を表示
     }
 
     function copyResultText() {
