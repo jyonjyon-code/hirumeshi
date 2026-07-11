@@ -24,6 +24,7 @@
             --leaf-green: #4CAF50;
             --rider-yellow: #ffde00;
             --vitanic-blue: #3498db;
+            --amacchari-teal: #1abc9c;
             --bg-cream: #f9f1e6;
             --insta-gradient: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
         }
@@ -58,8 +59,8 @@
         .btn { display: block; padding: 14px; border-radius: 50px; text-decoration: none; font-weight: bold; text-align: center; font-size: 16px; transition: 0.2s; }
         .btn-play { background: var(--main-red); color: white; box-shadow: 0 4px 0 #b52b27; }
 
-        /* おしゃべりセクションのスタイル */
-        .x-talk-wrap { display: none; max-width: 500px; margin: 20px auto; padding: 0 20px; animation: pop 0.4s ease; }
+        /* おしゃべりセクション（X埋め込み枠）のスクロール対応強化 */
+        .x-talk-wrap { display: none; max-width: 500px; height: 600px; margin: 20px auto; padding: 10px; background: white; border: 1px solid #e0d5c1; border-radius: 25px; overflow-y: auto; box-shadow: 0 8px 20px rgba(0,0,0,0.06); animation: pop 0.4s ease; }
 
         .kiriban-box { background: #fffbe6; border: 2px double #f0ad4e; padding: 15px; margin: 20px auto; max-width: 500px; width: 85%; font-size: 13px; line-height: 1.6; border-radius: 15px; }
         .faq-section { max-width: 800px; margin: 40px auto; padding: 30px; background: white; border-radius: 30px; box-shadow: 0 5px 15px rgba(0,0,0,0.03); text-align: left; }
@@ -95,12 +96,23 @@
     <button class="tab-btn active" data-target="all">すべて</button>
     <button class="tab-btn" data-target="gohan">ごはん検索</button>
     <button class="tab-btn" data-target="kondate">献立</button>
-    <button class="tab-btn" data-target="keisoku">食べ物計測アプリ</button>
+    <button class="tab-btn" data-target="keisoku">食べ物計測ネタアプリ</button>
     <button class="tab-btn" data-target="tool">便利ツール</button>
     <button class="tab-btn" data-target="talk"><i class="fa-brands fa-x-twitter"></i> おしゃべり</button>
 </div>
 
 <div class="container" id="app-container">
+    <!-- 新着：あまっちゃり（最上位・アイコン指定修正） -->
+    <div class="app-card" style="border-top: 5px solid var(--amacchari-teal);" data-category="kondate">
+        <div class="app-icon-wrap" style="background: #e8f8f5;"><img src="amatchari.png" class="app-icon-img" alt="あまっちゃり" onerror="this.src='https://via.placeholder.com/100?text=🚲'"></div>
+        <div class="app-info">
+            <h2>あまっちゃり</h2>
+            <p>冷蔵庫の「余っちゃった」食材、どうする？<br>残った食材をサクッと登録して、チャリで買い足しに行くような軽快さでパパッと消費レシピを見つけ出すお助けツールです。</p>
+        </div>
+        <div class="btn-group"><a href="amacchari.html" class="btn btn-play" style="background: var(--amacchari-teal); box-shadow: 0 4px 0 #117a65;">あそぶ</a></div>
+    </div>
+
+    <!-- 出した順通りのカード並び -->
     <div class="app-card" data-category="gohan">
         <div class="app-icon-wrap"><img src="icon.png" class="app-icon-img" alt="ランチ決定アプリ ひるめしえらんで" onerror="this.src='https://via.placeholder.com/100?text=🍱'"></div>
         <div class="app-info">
@@ -109,6 +121,7 @@
         </div>
         <div class="btn-group"><a href="app.html" class="btn btn-play">あそぶ</a></div>
     </div>
+    
     <div class="app-card" data-category="kondate">
         <div class="app-icon-wrap" style="background: #fff9f0;"><img src="myicon.png" class="app-icon-img" alt="夕飯献立スロット ゆうはんなにしよ" onerror="this.src='https://via.placeholder.com/100?text=🍳'"></div>
         <div class="app-info">
@@ -117,6 +130,7 @@
         </div>
         <div class="btn-group"><a href="yuhan.html" class="btn btn-play" style="background: var(--yuhan-orange); box-shadow: 0 4px 0 #d35400;">あそぶ</a></div>
     </div>
+    
     <div class="app-card" style="border-top: 5px solid var(--ichigo-pink);" data-category="keisoku">
         <div class="app-icon-wrap" style="background: #fff5f6;"><img src="icon-ichigo.png" class="app-icon-img" alt="いちご摂取記録ログ 今日イチ" onerror="this.src='https://via.placeholder.com/100?text=🍓'"></div>
         <div class="app-info">
@@ -220,11 +234,10 @@
     window.addEventListener('load', updateCounter);
 </script>
 
-<!-- 追加：タブ切り替え制御スクリプト -->
+<!-- タブ切り替え制御スクリプト -->
 <script>
     document.querySelectorAll('.tab-btn').forEach(button => {
         button.addEventListener('click', () => {
-            // アクティブなタブのクラスを切り替え
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
 
@@ -234,11 +247,9 @@
             const cards = document.querySelectorAll('.app-card');
 
             if (target === 'talk') {
-                // 「おしゃべり」タブの時はアプリ一覧を隠してXタイムラインを表示
                 appContainer.style.display = 'none';
                 xSection.style.display = 'block';
             } else {
-                // アプリジャンルの時はXタイムラインを隠してアプリ一覧を表示
                 appContainer.style.display = 'grid';
                 xSection.style.display = 'none';
 
