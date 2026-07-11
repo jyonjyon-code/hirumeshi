@@ -41,7 +41,6 @@
         .btn-x-celeb { background: #000; }
         .btn-insta-celeb { background: var(--insta-gradient); }
         
-        /* ジャンル分けタブのスタイル */
         .tab-container { max-width: 1000px; margin: 20px auto 10px; padding: 0 20px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
         .tab-btn { background: white; color: #555; border: 2px solid #e0d5c1; padding: 10px 20px; border-radius: 50px; font-weight: 700; cursor: pointer; font-size: 14px; transition: 0.2s; font-family: 'Zen Maru Gothic', sans-serif; }
         .tab-btn:hover { background: #fffcf7; transform: translateY(-2px); }
@@ -59,18 +58,42 @@
         .btn { display: block; padding: 14px; border-radius: 50px; text-decoration: none; font-weight: bold; text-align: center; font-size: 16px; transition: 0.2s; }
         .btn-play { background: var(--main-red); color: white; box-shadow: 0 4px 0 #b52b27; }
 
-        /* おしゃべりセクション（初期状態は非表示、スクロール対応） */
-        .x-talk-wrap { display: none; max-width: 500px; height: 600px; margin: 20px auto; padding: 10px; background: white; border: 1px solid #e0d5c1; border-radius: 25px; overflow-y: auto; box-shadow: 0 8px 20px rgba(0,0,0,0.06); animation: pop 0.4s ease; }
+        /* おしゃべりタブ・記事エリアのスタイル */
+        .x-talk-wrap { display: none; max-width: 600px; margin: 30px auto; padding: 25px; background: white; border: 1px solid #e0d5c1; border-radius: 25px; box-shadow: 0 8px 20px rgba(0,0,0,0.06); animation: pop 0.4s ease; text-align: center; }
+        .btn-x-link { display: inline-flex; align-items: center; justify-content: center; gap: 10px; background: #000; color: white; font-size: 16px; font-weight: 700; padding: 14px 28px; border-radius: 50px; text-decoration: none; box-shadow: 0 4px 0 #333; transition: 0.2s; margin-bottom: 25px; }
+        .btn-x-link:hover { transform: translateY(-2px); box-shadow: 0 6px 0 #333; }
+        
+        /* 記事投稿エリアのスタイル */
+        .article-section { text-align: left; border-top: 2px dashed #e0d5c1; padding-top: 25px; margin-top: 10px; }
+        .article-section h3 { font-size: 1.2rem; color: #444; margin: 0 0 15px 0; display: flex; align-items: center; gap: 8px; }
+        #admin-controls { display: none; background: #fcf8e3; border: 1px solid #fbeed5; padding: 15px; border-radius: 15px; margin-bottom: 20px; }
+        .admin-input { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-family: inherit; font-size: 14px; }
+        .admin-textarea { width: 100%; height: 80px; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-family: inherit; font-size: 14px; resize: vertical; }
+        .btn-admin-submit { background: var(--leaf-green); color: white; border: none; padding: 8px 16px; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 14px; }
+        
+        .article-list { display: flex; flex-direction: column; gap: 15px; }
+        .article-item { background: #fafafa; border-left: 5px solid var(--main-red); padding: 15px; border-radius: 0 15px 15px 0; position: relative; }
+        .article-meta { font-size: 12px; color: #999; margin-bottom: 5px; font-weight: bold; }
+        .article-title { font-size: 15px; font-weight: 900; color: #333; margin: 0 0 5px 0; }
+        .article-body { font-size: 13.5px; color: #555; line-height: 1.6; margin: 0; white-space: pre-wrap; }
+        .btn-article-delete { display: none; position: absolute; top: 10px; right: 10px; background: #d9534f; color: white; border: none; border-radius: 4px; padding: 2px 6px; font-size: 11px; cursor: pointer; }
 
         .kiriban-box { background: #fffbe6; border: 2px double #f0ad4e; padding: 15px; margin: 20px auto; max-width: 500px; width: 85%; font-size: 13px; line-height: 1.6; border-radius: 15px; }
-        .faq-section { max-width: 800px; margin: 40px auto; padding: 30px; background: white; border-radius: 30px; box-shadow: 0 5px 15px rgba(0,0,0,0.03); text-align: left; }
+        
+        /* FAQ & 免責事項セクション */
+        .faq-section { max-width: 800px; margin: 40px auto 20px; padding: 30px; background: white; border-radius: 30px; box-shadow: 0 5px 15px rgba(0,0,0,0.03); text-align: left; }
         .faq-section h3 { color: var(--main-red); font-size: 1.3rem; text-align: center; margin-bottom: 25px; }
         .faq-item { margin-bottom: 20px; border-bottom: 1px dashed #eee; padding-bottom: 15px; }
         .faq-item:last-child { border-bottom: none; }
         .faq-q { font-weight: 900; color: #444; display: block; margin-bottom: 5px; }
         .faq-a { font-size: 14px; color: #666; }
+        
+        .disclaimer-box { max-width: 800px; margin: 0 auto 40px; padding: 20px; background: #f4f4f4; border-radius: 20px; text-align: left; font-size: 12px; color: #777; line-height: 1.6; box-sizing: border-box; width: calc(100% - 40px); }
+        .disclaimer-box h4 { margin: 0 0 8px 0; color: #555; font-size: 13px; }
+
         footer { background: white; padding: 40px 20px; border-top: 1px solid #eee; margin-top: 40px; }
         .sns-links a { font-size: 28px; margin: 0 15px; text-decoration: none; display: inline-block; transition: 0.2s; }
+        .admin-trigger { cursor: default; user-select: none; }
     </style>
 </head>
 <body>
@@ -91,7 +114,6 @@
     <a href="https://www.instagram.com/necotastudio" class="celebration-btn btn-insta-celeb" target="_blank">Instagramへ</a>
 </div>
 
-<!-- ジャンル分けタブメニュー -->
 <div class="tab-container">
     <button class="tab-btn active" data-target="all">すべて</button>
     <button class="tab-btn" data-target="gohan">ごはん検索</button>
@@ -102,7 +124,6 @@
 </div>
 
 <div class="container" id="app-container">
-    <!-- 出した順通りのカード並び（ひるめしえらんでが1番） -->
     <div class="app-card" data-category="gohan">
         <div class="app-icon-wrap"><img src="icon.png" class="app-icon-img" alt="ランチ決定アプリ ひるめしえらんで" onerror="this.src='https://via.placeholder.com/100?text=🍱'"></div>
         <div class="app-info">
@@ -112,12 +133,11 @@
         <div class="btn-group"><a href="app.html" class="btn btn-play">あそぶ</a></div>
     </div>
     
-    <!-- カテゴリを「ごはん検索（gohan）」に変更 -->
     <div class="app-card" data-category="gohan">
         <div class="app-icon-wrap" style="background: #fff9f0;"><img src="myicon.png" class="app-icon-img" alt="夕飯献立スロット ゆうはんなにしよ" onerror="this.src='https://via.placeholder.com/100?text=🍳'"></div>
         <div class="app-info">
             <h2>ゆうはんなにしよ</h2>
-            <p>今の気分に合わせて「夕飯献立スロット」！<br>自炊メニューや外食など、毎日の献立作りが面倒な時にぴったりのレシピ・メニュー提案アプリです。</p>
+            <p>今の気分に合わせて「夕飯献立スロット」！<br>自炊メニューや外食など、毎日の献立作りが面倒な時にぴ่ったりのレシピ・メニュー提案アプリです。</p>
         </div>
         <div class="btn-group"><a href="yuhan.html" class="btn btn-play" style="background: var(--yuhan-orange); box-shadow: 0 4px 0 #d35400;">あそぶ</a></div>
     </div>
@@ -162,8 +182,6 @@
         </div>
         <div class="btn-group"><a href="warikan.html" class="btn btn-play" style="background: #2c3e50; box-shadow: 0 4px 0 #1a252f;">計算する</a></div>
     </div>
-
-    <!-- あまっちゃり（末尾へ追加、説明文・改行を修正） -->
     <div class="app-card" style="border-top: 5px solid var(--amacchari-teal);" data-category="kondate">
         <div class="app-icon-wrap" style="background: #e8f8f5;"><img src="amatchari.png" class="app-icon-img" alt="あまっちゃり" onerror="this.src='https://via.placeholder.com/100?text=🚲'"></div>
         <div class="app-info">
@@ -174,13 +192,34 @@
     </div>
 </div>
 
-<!-- ねこたスタジオのおしゃべり（Xタイムライン埋め込み） -->
+<!-- おしゃべりタブエリア -->
 <div class="x-talk-wrap" id="x-talk-section">
-    <a class="twitter-timeline" data-height="600" data-theme="light" href="https://twitter.com/necotatu2?ref_src=twsrc%5Etfw">Tweets by necotatu2</a>
-    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    <p style="font-weight: bold; margin-bottom: 20px; font-size: 15px;">ねこたスタジオの日常やお知らせをXでチェック！</p>
+    <a href="https://x.com/necotatu2" class="btn-x-link" target="_blank">
+        <i class="fa-brands fa-x-twitter"></i> Xでおしゃべりを見る
+    </a>
+
+    <!-- 管理者記事投稿・お知らせエリア -->
+    <div class="article-section">
+        <h3><i class="fa-solid fa-bullhorn" style="color: var(--main-red);"></i> スタジオ瓦版（お知らせ）</h3>
+        
+        <!-- 管理者用シークレット投稿フォーム -->
+        <div id="admin-controls">
+            <strong style="font-size: 13px; color: #c09853; display:block; margin-bottom:8px;">🛠️ 管理者投稿モード</strong>
+            <input type="text" id="art-title" class="admin-input" placeholder="記事のタイトル（例: アップデート情報）">
+            <textarea id="art-body" class="admin-textarea" placeholder="本文を入力してください..."></textarea>
+            <button type="button" class="btn-admin-submit" onclick="addArticle()">記事を公開する</button>
+        </div>
+
+        <!-- 記事リスト表示場所 -->
+        <div class="article-list" id="article-list-container">
+            <!-- JavaScriptで動的に記事が挿入されます -->
+        </div>
+    </div>
 </div>
 
 <div class="kiriban-box"><strong>✨ 狙え！キリ番リスト ✨</strong><br>【100 / 222 / 333 / 500 / 777 / 888 / 1000】</div>
+
 <div class="faq-section">
     <h3>🍴 こんな悩み、ありませんか？</h3>
     <div class="faq-item">
@@ -196,18 +235,32 @@
         <span class="faq-a">A. 「今日イチ」や「JUICY RIDER」は、フルーツ好きの方のための専用ログ・エンタメアプリです。</span>
     </div>
 </div>
+
+<!-- 法的・セキュリティ保護のための免責事項文（追加） -->
+<div class="disclaimer-box">
+    <h4>⚠️ 免責事項・ご利用上の注意</h4>
+    <p style="margin: 0;">
+        当サイトで提供する各種アプリ（以下、本サービス）は、エンターテインメントおよび日常の利便性向上、一般的な健康意識向上を目的とした無料ツールです。本サービス、および外部マップ・デリバリー等の連携機能を利用したことで生じたトラブルや損失について、開発者は一切の責任を負いかねます。また、栄養素や食事ログに関する機能は医療診断や治療を代替するものではありません。実際の食事管理や健康維持に関しては、必要に応じて専門医や管理栄養士にご相談ください。
+    </p>
+</div>
+
 <footer>
     <div class="sns-links">
         <a href="https://x.com/necotatu2" target="_blank"><i class="fa-brands fa-x-twitter" style="color:#333"></i></a>
         <a href="https://www.instagram.com/necotastudio" target="_blank"><i class="fa-brands fa-instagram" style="color:#e4405f"></i></a>
     </div>
-    <p style="margin-top: 20px; font-size: 12px; color: #999;">&copy; 2026 ねこたスタジオ</p>
+    <!-- コピーライト部分にトリプルクリックイベントを設定 -->
+    <p style="margin-top: 20px; font-size: 12px; color: #999;" class="admin-trigger" onclick="handleAdminTrigger()">
+        &copy; 2026 <span id="copyright-name">ねこたスタジオ</span>
+    </p>
 </footer>
 
 <!-- 既存のFirebase用スクリプト -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, doc, updateDoc, increment, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    
+    // 💡 セキュリティ確保のため、Firebaseコンソール側でHTTPリファラー制限（necotastudio.comのみ許可）を必ず設定してください。
     const firebaseConfig = { apiKey: "AIzaSyC4rb66A7CFgOOiXkPXoPKdUk3BVH42g28", authDomain: "necotastudio-counter.firebaseapp.com", projectId: "necotastudio-counter", storageBucket: "necotastudio-counter.firebasestorage.app", messagingSenderId: "28403673696", appId: "1:28403673696:web:e5ebccac51207dc588f105", measurementId: "G-0GV9MDP7M9" };
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
@@ -250,6 +303,7 @@
             if (target === 'talk') {
                 appContainer.style.display = 'none';
                 xSection.style.display = 'block';
+                renderArticles(); // 記事エリア表示時に一覧を再描画
             } else {
                 appContainer.style.display = 'grid';
                 xSection.style.display = 'none';
@@ -265,6 +319,99 @@
             }
         });
     });
+
+    // ─── 管理者機能のロジック ───
+    let clickCount = 0;
+    let clickTimer = null;
+    let isAdmin = false;
+
+    // フッターを3回連続クリックで管理者認証
+    function handleAdminTrigger() {
+        clickCount++;
+        if (clickCount === 1) {
+            clickTimer = setTimeout(() => { clickCount = 0; }, 1000);
+        } else if (clickCount === 3) {
+            clearTimeout(clickTimer);
+            clickCount = 0;
+            
+            // 簡易暗証番号（任意のパスワードに変更可能です）
+            const password = prompt("管理者用パスワードを入力してください:");
+            if (password === "nekota2026") { 
+                isAdmin = true;
+                alert("管理者認証に成功しました！投稿フォームが表示されます。");
+                document.getElementById('admin-controls').style.display = 'block';
+                renderArticles(); // 削除ボタン反映のため再描画
+            } else if (password !== null) {
+                alert("パスワードが違います。");
+            }
+        }
+    }
+
+    // 記事の読み込みと表示
+    function renderArticles() {
+        const container = document.getElementById('article-list-container');
+        const articles = JSON.parse(localStorage.getItem('nekota_articles') || '[]');
+        
+        if (articles.length === 0) {
+            container.innerHTML = '<p style="font-size:13px; color:#999; text-align:center; padding:10px 0;">まだ投稿はありません。</p>';
+            return;
+        }
+
+        // 新しい順に並び替え
+        container.innerHTML = articles.map((art, index) => `
+            <div class="article-item">
+                <div class="article-meta">${art.date}</div>
+                <h4 class="article-title">${escapeHTML(art.title)}</h4>
+                <p class="article-body">${escapeHTML(art.body)}</p>
+                <button class="btn-article-delete" style="display: ${isAdmin ? 'block' : 'none'}" onclick="deleteArticle(${index})">削除</button>
+            </div>
+        `).join('');
+    }
+
+    // 記事の追加
+    function addArticle() {
+        const titleInput = document.getElementById('art-title');
+        const bodyInput = document.getElementById('art-body');
+        
+        if (!titleInput.value.trim() || !bodyInput.value.trim()) {
+            alert("タイトルと本文の両方を入力してください。");
+            return;
+        }
+
+        const articles = JSON.parse(localStorage.getItem('nekota_articles') || '[]');
+        const now = new Date();
+        const dateStr = `${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+        articles.unshift({
+            title: titleInput.value,
+            body: bodyInput.value,
+            date: dateStr
+        });
+
+        localStorage.setItem('nekota_articles', JSON.stringify(articles));
+        titleInput.value = '';
+        bodyInput.value = '';
+        renderArticles();
+    }
+
+    // 記事の削除
+    function deleteArticle(index) {
+        if (!confirm("この記事を削除してもよろしいですか？")) return;
+        const articles = JSON.parse(localStorage.getItem('nekota_articles') || '[]');
+        articles.splice(index, 1);
+        localStorage.setItem('nekota_articles', JSON.stringify(articles));
+        renderArticles();
+    }
+
+    // XSS対策のHTMLエスケープ関数
+    function escapeHTML(str) {
+        return str.replace(/[&<>'"]/g, tag => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+        }[tag] || tag));
+    }
+
+    // 初期化表示
+    renderArticles();
 </script>
 </body>
 </html>
