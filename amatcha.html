@@ -22,13 +22,13 @@
         /* セクション見出し */
         .section-title { font-weight: bold; font-size: 15px; color: #d35400; margin: 20px 0 10px 0; display: flex; align-items: center; gap: 6px; border-bottom: 2px solid #f39c12; padding-bottom: 4px; }
         
-        /* 自由入力エリアのスタイリング */
+        /* 自由入力エリア */
         .input-wrapper { display: flex; gap: 8px; margin-bottom: 12px; }
         .ingredient-input { flex: 1; padding: 12px; border: 2px solid #f5cba7; border-radius: 12px; font-size: 16px; font-family: inherit; box-sizing: border-box; outline: none; }
         .ingredient-input:focus { border-color: #e67e22; }
         .btn-add { background: #f39c12; color: white; border: none; padding: 0 16px; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 14px; }
         
-        /* 追加された食材タグの表示エリア */
+        /* 追加された食材タグ */
         .tags-container { display: flex; flex-wrap: wrap; gap: 6px; min-height: 38px; padding: 6px; background: #fafafa; border: 1px dashed #f5cba7; border-radius: 12px; box-sizing: border-box; margin-bottom: 15px; }
         .ingredient-tag { display: inline-flex; align-items: center; gap: 6px; background: #e67e22; color: white; padding: 6px 12px; border-radius: 50px; font-size: 13px; font-weight: bold; animation: fadeIn 0.2s ease; }
         .btn-remove-tag { background: none; border: none; color: white; cursor: pointer; padding: 0; font-size: 12px; display: flex; align-items: center; }
@@ -119,6 +119,7 @@
 <script>
     let currentIngredients = [];
 
+    // エンターキーでも追加できるようにする
     function handleKeyPress(event) {
         if (event.key === 'Enter') {
             event.preventDefault();
@@ -126,6 +127,7 @@
         }
     }
 
+    // 入力されたキーワードをタグとして追加
     function addIngredientTag() {
         const input = document.getElementById('ingredient-input');
         const value = input.value.trim();
@@ -133,16 +135,18 @@
         if (value && !currentIngredients.includes(value)) {
             currentIngredients.push(value);
             renderTags();
-            document.getElementById('error-msg').style.display = 'none'; // エラーを消す
+            document.getElementById('error-msg').style.display = 'none';
         }
         input.value = "";
     }
 
+    // タグの削除
     function removeIngredientTag(index) {
         currentIngredients.splice(index, 1);
         renderTags();
     }
 
+    // タグエリアの描画
     function renderTags() {
         const container = document.getElementById('tags-container');
         container.innerHTML = "";
@@ -157,9 +161,8 @@
         });
     }
 
-    // 外部のレシピサイトへ遷移するメインロジック
+    // 外部のレシピサイトへジャンプ
     function searchExternalRecipes() {
-        // 食材が未入力の場合は警告を出す
         if (currentIngredients.length === 0) {
             document.getElementById('error-msg').style.display = 'block';
             return;
@@ -169,7 +172,7 @@
         const type = document.getElementById('type-select').value;
         const targetSite = document.getElementById('site-select').value;
 
-        // 検索キーワードの組み立て（例：「キャベツ 豚肉 和食 おかず」）
+        // キーワードを配列にまとめる
         let keywords = [...currentIngredients];
         if (genre) keywords.push(genre);
         if (type) keywords.push(type);
@@ -177,7 +180,7 @@
         const searchQuery = encodeURIComponent(keywords.join(" "));
         let searchUrl = "";
 
-        // 選択されたサイトに合わせてURLを生成
+        // 選択されたサイトに合わせてURLを切り替え
         switch (targetSite) {
             case "cookpad":
                 searchUrl = `https://cookpad.com/search/${searchQuery}`;
@@ -189,14 +192,13 @@
                 searchUrl = `https://recipe.rakuten.co.jp/search/${searchQuery}/`;
                 break;
             case "google":
-                // Googleの場合は「レシピ」という言葉を添えて精度を上げる
                 searchUrl = `https://www.google.com/search?q=${searchQuery}%20レシピ`;
                 break;
             default:
                 searchUrl = `https://www.google.com/search?q=${searchQuery}`;
         }
 
-        // 新しいタブで検索結果を開く
+        // 新しいタブで検索
         window.open(searchUrl, '_blank');
     }
 </script>
