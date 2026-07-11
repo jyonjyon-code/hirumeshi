@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>あまっちゃ - 余り物でチャチャっと料理検索 | ねこたスタジオ</title>
+    
+    <link rel="icon" href="amatcha.png" type="image/png">
+    <link rel="apple-touch-icon" href="amatcha.png">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { font-family: 'Hiragino Kaku Gothic ProN', sans-serif; text-align: center; background: #fff5eb; padding: 15px; color: #333; margin: 0; }
+        .card { background: white; padding: 25px 20px; border-radius: 25px; box-shadow: 0 10px 30px rgba(230, 126, 34, 0.15); display: inline-block; width: 100%; max-width: 440px; border: 4px solid #e67e22; margin-top: 10px; box-sizing: border-box; text-align: left; }
+        
+        /* ヘッダーエリア */
+        .header-container { text-align: center; margin-bottom: 20px; }
+        .sub-tagline { display: inline-block; background: #e67e22; color: white; font-size: 11px; font-weight: bold; padding: 3px 12px; border-radius: 50px; letter-spacing: 1px; margin-bottom: 4px; }
+        h2 { color: #d35400; text-align: center; margin: 0; font-size: 28px; font-weight: 900; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .header-icon { height: 36px; width: 36px; object-fit: contain; border-radius: 8px; vertical-align: middle; }
+        
+        /* セクション見出し */
+        .section-title { font-weight: bold; font-size: 15px; color: #d35400; margin: 20px 0 10px 0; display: flex; align-items: center; gap: 6px; border-bottom: 2px solid #f39c12; padding-bottom: 4px; }
+        
+        /* 自由入力エリアのスタイリング */
+        .input-wrapper { display: flex; gap: 8px; margin-bottom: 12px; }
+        .ingredient-input { flex: 1; padding: 12px; border: 2px solid #f5cba7; border-radius: 12px; font-size: 16px; font-family: inherit; box-sizing: border-box; outline: none; }
+        .ingredient-input:focus { border-color: #e67e22; }
+        .btn-add { background: #f39c12; color: white; border: none; padding: 0 16px; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 14px; }
+        
+        /* 追加された食材タグの表示エリア */
+        .tags-container { display: flex; flex-wrap: wrap; gap: 6px; min-height: 38px; padding: 6px; background: #fafafa; border: 1px dashed #f5cba7; border-radius: 12px; box-sizing: border-box; margin-bottom: 15px; }
+        .ingredient-tag { display: inline-flex; align-items: center; gap: 6px; background: #e67e22; color: white; padding: 6px 12px; border-radius: 50px; font-size: 13px; font-weight: bold; animation: fadeIn 0.2s ease; }
+        .btn-remove-tag { background: none; border: none; color: white; cursor: pointer; padding: 0; font-size: 12px; display: flex; align-items: center; }
+
+        /* セレクトボックス */
+        .flex-select { display: flex; gap: 10px; margin-bottom: 10px; }
+        .flex-select > div { flex: 1; }
+        .select-box { width: 100%; padding: 12px; border: 2px solid #f5cba7; border-radius: 12px; font-size: 15px; font-weight: bold; color: #333; background: white; font-family: inherit; box-sizing: border-box; outline: none; }
+        .select-box:focus { border-color: #e67e22; }
+
+        /* 検索ボタン */
+        .btn-search { background: #e67e22; color: white; border: none; width: 100%; padding: 15px; border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 18px; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(230, 126, 34, 0.3); transition: 0.2s; }
+        .btn-search:hover { background: #d35400; }
+        
+        /* 警告メッセージ */
+        .error-message { color: #c0392b; font-size: 13px; font-weight: bold; margin-top: 8px; text-align: center; display: none; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* スタジオナビ */
+        .studio-nav { margin-top: 25px; border-top: 1px solid #ddd; padding-top: 20px; text-align: center; }
+        .btn-back { background: #888; color: white; padding: 10px 20px; border-radius: 50px; text-decoration: none; display: inline-block; font-size: 14px; width: 100%; box-sizing: border-box; margin-bottom: 15px; }
+        .sns-group { display: flex; gap: 10px; }
+        .btn-sns { color: white; border: none; padding: 12px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px; flex: 1; }
+        .btn-x { background: #000; }
+        .btn-insta { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="header-container">
+        <span class="sub-tagline">余り物でチャチャっと料理検索</span>
+        <h2><img src="amatcha.png" alt="🍳" class="header-icon"> あまっちゃ</h2>
+    </div>
+
+    <div class="section-title"><i class="fas fa-carrot"></i> 1. あまっている食材を入力</div>
+    <div class="input-wrapper">
+        <input type="text" id="ingredient-input" class="ingredient-input" placeholder="例: キャベツ、豚肉、卵" onkeypress="handleKeyPress(event)">
+        <button class="btn-add" onclick="addIngredientTag()">追加</button>
+    </div>
+    <div id="tags-container" class="tags-container"></div>
+
+    <div class="flex-select">
+        <div>
+            <div class="section-title"><i class="fas fa-utensils"></i> 2. 気分・ジャンル</div>
+            <select id="genre-select" class="select-box">
+                <option value="">指定なし</option>
+                <option value="和食">和食</option>
+                <option value="洋食">洋食</option>
+                <option value="中華">中華</option>
+            </select>
+        </div>
+        <div>
+            <div class="section-title"><i class="fas fa-bowl-rice"></i> 3. 役割</div>
+            <select id="type-select" class="select-box">
+                <option value="">指定なし</option>
+                <option value="主食">主食</option>
+                <option value="おかず">おかず</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="section-title"><i class="fas fa-globe"></i> 4. どこで探す？</div>
+    <select id="site-select" class="select-box">
+        <option value="google">Googleでまるっと検索</option>
+        <option value="cookpad">クックパッド</option>
+        <option value="kurashiru">クラシル</option>
+        <option value="rakuten">楽天レシピ</option>
+    </select>
+
+    <div id="error-msg" class="error-message">食材を1つ以上入力してください！</div>
+
+    <button class="btn-search" onclick="searchExternalRecipes()"><i class="fas fa-search"></i> チャチャっと外部サイトで検索！</button>
+
+    <div class="studio-nav">
+        <a href="index.html" class="btn-back">ねこたスタジオへ戻る</a>
+        <div class="sns-group">
+            <a href="https://x.com/necotatu2" target="_blank" class="btn-sns btn-x">公式X</a>
+            <a href="https://www.instagram.com/necotastudio" target="_blank" class="btn-sns btn-insta">公式Insta</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentIngredients = [];
+
+    function handleKeyPress(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            addIngredientTag();
+        }
+    }
+
+    function addIngredientTag() {
+        const input = document.getElementById('ingredient-input');
+        const value = input.value.trim();
+        
+        if (value && !currentIngredients.includes(value)) {
+            currentIngredients.push(value);
+            renderTags();
+            document.getElementById('error-msg').style.display = 'none'; // エラーを消す
+        }
+        input.value = "";
+    }
+
+    function removeIngredientTag(index) {
+        currentIngredients.splice(index, 1);
+        renderTags();
+    }
+
+    function renderTags() {
+        const container = document.getElementById('tags-container');
+        container.innerHTML = "";
+        currentIngredients.forEach((ingredient, index) => {
+            const tag = document.createElement('div');
+            tag.className = 'ingredient-tag';
+            tag.innerHTML = `
+                <span>${ingredient}</span>
+                <button class="btn-remove-tag" onclick="removeIngredientTag(${index})"><i class="fas fa-times"></i></button>
+            `;
+            container.appendChild(tag);
+        });
+    }
+
+    // 外部のレシピサイトへ遷移するメインロジック
+    function searchExternalRecipes() {
+        // 食材が未入力の場合は警告を出す
+        if (currentIngredients.length === 0) {
+            document.getElementById('error-msg').style.display = 'block';
+            return;
+        }
+
+        const genre = document.getElementById('genre-select').value;
+        const type = document.getElementById('type-select').value;
+        const targetSite = document.getElementById('site-select').value;
+
+        // 検索キーワードの組み立て（例：「キャベツ 豚肉 和食 おかず」）
+        let keywords = [...currentIngredients];
+        if (genre) keywords.push(genre);
+        if (type) keywords.push(type);
+        
+        const searchQuery = encodeURIComponent(keywords.join(" "));
+        let searchUrl = "";
+
+        // 選択されたサイトに合わせてURLを生成
+        switch (targetSite) {
+            case "cookpad":
+                searchUrl = `https://cookpad.com/search/${searchQuery}`;
+                break;
+            case "kurashiru":
+                searchUrl = `https://www.kurashiru.com/search?query=${searchQuery}`;
+                break;
+            case "rakuten":
+                searchUrl = `https://recipe.rakuten.co.jp/search/${searchQuery}/`;
+                break;
+            case "google":
+                // Googleの場合は「レシピ」という言葉を添えて精度を上げる
+                searchUrl = `https://www.google.com/search?q=${searchQuery}%20レシピ`;
+                break;
+            default:
+                searchUrl = `https://www.google.com/search?q=${searchQuery}`;
+        }
+
+        // 新しいタブで検索結果を開く
+        window.open(searchUrl, '_blank');
+    }
+</script>
+</body>
+</html>
