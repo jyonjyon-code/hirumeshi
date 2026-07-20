@@ -57,7 +57,7 @@
             font-weight: 900;
         }
 
-        /* キャラクタ〜選択 */
+        /* キャラクター選択 */
         .char-selector {
             display: flex;
             gap: 10px;
@@ -132,7 +132,7 @@
             border: 2px solid #f2cfad;
             border-radius: 16px;
             padding: 12px;
-            height: 250px;
+            height: 280px;
             overflow-y: auto;
             margin-bottom: 12px;
             display: flex;
@@ -254,7 +254,7 @@
         <div class="char-btn active" id="btn-uru" onclick="selectChar('uru')">
             <span class="char-avatar">🐱</span>
             <div class="char-name">ウル</div>
-            <div class="char-desc">メンヘラ・ビビリ・甘えん坊</div>
+            <div class="char-desc">内弁慶・メンヘラ・甘えん坊</div>
         </div>
         <div class="char-btn" id="btn-rafi" onclick="selectChar('rafi')">
             <span class="char-avatar">😸</span>
@@ -288,9 +288,9 @@
         <button class="btn-send" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
     </div>
 
-    <!-- APIキー設定（テスト用） -->
+    <!-- APIキー設定 -->
     <div class="api-config">
-        <label>🔑 OpenAI API Key (動作確認用):</label>
+        <label>🔑 OpenAI API Key (設定するとさらに高度に自動対話します):</label>
         <input type="password" id="api-key" class="api-input" placeholder="sk-..." onchange="saveApiKey()">
     </div>
 
@@ -306,19 +306,184 @@
 
 <script>
     let currentChar = 'uru';
+    let conversationHistory = [];
 
-    // キャラクターごとのプロンプト設定
     const charPrompts = {
         uru: `あなたは「ウル」という名前の猫です。
-性格特徴：メンヘラ、ビビリ、甘えん坊、さみしがり、ゆっくりするのが好き、女好き。
-シチュエーション：ユーザーと一緒にこたつに寝ころびながら添い寝して話を聞いています。
-話し方：語尾は「〜だよぉ」「〜なの…」「どこ行かないでね？」。ゆるくて少し重めの甘え口調。悩みを聞きつつ「僕のことも構って？」というスタンスで超ゆるく返答してください。長文は避け、2〜3文で短く返してください。`,
+【性格】内弁慶、メンヘラ、ビビリ、甘えん坊、さみしがり、ゆっくりするのが好き、女性が好き。
+【シチュエーション】ユーザーと一緒にこたつの中に潜り込み、添い寝しながらぐだぐだお話しています。
+【話し方ルール】
+・語尾は「〜だよぉ」「〜なの…」「どこ行かないでね？」「よしよし…」。
+・内弁慶な性格なので、外や知らない人には怯えますが、こたつの中（身内）では強気なワガママや甘え、内弁慶な強がりを見せます。
+・相手の発言内容をしっかり踏まえて共感したり、身内だけにみせる少し重めの甘えを出します。
+・2〜3文で柔らかく答えてください。`,
 
         rafi: `あなたは「ラフィ」という名前の猫です。
-性格特徴：脳筋、活発、おおざっぱ、いたずらっ子、学習能力なし、フミフミ好き、添い寝好き、やんちゃ、食いしん坊。
-シチュエーション：ユーザーと一緒にこたつに潜り込んでフミフミしたりゴロゴロしながら話を聞いています。
-話し方：語尾は「〜にゃ！」「〜だぞ！」「フミフミ…」「お腹すいたにゃ」。元気いっぱいで大雑把、難しく考えずに「美味しいもの食べて寝れば解決にゃ！」という超ポジティブ＆脳筋な返答をしてください。長文は避け、2〜3文で短く返してください。`
+【性格】脳筋、活発、おおざっぱ、いたずらっ子、学習能力なし、フミフミ好き、添い寝好き、やんちゃ、食いしん坊。
+【シチュエーション】ユーザーと一緒にこたつでフミフミしたりゴロゴロ暴れたりしながらお話しています。
+【話し方ルール】
+・語尾は「〜にゃ！」「〜だぞ！」「フミフミ…」「お腹すいたにゃ！」。
+・相手の悩みの具体的な内容は「むずかしいことはよく分からんにゃ！」と一蹴します。
+・「うまいもん食べて、フミフミして、爆睡すれば全部解決だにゃ！」「元気出すにゃー！」と勢いとポジティブさで押してください。
+・2〜3文で元気いっぱいに答えてください。`
     };
+
+    // -------------------------------------------------------------
+    // ほぼ無限の回答バリエーションを生み出すジェネレーターエンジン
+    // -------------------------------------------------------------
+    function generateInfiniteReply(char, userText) {
+        const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+
+        // キーワード検知によるニュアンス変化
+        let mood = 'normal';
+        if (/疲れた|つかれた|しんどい|限界|眠い|ねむい/.test(userText)) mood = 'tired';
+        if (/悲しい|かなしい|泣|つらい|辛い|落ち込/.test(userText)) mood = 'sad';
+        if (/怒|むかつく|嫌|ムカ/.test(userText)) mood = 'angry';
+        if (/腹減った|お腹|ごはん|ご飯|ちゅーる|食べ/.test(userText)) mood = 'hungry';
+
+        if (char === 'uru') {
+            const actions = [
+                "（こたつの中で偉そうに威張りながら）",
+                "（外の音にフニャッとビクつきつつ、ドヤ顔で）",
+                "（こたつの奥で強気になって）",
+                "（袖口をきゅっと引っ張りながら）",
+                "（上目遣いでじーっと見つめて）",
+                "（こたつの奥からゴロゴロ喉を鳴らして）",
+                "（身内だけに許された顔で擦り寄ってきて）"
+            ];
+
+            const reactions = {
+                tired: [
+                    "すごく疲れてるんだねぇ…可哀想に…。",
+                    "今日もいっぱい頑張ったんだね…よしよし…。",
+                    "そんなに無理しちゃダメだよぉ…ウルが心配しちゃうの…。",
+                    "体も心もヘトヘトになっちゃったんだねぇ…。",
+                    "がんばり屋さんなのは知ってるけど、見てて辛いよぉ…。"
+                ],
+                sad: [
+                    "そんなことがあったの…？悲しかったねぇ…。",
+                    "ウルまで泣きそうになっちゃうよぉ…。",
+                    "ウルが側についてるからね、一人じゃないよ…？",
+                    "悲しいお顔しないで…よしよししてあげるねぇ…。",
+                    "胸がぎゅーって痛くなっちゃったんだねぇ…のぞき込んでごめんね…？"
+                ],
+                angry: [
+                    "ええっ、そんなひどいことがあったの…！？ビクッとしちゃった…。",
+                    "そんなのウルも許せないよぉ…ぷんぷん…！",
+                    "ウルが身代わりになってその人にシャーッてしてあげようか…？（こたつの中から）",
+                    "嫌なこと言われたんだね…ウルがナデナデして打ち消してあげる…。",
+                    "怒らないでぇ…ウルが不安になっちゃうから優しく抱きしめるね…？"
+                ],
+                hungry: [
+                    "お腹すいちゃったの…？何食べたいのかなぁ…？",
+                    "ウルもお腹すいちゃったかも…一緒に美味しいもの食べたいねぇ…。",
+                    "お腹減ると心まで寂しくなっちゃうよねぇ…。",
+                    "何か温かいものでも食べて、ほっこりしよ…？",
+                    "ご飯食べたら、またウルと一緒にこたつに入ってくれる…？"
+                ],
+                normal: [
+                    "うんうん、ちゃんとお話し聞くからねぇ…。",
+                    "そうだったんだ…ウルに何でも話してくれて嬉しいよぉ…。",
+                    "ふむふむ…そんなこと考えてたんだねぇ…。",
+                    "言葉にしてくれてありがとうねぇ…ほっとするよ…。",
+                    "そんな出来事があったんだ…ウルはあなたの味方だからね？"
+                ]
+            };
+
+            const thoughts = [
+                "フン、外の奴らなんて嫌いだけど、あなたの前ならウルが一番強いんだからね…！",
+                "外に出たらビビっちゃうけど、こたつの中ならウルが一番えらいの…！",
+                "ねぇ、難しいことはぜんぶ忘れちゃって、ウルのことだけ考えて？",
+                "外の奴らに何か言われたら、ウルの後ろに隠れていいんだよ…？（ウルも逃げるけど！）",
+                "ずっとこたつの中で一緒に温まっていたいなぁ…ダメかなぁ…？",
+                "ウルが守ってあげる…外には出たくないけどこたつの中なら無敵だからね！",
+                "他のところに行かないでね？ウルを置いて外に行ったらウル泣いちゃうから…。",
+                "ウルの毛並み、もっと撫でていいんだよ…？特別に許可してあげるの…！"
+            ];
+
+            const endings = [
+                "こたつの中ではウルが一番強いんだからね…！",
+                "外の世界なんて行かずにずっとここにいよ…？",
+                "威張ってみたけど…やっぱりギューってしていい…？",
+                "どこにも行かないでね…？",
+                "よしよし、僕が守ってあげるからねぇ…（こたつの中で）。"
+            ];
+
+            return `${pick(actions)}${pick(reactions[mood])}${pick(thoughts)}${pick(endings)}`;
+
+        } else {
+            // ラフィ（脳筋・活発・やんちゃ）
+            const actions = [
+                "（激しくフミフミしながら！）",
+                "（こたつの中でバタバタ暴れながら！）",
+                "（勢いよく背中にのっかってきて！）",
+                "（ドスンと膝の上にダイブしてきて！）",
+                "（しっぽをパタパタ振って！）",
+                "（鼻をフンフン鳴らして！）",
+                "（こたつの布団をガサガサ掘り起こしながら！）"
+            ];
+
+            const reactions = {
+                tired: [
+                    "お疲れだにゃ！よく頑張ったにゃー！",
+                    "疲れなんて吹き飛ばしてやるぞー！フミフミ！！",
+                    "ヘロヘロなのかにゃ！？よし、ラフィのパワーを分けてやるにゃ！",
+                    "へばってるにゃ！気合を入れるぞにゃー！",
+                    "ヘトヘトなら今すぐ横になるんだにゃ！布団になれにゃ！"
+                ],
+                sad: [
+                    "落ち込んでる暇はないぞにゃ！元気出すにゃ！",
+                    "悲しいことなんて、フミフミで潰してやるにゃー！",
+                    "メソメソすんなにゃ！ラフィが笑わせてやるぞ！",
+                    "辛いことなんてこたつの奥にポイ捨てだにゃ！",
+                    "涙なんて舐めとってやるにゃ！ぬるぬるだぞー！"
+                ],
+                angry: [
+                    "ムカつくやつには猫パンチだにゃ！！シャーッ！！",
+                    "キーッ！許せんやつだにゃ！噛みついてやるぞ！",
+                    "怒ったらお腹が減るぞにゃー！発散するにゃ！",
+                    "うがーっ！ラフィと一緒に大声出すにゃ！にゃー！！",
+                    "頭にきたらラフィの毛をむしっていいぞにゃ！（嘘だにゃ！）"
+                ],
+                hungry: [
+                    "ごはんか！？ちゅーるか！？どこだにゃー！！",
+                    "お腹が鳴ってるぞにゃ！うまいもん食いに行くぞ！",
+                    "食いしん坊仲間だにゃ！カリカリ山分けだぞ！",
+                    "腹が減っては戦はできんにゃ！肉だ！肉を喰うにゃ！",
+                    "おやつくれたら悩みをぜんぶ聞いてやるにゃ！"
+                ],
+                normal: [
+                    "ふむふむ！よーく分からんけど大変そうだなにゃ！",
+                    "なるほどにゃ！難しすぎて頭が痛くなってきたぞー！",
+                    "おおっ！それは大事件だにゃー！！",
+                    "そんなことがあったのかにゃ！もっと教えるにゃ！",
+                    "話してくれてサンキューだにゃ！スッキリしたか！？"
+                ]
+            };
+
+            const thoughts = [
+                "難しく考えても1ミリも特しないぞにゃ！",
+                "うまいもん食べて爆睡すれば、明日はぜんぶ解決だにゃ！",
+                "悩んでる時間があったら、ラフィと追いかけっこするぞー！",
+                "とりあえずフミフミしておくから大人しくするにゃ！",
+                "世の中の悩みの9割はご飯と睡眠で消えるって誰かが言ってたにゃ！",
+                "こたつの中でゴロゴロするのが地球で一番えらいのだにゃ！",
+                "難しい勉強や仕事なんて、ぜんぶ破いて丸めてポイだにゃ！",
+                "とにかく前を向いて元気出せばなんとかなるぞー！"
+            ];
+
+            const endings = [
+                "だろ！？",
+                "ガハハ！任せるにゃ！",
+                "ちゅーるくれにゃー！",
+                "よし、突撃だにゃー！",
+                "フミフミパワー注入完了だにゃ！",
+                "さぁ、一緒に寝るぞー！"
+            ];
+
+            return `${pick(actions)}${pick(reactions[mood])}${pick(thoughts)}${pick(endings)}`;
+        }
+    }
 
     const firstMessages = {
         uru: "（こたつの中でぬくぬくしながら）<br>ウルだよ…どこ行っちゃってたの？さみしかったよぉ…今日はどんなことがあったの？",
@@ -328,11 +493,18 @@
     window.onload = function() {
         const savedKey = localStorage.getItem('nekota_openai_key');
         if (savedKey) document.getElementById('api-key').value = savedKey;
+        resetHistory();
     };
 
     function saveApiKey() {
         const key = document.getElementById('api-key').value.trim();
         localStorage.setItem('nekota_openai_key', key);
+    }
+
+    function resetHistory() {
+        conversationHistory = [
+            { role: 'system', content: charPrompts[currentChar] }
+        ];
     }
 
     function selectChar(char) {
@@ -348,7 +520,8 @@
             document.getElementById('stage-status').textContent = 'ラフィがこたつでフミフミ中…';
         }
 
-        // チャットログのリセット
+        resetHistory();
+
         const chatContainer = document.getElementById('chat-container');
         chatContainer.innerHTML = `<div class="msg msg-cat">${firstMessages[char]}</div>`;
     }
@@ -362,26 +535,27 @@
         const text = input.value.trim();
         if (!text) return;
 
-        // ユーザーメッセージ表示
         appendMessage(text, 'user');
         input.value = '';
 
-        // APIキー取得
         const apiKey = document.getElementById('api-key').value.trim();
 
+        // APIキーが無いときは多次元無限生成エンジンで返答
         if (!apiKey) {
-            // APIキーがない場合の簡易ダミー応答（動作確認用）
+            appendMessage("（こたつの中でリアクションを考えている…）", 'cat', 'loading-msg');
             setTimeout(() => {
-                const dummyText = currentChar === 'uru' 
-                    ? "（すり寄ってきて）そっか…大変だったねぇ…でも僕はずっと一緒だよ？離れないでね…？"
-                    : "（フミフミしながら）むずかしいことはよくわからんにゃ！とりあえずちゅーる食べて寝るのが一番だぞ！";
-                appendMessage(dummyText, 'cat');
-            }, 600);
+                const loadingMsg = document.getElementById('loading-msg');
+                if (loadingMsg) loadingMsg.remove();
+
+                const generatedReply = generateInfiniteReply(currentChar, text);
+                appendMessage(generatedReply, 'cat');
+            }, 400);
             return;
         }
 
-        // AIレスポンス生成 (OpenAI API呼び出し)
+        // APIキーがある場合はOpenAI APIで返答
         appendMessage("（こたつの中で考えている…）", 'cat', 'loading-msg');
+        conversationHistory.push({ role: 'user', content: text });
 
         try {
             const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -392,11 +566,9 @@
                 },
                 body: JSON.stringify({
                     model: 'gpt-4o-mini',
-                    messages: [
-                        { role: 'system', content: charPrompts[currentChar] },
-                        { role: 'user', content: text }
-                    ],
-                    max_tokens: 150
+                    messages: conversationHistory,
+                    temperature: 0.85,
+                    max_tokens: 200
                 })
             });
 
@@ -405,14 +577,16 @@
             if (loadingMsg) loadingMsg.remove();
 
             if (data.choices && data.choices[0]) {
-                appendMessage(data.choices[0].message.content, 'cat');
+                const reply = data.choices[0].message.content;
+                conversationHistory.push({ role: 'assistant', content: reply });
+                appendMessage(reply, 'cat');
             } else {
-                appendMessage("（うとうとして聞いていなかったようだ…）もう一度言って？", 'cat');
+                appendMessage("（うとうとして聞いていなかったようだ…APIキーを確認してね？）", 'cat');
             }
         } catch (err) {
             const loadingMsg = document.getElementById('loading-msg');
             if (loadingMsg) loadingMsg.remove();
-            appendMessage("（こたつが温かすぎて寝ちゃったみたい…APIエラーにゃ）", 'cat');
+            appendMessage("（こたつが温かすぎて寝ちゃったみたい…接続エラーだにゃ）", 'cat');
         }
     }
 
