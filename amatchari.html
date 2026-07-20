@@ -10,41 +10,189 @@
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        body { font-family: 'Hiragino Kaku Gothic ProN', sans-serif; text-align: center; background: #fff5eb; padding: 15px; color: #333; margin: 0; }
-        .card { background: white; padding: 25px 20px; border-radius: 25px; box-shadow: 0 10px 30px rgba(230, 126, 34, 0.15); display: inline-block; width: 100%; max-width: 440px; border: 4px solid #e67e22; margin-top: 10px; box-sizing: border-box; text-align: left; }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
+            text-align: center;
+            background: #fff5eb;
+            padding: 15px;
+            color: #333;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .card {
+            background: white;
+            padding: 25px 20px;
+            border-radius: 24px;
+            box-shadow: 0 12px 32px rgba(230, 126, 34, 0.12);
+            width: 100%;
+            max-width: 440px;
+            border: 3px solid #e67e22;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
         
         /* ヘッダーエリア */
         .header-container { text-align: center; margin-bottom: 20px; }
-        .sub-tagline { display: inline-block; background: #e67e22; color: white; font-size: 11px; font-weight: bold; padding: 3px 12px; border-radius: 50px; letter-spacing: 1px; margin-bottom: 4px; }
-        h2 { color: #d35400; text-align: center; margin: 0; font-size: 28px; font-weight: 900; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .header-icon { height: 36px; width: 36px; object-fit: contain; border-radius: 8px; vertical-align: middle; }
+        .sub-tagline {
+            display: inline-block;
+            background: #e67e22;
+            color: white;
+            font-size: 11px;
+            font-weight: bold;
+            padding: 4px 14px;
+            border-radius: 50px;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+        h2 {
+            color: #d35400;
+            text-align: center;
+            margin: 0;
+            font-size: 28px;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .header-icon {
+            height: 38px;
+            width: 38px;
+            object-fit: contain;
+            border-radius: 8px;
+        }
         
         /* セクション見出し */
-        .section-title { font-weight: bold; font-size: 15px; color: #d35400; margin: 20px 0 10px 0; display: flex; align-items: center; gap: 6px; border-bottom: 2px solid #f39c12; padding-bottom: 4px; }
+        .section-title {
+            font-weight: bold;
+            font-size: 14px;
+            color: #d35400;
+            margin: 18px 0 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border-bottom: 2px solid #fdf2e9;
+            padding-bottom: 4px;
+        }
         
         /* 自由入力エリア */
-        .input-wrapper { display: flex; gap: 8px; margin-bottom: 12px; }
-        .ingredient-input { flex: 1; padding: 12px; border: 2px solid #f5cba7; border-radius: 12px; font-size: 16px; font-family: inherit; box-sizing: border-box; outline: none; }
+        .input-wrapper { display: flex; gap: 8px; margin-bottom: 10px; }
+        .ingredient-input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #f5cba7;
+            border-radius: 12px;
+            font-size: 15px;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s;
+        }
         .ingredient-input:focus { border-color: #e67e22; }
-        .btn-add { background: #f39c12; color: white; border: none; padding: 0 16px; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 14px; }
+        .btn-add {
+            background: #f39c12;
+            color: white;
+            border: none;
+            padding: 0 18px;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+        .btn-add:active { background: #d35400; }
         
         /* 追加された食材タグ */
-        .tags-container { display: flex; flex-wrap: wrap; gap: 6px; min-height: 38px; padding: 6px; background: #fafafa; border: 1px dashed #f5cba7; border-radius: 12px; box-sizing: border-box; margin-bottom: 15px; }
-        .ingredient-tag { display: inline-flex; align-items: center; gap: 6px; background: #e67e22; color: white; padding: 6px 12px; border-radius: 50px; font-size: 13px; font-weight: bold; animation: fadeIn 0.2s ease; }
-        .btn-remove-tag { background: none; border: none; color: white; cursor: pointer; padding: 0; font-size: 12px; display: flex; align-items: center; }
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            min-height: 42px;
+            padding: 6px;
+            background: #fafafa;
+            border: 1px dashed #f5cba7;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+        .ingredient-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #e67e22;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: bold;
+            animation: fadeIn 0.2s ease;
+        }
+        .btn-remove-tag {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 0;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            opacity: 0.8;
+        }
+        .btn-remove-tag:hover { opacity: 1; }
 
         /* セレクトボックス */
         .flex-select { display: flex; gap: 10px; margin-bottom: 10px; }
         .flex-select > div { flex: 1; }
-        .select-box { width: 100%; padding: 12px; border: 2px solid #f5cba7; border-radius: 12px; font-size: 15px; font-weight: bold; color: #333; background: white; font-family: inherit; box-sizing: border-box; outline: none; }
+        .select-box {
+            width: 100%;
+            padding: 11px;
+            border: 2px solid #f5cba7;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+            background: white;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s;
+        }
         .select-box:focus { border-color: #e67e22; }
 
         /* 検索ボタン */
-        .btn-search { background: #e67e22; color: white; border: none; width: 100%; padding: 15px; border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 18px; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(230, 126, 34, 0.3); transition: 0.2s; }
-        .btn-search:hover { background: #d35400; }
+        .btn-search {
+            background: #e67e22;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 17px;
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 14px rgba(230, 126, 34, 0.35);
+            transition: transform 0.1s, background 0.2s;
+        }
+        .btn-search:active { transform: scale(0.98); background: #d35400; }
         
         /* 警告メッセージ */
-        .error-message { color: #c0392b; font-size: 13px; font-weight: bold; margin-top: 8px; text-align: center; display: none; }
+        .error-message {
+            color: #e74c3c;
+            font-size: 13px;
+            font-weight: bold;
+            margin-top: 10px;
+            text-align: center;
+            display: none;
+        }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: scale(0.9); }
@@ -52,10 +200,42 @@
         }
 
         /* スタジオナビ */
-        .studio-nav { margin-top: 25px; border-top: 1px solid #ddd; padding-top: 20px; text-align: center; }
-        .btn-back { background: #888; color: white; padding: 10px 20px; border-radius: 50px; text-decoration: none; display: inline-block; font-size: 14px; width: 100%; box-sizing: border-box; margin-bottom: 15px; }
+        .studio-nav {
+            margin-top: 25px;
+            border-top: 1px dashed #e0e0e0;
+            padding-top: 20px;
+            text-align: center;
+        }
+        .btn-back {
+            background: #7f8c8d;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 13px;
+            font-weight: bold;
+            width: 100%;
+            margin-bottom: 12px;
+            transition: background 0.2s;
+        }
+        .btn-back:hover { background: #606c6d; }
         .sns-group { display: flex; gap: 10px; }
-        .btn-sns { color: white; border: none; padding: 12px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px; flex: 1; }
+        .btn-sns {
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: 13px;
+            flex: 1;
+        }
         .btn-x { background: #000; }
         .btn-insta { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
     </style>
@@ -68,7 +248,7 @@
         <h2><img src="amatchari.png" alt="🍳" class="header-icon"> あまっちゃり</h2>
     </div>
 
-    <div class="section-title"><i class="fas fa-carrot"></i> 1. あまっている食材を入力</div>
+    <div class="section-title"><i class="fas fa-carrot"></i> 1. あめている食材を入力</div>
     <div class="input-wrapper">
         <input type="text" id="ingredient-input" class="ingredient-input" placeholder="例: キャベツ、豚肉、卵" onkeypress="handleKeyPress(event)">
         <button class="btn-add" onclick="addIngredientTag()">追加</button>
@@ -77,7 +257,7 @@
 
     <div class="flex-select">
         <div>
-            <div class="section-title"><i class="fas fa-utensils"></i> 2. 気分・ジャンル</div>
+            <div class="section-title"><i class="fas fa-utensils"></i> 2. ジャンル</div>
             <select id="genre-select" class="select-box">
                 <option value="">指定なし</option>
                 <option value="和食">和食</option>
@@ -110,8 +290,8 @@
     <div class="studio-nav">
         <a href="index.html" class="btn-back">ねこたスタジオへ戻る</a>
         <div class="sns-group">
-            <a href="https://x.com/necotatu2" target="_blank" class="btn-sns btn-x">公式X</a>
-            <a href="https://www.instagram.com/necotastudio" target="_blank" class="btn-sns btn-insta">公式Insta</a>
+            <a href="https://x.com/necotatu2" target="_blank" rel="noopener noreferrer" class="btn-sns btn-x"><i class="fab fa-x-twitter"></i> 公式X</a>
+            <a href="https://www.instagram.com/necotastudio" target="_blank" rel="noopener noreferrer" class="btn-sns btn-insta"><i class="fab fa-instagram"></i> 公式Insta</a>
         </div>
     </div>
 </div>
@@ -128,10 +308,19 @@
 
     function addIngredientTag() {
         const input = document.getElementById('ingredient-input');
-        const value = input.value.trim();
+        const rawValue = input.value.trim();
         
-        if (value && !currentIngredients.includes(value)) {
-            currentIngredients.push(value);
+        if (rawValue) {
+            // カンマ（、 ,）やスペース（全角・半角）で分割してそれぞれタグ化
+            const items = rawValue.split(/[,、\s]+/);
+            
+            items.forEach(item => {
+                const trimmed = item.trim();
+                if (trimmed && !currentIngredients.includes(trimmed)) {
+                    currentIngredients.push(trimmed);
+                }
+            });
+
             renderTags();
             document.getElementById('error-msg').style.display = 'none';
         }
