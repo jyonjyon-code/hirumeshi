@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ねこたおはなし - こたつでゆるっと人生相談 | ねこたスタジオ</title>
+    
+    <link rel="icon" href="amatchari.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
+            text-align: center;
+            background: #fdf6ec;
+            padding: 15px;
+            color: #4a3b32;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 24px;
+            box-shadow: 0 10px 25px rgba(184, 115, 51, 0.15);
+            width: 100%;
+            max-width: 440px;
+            border: 3px solid #e08b47;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ヘッダー */
+        .header-container { text-align: center; margin-bottom: 15px; }
+        .sub-tagline {
+            display: inline-block;
+            background: #e08b47;
+            color: white;
+            font-size: 11px;
+            font-weight: bold;
+            padding: 3px 12px;
+            border-radius: 50px;
+            margin-bottom: 4px;
+        }
+        h2 {
+            color: #b85b14;
+            margin: 0;
+            font-size: 26px;
+            font-weight: 900;
+        }
+
+        /* キャラクタ〜選択 */
+        .char-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .char-btn {
+            flex: 1;
+            padding: 12px 8px;
+            border: 2px solid #f2cfad;
+            background: #fff9f3;
+            border-radius: 16px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .char-btn.active {
+            border-color: #e08b47;
+            background: #ffe3cb;
+            box-shadow: 0 4px 10px rgba(224, 139, 71, 0.2);
+        }
+        .char-avatar {
+            font-size: 32px;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .char-name {
+            font-weight: bold;
+            font-size: 15px;
+            color: #8c430e;
+        }
+        .char-desc {
+            font-size: 10px;
+            color: #7a685a;
+            margin-top: 2px;
+        }
+
+        /* こたつ添い寝ステージ */
+        .kotatsu-stage {
+            background: linear-gradient(to bottom, #d98880, #c0392b);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            color: white;
+            position: relative;
+            margin-bottom: 15px;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.2);
+            border: 4px solid #8b0000;
+        }
+        .kotatsu-futon {
+            background: #f5b7b1;
+            border-radius: 12px;
+            padding: 15px;
+            color: #4a154b;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .cat-sleeping {
+            font-size: 40px;
+            animation: breathe 3s infinite ease-in-out;
+        }
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
+
+        /* チャットエリア */
+        .chat-container {
+            background: #faf5f0;
+            border: 2px solid #f2cfad;
+            border-radius: 16px;
+            padding: 12px;
+            height: 250px;
+            overflow-y: auto;
+            margin-bottom: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .msg {
+            max-width: 85%;
+            padding: 10px 14px;
+            border-radius: 16px;
+            font-size: 14px;
+            line-height: 1.5;
+            word-break: break-word;
+        }
+        .msg-cat {
+            background: #ffffff;
+            color: #4a3b32;
+            border: 2px solid #e08b47;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+        .msg-user {
+            background: #e08b47;
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        /* 入力エリア */
+        .input-wrapper {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        .chat-input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #f2cfad;
+            border-radius: 12px;
+            font-size: 15px;
+            outline: none;
+            font-family: inherit;
+        }
+        .chat-input:focus { border-color: #e08b47; }
+        .btn-send {
+            background: #e08b47;
+            color: white;
+            border: none;
+            padding: 0 18px;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        /* 設定・APIキー設定 */
+        .api-config {
+            font-size: 11px;
+            color: #8c7b70;
+            background: #f8efe6;
+            padding: 8px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+        .api-input {
+            width: 100%;
+            padding: 6px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 11px;
+            margin-top: 4px;
+        }
+
+        /* スタジオナビ */
+        .studio-nav {
+            border-top: 1px dashed #d9c5b2;
+            padding-top: 15px;
+            text-align: center;
+        }
+        .btn-back {
+            background: #8c7b70;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 50px;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 12px;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .sns-group { display: flex; gap: 8px; }
+        .btn-sns {
+            color: white;
+            border: none;
+            padding: 8px;
+            border-radius: 50px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            font-size: 12px;
+            flex: 1;
+        }
+        .btn-x { background: #000; }
+        .btn-insta { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="header-container">
+        <span class="sub-tagline">こたつでごろごろ人生相談</span>
+        <h2>🍊 ねこたおはなし</h2>
+    </div>
+
+    <!-- キャラクター選択 -->
+    <div class="char-selector">
+        <div class="char-btn active" id="btn-uru" onclick="selectChar('uru')">
+            <span class="char-avatar">🐱</span>
+            <div class="char-name">ウル</div>
+            <div class="char-desc">メンヘラ・ビビリ・甘えん坊</div>
+        </div>
+        <div class="char-btn" id="btn-rafi" onclick="selectChar('rafi')">
+            <span class="char-avatar">😸</span>
+            <div class="char-name">ラフィ</div>
+            <div class="char-desc">脳筋・やんちゃ・フミフミ好き</div>
+        </div>
+    </div>
+
+    <!-- こたつステージ -->
+    <div class="kotatsu-stage">
+        <div class="kotatsu-futon">
+            <span class="cat-sleeping" id="stage-icon">🐱</span>
+            <div>
+                <div id="stage-status" style="font-size: 14px;">ウルがこたつで添い寝中…</div>
+                <div style="font-size: 11px; opacity: 0.8;">「ゴロゴロ…なんでも話してね…」</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- チャットログ -->
+    <div class="chat-container" id="chat-container">
+        <div class="msg msg-cat" id="first-msg">
+            （こたつの中でぬくぬくしながら）<br>
+            ウルだよ…どこ行っちゃってたの？さみしかったよぉ…今日はどんなことがあったの？
+        </div>
+    </div>
+
+    <!-- 入力フォーム -->
+    <div class="input-wrapper">
+        <input type="text" id="user-input" class="chat-input" placeholder="悩みや話したいことを入力…" onkeypress="handleKeyPress(event)">
+        <button class="btn-send" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+    </div>
+
+    <!-- APIキー設定（テスト用） -->
+    <div class="api-config">
+        <label>🔑 OpenAI API Key (動作確認用):</label>
+        <input type="password" id="api-key" class="api-input" placeholder="sk-..." onchange="saveApiKey()">
+    </div>
+
+    <!-- ナビゲーション -->
+    <div class="studio-nav">
+        <a href="index.html" class="btn-back">ねこたスタジオへ戻る</a>
+        <div class="sns-group">
+            <a href="https://x.com/necotatu2" target="_blank" class="btn-sns btn-x"><i class="fab fa-x-twitter"></i> 公式X</a>
+            <a href="https://www.instagram.com/necotastudio" target="_blank" class="btn-sns btn-insta"><i class="fab fa-instagram"></i> 公式Insta</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentChar = 'uru';
+
+    // キャラクターごとのプロンプト設定
+    const charPrompts = {
+        uru: `あなたは「ウル」という名前の猫です。
+性格特徴：メンヘラ、ビビリ、甘えん坊、さみしがり、ゆっくりするのが好き、女好き。
+シチュエーション：ユーザーと一緒にこたつに寝ころびながら添い寝して話を聞いています。
+話し方：語尾は「〜だよぉ」「〜なの…」「どこ行かないでね？」。ゆるくて少し重めの甘え口調。悩みを聞きつつ「僕のことも構って？」というスタンスで超ゆるく返答してください。長文は避け、2〜3文で短く返してください。`,
+
+        rafi: `あなたは「ラフィ」という名前の猫です。
+性格特徴：脳筋、活発、おおざっぱ、いたずらっ子、学習能力なし、フミフミ好き、添い寝好き、やんちゃ、食いしん坊。
+シチュエーション：ユーザーと一緒にこたつに潜り込んでフミフミしたりゴロゴロしながら話を聞いています。
+話し方：語尾は「〜にゃ！」「〜だぞ！」「フミフミ…」「お腹すいたにゃ」。元気いっぱいで大雑把、難しく考えずに「美味しいもの食べて寝れば解決にゃ！」という超ポジティブ＆脳筋な返答をしてください。長文は避け、2〜3文で短く返してください。`
+    };
+
+    const firstMessages = {
+        uru: "（こたつの中でぬくぬくしながら）<br>ウルだよ…どこ行っちゃってたの？さみしかったよぉ…今日はどんなことがあったの？",
+        rafi: "（こたつの中でフミフミしながら）<br>ラフィだにゃ！こたつ最高にゃ〜！何か悩みでもあるのかにゃ？フミフミしてやるぞ！"
+    };
+
+    window.onload = function() {
+        const savedKey = localStorage.getItem('nekota_openai_key');
+        if (savedKey) document.getElementById('api-key').value = savedKey;
+    };
+
+    function saveApiKey() {
+        const key = document.getElementById('api-key').value.trim();
+        localStorage.setItem('nekota_openai_key', key);
+    }
+
+    function selectChar(char) {
+        currentChar = char;
+        document.getElementById('btn-uru').classList.toggle('active', char === 'uru');
+        document.getElementById('btn-rafi').classList.toggle('active', char === 'rafi');
+
+        if (char === 'uru') {
+            document.getElementById('stage-icon').textContent = '🐱';
+            document.getElementById('stage-status').textContent = 'ウルがこたつで添い寝中…';
+        } else {
+            document.getElementById('stage-icon').textContent = '😸';
+            document.getElementById('stage-status').textContent = 'ラフィがこたつでフミフミ中…';
+        }
+
+        // チャットログのリセット
+        const chatContainer = document.getElementById('chat-container');
+        chatContainer.innerHTML = `<div class="msg msg-cat">${firstMessages[char]}</div>`;
+    }
+
+    function handleKeyPress(e) {
+        if (e.key === 'Enter') sendMessage();
+    }
+
+    async function sendMessage() {
+        const input = document.getElementById('user-input');
+        const text = input.value.trim();
+        if (!text) return;
+
+        // ユーザーメッセージ表示
+        appendMessage(text, 'user');
+        input.value = '';
+
+        // APIキー取得
+        const apiKey = document.getElementById('api-key').value.trim();
+
+        if (!apiKey) {
+            // APIキーがない場合の簡易ダミー応答（動作確認用）
+            setTimeout(() => {
+                const dummyText = currentChar === 'uru' 
+                    ? "（すり寄ってきて）そっか…大変だったねぇ…でも僕はずっと一緒だよ？離れないでね…？"
+                    : "（フミフミしながら）むずかしいことはよくわからんにゃ！とりあえずちゅーる食べて寝るのが一番だぞ！";
+                appendMessage(dummyText, 'cat');
+            }, 600);
+            return;
+        }
+
+        // AIレスポンス生成 (OpenAI API呼び出し)
+        appendMessage("（こたつの中で考えている…）", 'cat', 'loading-msg');
+
+        try {
+            const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`
+                },
+                body: JSON.stringify({
+                    model: 'gpt-4o-mini',
+                    messages: [
+                        { role: 'system', content: charPrompts[currentChar] },
+                        { role: 'user', content: text }
+                    ],
+                    max_tokens: 150
+                })
+            });
+
+            const data = await response.json();
+            const loadingMsg = document.getElementById('loading-msg');
+            if (loadingMsg) loadingMsg.remove();
+
+            if (data.choices && data.choices[0]) {
+                appendMessage(data.choices[0].message.content, 'cat');
+            } else {
+                appendMessage("（うとうとして聞いていなかったようだ…）もう一度言って？", 'cat');
+            }
+        } catch (err) {
+            const loadingMsg = document.getElementById('loading-msg');
+            if (loadingMsg) loadingMsg.remove();
+            appendMessage("（こたつが温かすぎて寝ちゃったみたい…APIエラーにゃ）", 'cat');
+        }
+    }
+
+    function appendMessage(text, sender, id = '') {
+        const chatContainer = document.getElementById('chat-container');
+        const div = document.createElement('div');
+        div.className = `msg msg-${sender}`;
+        if (id) div.id = id;
+        div.innerHTML = text;
+        chatContainer.appendChild(div);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+</script>
+
+</body>
+</html>
