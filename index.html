@@ -59,7 +59,7 @@
         .btn-play { background: var(--main-red); color: white; box-shadow: 0 4px 0 #b52b27; }
 
         /* おしゃべりタブ・記事エリアのスタイル */
-        .x-talk-wrap { display: none; max-width: 600px; margin: 30px auto; padding: 25px; background: white; border: 1px solid #e0d5c1; border-radius: 25px; box-shadow: 0 8px 20px rgba(0,0,0,0.06); animation: pop 0.4s ease; text-align: center; }
+        .x-talk-wrap { display: none; max-width: 600px; margin: 30px auto; padding: 25px; background: white; border: 1px solid #e0d5c1; border-radius: 25px; box-shadow: 0 8px 20px rgba(0,0,0,0.06); text-align: center; }
         .btn-x-link { display: inline-flex; align-items: center; justify-content: center; gap: 10px; background: #000; color: white; font-size: 16px; font-weight: 700; padding: 14px 28px; border-radius: 50px; text-decoration: none; box-shadow: 0 4px 0 #333; transition: 0.2s; margin-bottom: 25px; }
         .btn-x-link:hover { transform: translateY(-2px); box-shadow: 0 6px 0 #333; }
         
@@ -201,7 +201,7 @@
 <div class="x-talk-wrap" id="x-talk-section">
     <!-- こたつでねこた リンクエリア -->
     <div style="margin-bottom: 25px;">
-        <a href="ohanashi.html" style="display: inline-flex; align-items: center; justify-content: center; gap: 12px; background: #fff5f0; border: 2px solid #f39c12; color: #333; font-size: 16px; font-weight: 700; padding: 12px 24px; border-radius: 50px; text-decoration: none; box-shadow: 0 4px 0 #d35400; transition: 0.2s;">
+        <a href="ohanashi.html" target="_self" style="display: inline-flex; align-items: center; justify-content: center; gap: 12px; background: #fff5f0; border: 2px solid #f39c12; color: #333; font-size: 16px; font-weight: 700; padding: 12px 24px; border-radius: 50px; text-decoration: none; box-shadow: 0 4px 0 #d35400; transition: 0.2s;">
             <img src="kotatsunekota.png" alt="こたつでねこた" style="width: 40px; height: 40px; border-radius: 10px; object-fit: cover;" onerror="this.src='https://via.placeholder.com/40?text=🐱'">
             <span>こたつでねこたであそぶ</span>
         </a>
@@ -219,7 +219,7 @@
         <!-- 管理者用シークレット投稿フォーム -->
         <div id="admin-controls">
             <strong style="font-size: 13px; color: #c09853; display:block; margin-bottom:8px;">🛠️ 管理者投稿モード</strong>
-            <input type="text" id="art-title" class="admin-input" placeholder="記事のタイトル（例: アップアップデート情報）">
+            <input type="text" id="art-title" class="admin-input" placeholder="記事のタイトル（例: アプリアップデート情報）">
             <textarea id="art-body" class="admin-textarea" placeholder="本文を入力してください..."></textarea>
             <button type="button" class="btn-admin-submit" onclick="addArticle()">記事を公開する</button>
         </div>
@@ -268,13 +268,22 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, doc, updateDoc, increment, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, doc, updateDoc, increment, getDoc, collection, addDoc, getDocs, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
     
-    const firebaseConfig = { apiKey: "AIzaSyC4rb66A7CFgOOiXkPXoPKdUk3BVH42g28", authDomain: "necotastudio-counter.firebaseapp.com", projectId: "necotastudio-counter", storageBucket: "necotastudio-counter.firebasestorage.app", messagingSenderId: "28403673696", appId: "1:28403673696:web:e5ebccac51207dc588f105", measurementId: "G-0GV9MDP7M9" };
+    const firebaseConfig = { 
+        apiKey: "AIzaSyC4rb66A7CFgOOiXkPXoPKdUk3BVH42g28", 
+        authDomain: "necotastudio-counter.firebaseapp.com", 
+        projectId: "necotastudio-counter", 
+        storageBucket: "necotastudio-counter.firebasestorage.app", 
+        messagingSenderId: "28403673696", 
+        appId: "1:28403673696:web:e5ebccac51207dc588f105", 
+        measurementId: "G-0GV9MDP7M9" 
+    };
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const counterRef = doc(db, "counters", "studio-visitor");
     const kiribanList = [1, 7, 10, 50, 77, 100, 111, 222, 333, 444, 500, 555, 666, 777, 888, 999, 1000];
+
     async function updateCounter() {
         const counterEl = document.getElementById('current-count');
         try {
@@ -295,9 +304,84 @@
         } catch (e) { counterEl.innerText = "ERROR!!"; }
     }
     window.addEventListener('load', updateCounter);
+
+    // 記事取得関数（Firebase経由で全体共有）
+    window.renderArticles = async function() {
+        const container = document.getElementById('article-list-container');
+        try {
+            const q = query(collection(db, "articles"), orderBy("createdAt", "desc"));
+            const querySnapshot = await getDocs(q);
+            
+            if (querySnapshot.empty) {
+                container.innerHTML = '<p style="font-size:13px; color:#999; text-align:center; padding:10px 0;">まだ投稿はありません。</p>';
+                return;
+            }
+
+            let html = '';
+            querySnapshot.forEach((docSnap) => {
+                const art = docSnap.data();
+                html += `
+                    <div class="article-item">
+                        <div class="article-meta">${art.date}</div>
+                        <h4 class="article-title">${escapeHTML(art.title)}</h4>
+                        <p class="article-body">${escapeHTML(art.body)}</p>
+                        <button class="btn-article-delete" style="display: ${window.isAdmin ? 'block' : 'none'}" onclick="deleteArticle('${docSnap.id}')">削除</button>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        } catch (e) {
+            console.error("記事取得エラー:", e);
+            container.innerHTML = '<p style="font-size:13px; color:#999; text-align:center; padding:10px 0;">記事の読み込みに失敗しました。</p>';
+        }
+    };
+
+    // 記事追加関数（Firebaseへ保存）
+    window.addArticle = async function() {
+        const titleInput = document.getElementById('art-title');
+        const bodyInput = document.getElementById('art-body');
+        
+        if (!titleInput.value.trim() || !bodyInput.value.trim()) {
+            alert("タイトルと本文の両方を入力してください。");
+            return;
+        }
+
+        const now = new Date();
+        const dateStr = `${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+        try {
+            await addDoc(collection(db, "articles"), {
+                title: titleInput.value,
+                body: bodyInput.value,
+                date: dateStr,
+                createdAt: now.getTime()
+            });
+            titleInput.value = '';
+            bodyInput.value = '';
+            alert("記事を公開しました！");
+            window.renderArticles();
+        } catch (e) {
+            console.error("投稿エラー:", e);
+            alert("投稿に失敗しました。");
+        }
+    };
+
+    // 記事削除関数（Firebaseから削除）
+    window.deleteArticle = async function(id) {
+        if (!confirm("この記事を削除してもよろしいですか？")) return;
+        try {
+            await deleteDoc(doc(db, "articles", id));
+            window.renderArticles();
+        } catch (e) {
+            console.error("削除エラー:", e);
+            alert("削除に失敗しました。");
+        }
+    };
 </script>
 
 <script>
+    window.isAdmin = false;
+
     document.querySelectorAll('.tab-btn').forEach(button => {
         button.addEventListener('click', () => {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -311,7 +395,7 @@
             if (target === 'talk') {
                 appContainer.style.display = 'none';
                 xSection.style.display = 'block';
-                renderArticles();
+                if (window.renderArticles) window.renderArticles();
             } else {
                 appContainer.style.display = 'grid';
                 xSection.style.display = 'none';
@@ -330,7 +414,6 @@
 
     let clickCount = 0;
     let clickTimer = null;
-    let isAdmin = false;
 
     function handleAdminTrigger() {
         clickCount++;
@@ -340,68 +423,20 @@
             clearTimeout(clickTimer);
             clickCount = 0;
             
-            const password = prompt("管理者用パスワードを入力してください:");
+            let password = prompt("管理者用パスワードを入力してください:");
+            if (password) {
+                password = password.trim().toLowerCase();
+            }
+            
             if (password === "nekota2026") { 
-                isAdmin = true;
+                window.isAdmin = true;
                 alert("管理者認証に成功しました！投稿フォームが表示されます。");
                 document.getElementById('admin-controls').style.display = 'block';
-                renderArticles();
+                if (window.renderArticles) window.renderArticles();
             } else if (password !== null) {
                 alert("パスワードが違います。");
             }
         }
-    }
-
-    function renderArticles() {
-        const container = document.getElementById('article-list-container');
-        const articles = JSON.parse(localStorage.getItem('nekota_articles') || '[]');
-        
-        if (articles.length === 0) {
-            container.innerHTML = '<p style="font-size:13px; color:#999; text-align:center; padding:10px 0;">まだ投稿はありません。</p>';
-            return;
-        }
-
-        container.innerHTML = articles.map((art, index) => `
-            <div class="article-item">
-                <div class="article-meta">${art.date}</div>
-                <h4 class="article-title">${escapeHTML(art.title)}</h4>
-                <p class="article-body">${escapeHTML(art.body)}</p>
-                <button class="btn-article-delete" style="display: ${isAdmin ? 'block' : 'none'}" onclick="deleteArticle(${index})">削除</button>
-            </div>
-        `).join('');
-    }
-
-    function addArticle() {
-        const titleInput = document.getElementById('art-title');
-        const bodyInput = document.getElementById('art-body');
-        
-        if (!titleInput.value.trim() || !bodyInput.value.trim()) {
-            alert("タイトルと本文の両方を入力してください。");
-            return;
-        }
-
-        const articles = JSON.parse(localStorage.getItem('nekota_articles') || '[]');
-        const now = new Date();
-        const dateStr = `${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-
-        articles.unshift({
-            title: titleInput.value,
-            body: bodyInput.value,
-            date: dateStr
-        });
-
-        localStorage.setItem('nekota_articles', JSON.stringify(articles));
-        titleInput.value = '';
-        bodyInput.value = '';
-        renderArticles();
-    }
-
-    function deleteArticle(index) {
-        if (!confirm("この記事を削除してもよろしいですか？")) return;
-        const articles = JSON.parse(localStorage.getItem('nekota_articles') || '[]');
-        articles.splice(index, 1);
-        localStorage.setItem('nekota_articles', JSON.stringify(articles));
-        renderArticles();
     }
 
     function escapeHTML(str) {
@@ -410,7 +445,9 @@
         }[tag] || tag));
     }
 
-    renderArticles();
+    window.addEventListener('DOMContentLoaded', () => {
+        if (window.renderArticles) window.renderArticles();
+    });
 </script>
 </body>
 </html>
