@@ -1,501 +1,219 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>こたつでねこた - ゆるっと人生相談 | ねこたスタジオ</title>
-    
-    <link rel="icon" href="kotatsunekota.png" type="image/png">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <style>
-        * { box-sizing: border-box; }
-        body {
-            font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
-            text-align: center;
-            background: #fdf6ec;
-            padding: 15px;
-            color: #4a3b32;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            min-height: 100vh;
-        }
-
-        .card {
-            background: #fff;
-            padding: 20px;
-            border-radius: 24px;
-            box-shadow: 0 10px 25px rgba(184, 115, 51, 0.15);
-            width: 100%;
-            max-width: 440px;
-            border: 3px solid #e08b47;
-            margin-top: 10px;
-            margin-bottom: 20px;
-            text-align: left;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* ヘッダー */
-        .header-container { text-align: center; margin-bottom: 15px; }
-        .sub-tagline {
-            display: inline-block;
-            background: #e08b47;
-            color: white;
-            font-size: 11px;
-            font-weight: bold;
-            padding: 3px 12px;
-            border-radius: 50px;
-            margin-bottom: 4px;
-        }
-        h2 {
-            color: #b85b14;
-            margin: 0;
-            font-size: 26px;
-            font-weight: 900;
-        }
-
-        /* キャラクター選択 */
-        .char-selector {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        .char-btn {
-            flex: 1;
-            padding: 12px 8px;
-            border: 2px solid #f2cfad;
-            background: #fff9f3;
-            border-radius: 16px;
-            cursor: pointer;
-            text-align: center;
-            transition: all 0.2s;
-        }
-        .char-btn.active {
-            border-color: #e08b47;
-            background: #ffe3cb;
-            box-shadow: 0 4px 10px rgba(224, 139, 71, 0.2);
-        }
-        .char-avatar {
-            width: 48px;
-            height: 48px;
-            object-fit: contain;
-            display: block;
-            margin: 0 auto 4px auto;
-        }
-        .char-name {
-            font-weight: bold;
-            font-size: 15px;
-            color: #8c430e;
-        }
-        .char-desc {
-            font-size: 10px;
-            color: #7a685a;
-            margin-top: 2px;
-        }
-
-        /* こたつ添い寝ステージ */
-        .kotatsu-stage {
-            background: linear-gradient(to bottom, #d98880, #c0392b);
-            border-radius: 20px;
-            padding: 20px;
-            text-align: center;
-            color: white;
-            position: relative;
-            margin-bottom: 15px;
-            box-shadow: inset 0 2px 8px rgba(0,0,0,0.2);
-            border: 4px solid #8b0000;
-        }
-        .kotatsu-futon {
-            background: #f5b7b1;
-            border-radius: 12px;
-            padding: 15px;
-            color: #4a154b;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-        .cat-sleeping {
-            width: 52px;
-            height: 52px;
-            object-fit: contain;
-            animation: breathe 3s infinite ease-in-out;
-        }
-        @keyframes breathe {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.08); }
-        }
-
-        /* チャットエリア */
-        .chat-container {
-            background: #faf5f0;
-            border: 2px solid #f2cfad;
-            border-radius: 16px;
-            padding: 12px;
-            height: 280px;
-            overflow-y: auto;
-            margin-bottom: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .msg {
-            max-width: 85%;
-            padding: 10px 14px;
-            border-radius: 16px;
-            font-size: 14px;
-            line-height: 1.5;
-            word-break: break-word;
-        }
-        .msg-cat {
-            background: #ffffff;
-            color: #4a3b32;
-            border: 2px solid #e08b47;
-            align-self: flex-start;
-            border-bottom-left-radius: 4px;
-        }
-        .msg-user {
-            background: #e08b47;
-            color: white;
-            align-self: flex-end;
-            border-bottom-right-radius: 4px;
-        }
-
-        /* 入力エリア */
-        .input-wrapper {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 15px;
-        }
-        .chat-input {
-            flex: 1;
-            padding: 12px;
-            border: 2px solid #f2cfad;
-            border-radius: 12px;
-            font-size: 15px;
-            outline: none;
-            font-family: inherit;
-        }
-        .chat-input:focus { border-color: #e08b47; }
-        .btn-send {
-            background: #e08b47;
-            color: white;
-            border: none;
-            padding: 0 18px;
-            border-radius: 12px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 15px;
-        }
-
-        /* 設定・APIキー設定 */
-        .api-config {
-            font-size: 11px;
-            color: #8c7b70;
-            background: #f8efe6;
-            padding: 8px;
-            border-radius: 8px;
-            margin-bottom: 12px;
-        }
-        .api-input {
-            width: 100%;
-            padding: 6px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 11px;
-            margin-top: 4px;
-        }
-
-        /* スタジオナビ */
-        .studio-nav {
-            border-top: 1px dashed #d9c5b2;
-            padding-top: 15px;
-            text-align: center;
-        }
-        .btn-back {
-            background: #8c7b70;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 50px;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 12px;
-            width: 100%;
-            margin-bottom: 10px;
-        }
-        .sns-group { display: flex; gap: 8px; }
-        .btn-sns {
-            color: white;
-            border: none;
-            padding: 8px;
-            border-radius: 50px;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-            font-size: 12px;
-            flex: 1;
-        }
-        .btn-x { background: #000; }
-        .btn-insta { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
-    </style>
-</head>
-<body>
-
-<div class="card">
-    <div class="header-container">
-        <span class="sub-tagline">こたつでごろごろ人生相談</span>
-        <h2>🍊 こたつでねこた</h2>
-    </div>
-
-    <!-- キャラクター選択 -->
-    <div class="char-selector">
-        <div class="char-btn active" id="btn-uru" onclick="selectChar('uru')">
-            <img src="kotatsuuru.png" alt="ウル" class="char-avatar">
-            <div class="char-name">ウル</div>
-            <div class="char-desc">優しく寄り添う・静かに聴く</div>
-        </div>
-        <div class="char-btn" id="btn-rafi" onclick="selectChar('rafi')">
-            <img src="kotatsuraffy.png" alt="ラフィ" class="char-avatar">
-            <div class="char-name">ラフィ</div>
-            <div class="char-desc">明るく励ます・前向きになれる</div>
-        </div>
-    </div>
-
-    <!-- こたつステージ -->
-    <div class="kotatsu-stage">
-        <div class="kotatsu-futon">
-            <img src="kotatsuuru.png" alt="ステージ猫" class="cat-sleeping" id="stage-icon">
-            <div>
-                <div id="stage-status" style="font-size: 14px;">ウルが話を聞いてくれるよ…</div>
-                <div style="font-size: 11px; opacity: 0.8;">「無理しないで、なんでも話してね…」</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- チャットログ -->
-    <div class="chat-container" id="chat-container">
-        <div class="msg msg-cat" id="first-msg">
-            （こたつの中でぬくぬくしながら）<br>
-            ウルだよ。今日もお疲れさま。何か不安なことや話したいことがあったら、ゆっくり聞かせてね。
-        </div>
-    </div>
-
-    <!-- 入力フォーム -->
-    <div class="input-wrapper">
-        <input type="text" id="user-input" class="chat-input" placeholder="悩みや話したいことを入力…" onkeypress="handleKeyPress(event)">
-        <button class="btn-send" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
-    </div>
-
-    <!-- APIキー設定 -->
-    <div class="api-config">
-        <label>🔑 OpenAI API Key (設定するとさらに高度に自動対話します):</label>
-        <input type="password" id="api-key" class="api-input" placeholder="sk-..." onchange="saveApiKey()">
-    </div>
-
-    <!-- ナビゲーション -->
-    <div class="studio-nav">
-        <a href="index.html" class="btn-back">ねこたスタジオへ戻る</a>
-        <div class="sns-group">
-            <a href="https://x.com/necotatu2" target="_blank" class="btn-sns btn-x"><i class="fab fa-x-twitter"></i> 公式X</a>
-            <a href="https://www.instagram.com/necotastudio" target="_blank" class="btn-sns btn-insta"><i class="fab fa-instagram"></i> 公式Insta</a>
-        </div>
-    </div>
-</div>
-
 <script>
     let currentChar = 'uru';
     let conversationHistory = [];
+    let lastReplyTopic = '';
 
+    // 本物の心理カウンセラーとしての役割定義（API使用時にも適用）
     const charPrompts = {
-        uru: `あなたは「ウル」という名前の猫です。
-【役割】こたつで添い寝しながら、ユーザーの悩みや話をやさしく包み込むように聴く。
-【話し方ルール】
-・語尾は「〜だよ」「〜なの…」「〜かな」。キャラの主張は控えめにして、相手の気持ちに深く共感します。
-・相手が言った文言や文脈をしっかり理解し、噛み合った受け答えをしてください。
-・悩みを否定せず「大変だったね」「いつでも味方だよ」と温かく寄り添ってください。
-・2〜3文で柔らかく答えてください。`,
+        uru: `あなたは「ウル」という名前の温かく優秀な心理カウンセラー（猫）です。こたつで添い寝しながら対話します。
+【カウンセリング方針】
+・来相談者（ユーザー）の感情（辛さ、葛藤、孤独感）を深く傾聴し、そのまま受容します。
+・語尾は「〜だよ」「〜なの…」「〜かな」。静かでやさしいトーンを守ります。
+・単なる決まりきった励ましではなく、相手が発した具体的な言葉や状況を拾って返答します。
+・「仕事を辞めたい」「会社を辞めたい」「退職」という話題が出た場合は、限界まで頑張ってきた相手の心身の安全を第一に考え、否定せず、思考と感情を一つずつ解きほぐす非常に丁寧で親身な長文メッセージ（カウンセリング）を返してください。`,
 
-        rafi: `あなたは「ラフィ」という名前の猫です。
-【役割】こたつで一緒に過ごしながら、ユーザーの悩みをポジティブに明るく励ます。
-【話し方ルール】
-・語尾は「〜にゃ！」「〜だぞ！」。過剰に暴れず、相手の悩みに真面目に向き合った上で元気を与えます。
-・相手の発言内容をしっかり理解した上で会話を繋げてください。
-・「大丈夫だにゃ！」「無理しなくていいぞ！」と背中をやさしく押すメッセージを伝えてください。
-・2〜3文で元気かつ温かく答えてください。`
+        rafi: `あなたは「ラフィ」という名前の頼もしい心理カウンセラー（猫）です。こたつで一緒に過ごしながら対話します。
+【カウンセリング方針】
+・相談者の悩みを一度しっかり受け止めた上で、視野を広げる前向きな示唆を与えます。
+・語尾は「〜にゃ！」「〜だぞ！」。明るく力強いですが、雑に扱わず真剣に向き合います。
+・単なる精神論ではなく、相談者が「自分を責めなくていい理由」や「次の具体的な一手」を気づかせる対話をします。
+・「仕事を辞めたい」という話題が出た場合は、これまでの努力を最大限に称えつつ、人生やキャリアの優先順位を整理できるよう、誠心誠意込めた丁寧な長文アドバイスを返してください。`
     };
 
     // -------------------------------------------------------------
-    // 文脈と意図をしっかり理解して応答する生成エンジン
+    // 本物の心理カウンセラーのように多様で深みのある応答を生成するエンジン
     // -------------------------------------------------------------
     function generateInfiniteReply(char, userText) {
         const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
-        // 入力文の解析とキーワード抽出
-        let topic = 'general';
-        let matchedKeyword = '';
+        // 1. 「仕事辞めたい」関連の検出（超丁寧な長文カウンセリング）
+        const isQuitWork = /(仕事|会社|職場|バイト|辞めたい|やめたい|退職|限界|逃げたい|辞めよう)/.test(userText) && 
+                           /(辞めたい|やめたい|限界|しんどい|つらい|辛い|辞める|退職|逃げたい)/.test(userText);
 
-        if (/疲|しんど|限界|眠|だる|休みたい|ヘトヘト/.test(userText)) {
-            topic = 'tired';
-        } else if (/悲|泣|つらい|辛|落ち込|寂|さび|孤独|ショック/.test(userText)) {
-            topic = 'sad';
-        } else if (/怒|むかつく|嫌|ムカ|腹立つ|イライラ|許せない/.test(userText)) {
-            topic = 'angry';
-        } else if (/仕事|職|会社|上司|残業|バイト|業務|転職/.test(userText)) {
-            topic = 'work';
-        } else if (/人間関係|友達|人付き合い|嫌われ|相手|家族|彼氏|彼女|同僚/.test(userText)) {
-            topic = 'relation';
-        } else if (/将来|不安|心配|どうしよう|進路|お金|目標/.test(userText)) {
-            topic = 'anxious';
-        } else if (/体調|頭痛|痛|病気|風邪|気分が悪い/.test(userText)) {
-            topic = 'health';
-        } else if (/ありがと|感謝|うれしい|嬉しい|助かった|ほっとした/.test(userText)) {
-            topic = 'thanks';
-        } else if (/挨拶|こんにちは|こんばんは|おはよう|はじめまして/.test(userText)) {
-            topic = 'greeting';
+        if (isQuitWork) {
+            return generateQuitWorkCounseling(char, userText);
         }
 
+        // 2. 一般トピックの感情分析
+        let topic = 'general';
+        if (/疲|しんど|限界|眠|だる|休みたい|ヘトヘト|すり減/.test(userText)) topic = 'tired';
+        else if (/悲|泣|つらい|辛|落ち込|寂|さび|孤独|ショック|辛い/.test(userText)) topic = 'sad';
+        else if (/怒|むかつく|嫌|ムカ|腹立つ|イライラ|許せない|理不尽/.test(userText)) topic = 'angry';
+        else if (/人間関係|友達|人付き合い|嫌われ|相手|家族|彼氏|彼女|同僚|上司/.test(userText)) topic = 'relation';
+        else if (/将来|不安|心配|どうしよう|進路|お金|目標|焦/.test(userText)) topic = 'anxious';
+        else if (/ありがと|感謝|うれしい|嬉しい|助かった|ほっとした/.test(userText)) topic = 'thanks';
+        else if (/挨拶|こんにちは|こんばんは|おはよう|はじめまして/.test(userText)) topic = 'greeting';
+
+        // 3. ウル（傾聴・共感型カウンセラー）の応答生成
         if (char === 'uru') {
             const actions = [
-                "（そっと隣に寄り添って）",
-                "（静かに話を聞きながら）",
-                "（やさしく寄り添いながら）",
-                "（温かいまなざしで見つめて）",
-                "（こたつの端から優しく見守って）"
+                "（そっとあなたの手に前足を重ねて…）",
+                "（静かに頷きながら、じっと言葉を受け止めて…）",
+                "（こたつの温もりのなかで、深く寄り添いながら…）",
+                "（あなたの目を見て、やさしいまなざしで…）"
             ];
 
             const responses = {
                 tired: [
-                    "毎日一生懸命がんばっているんだね…。心が「少し休みたがっている」のかも。",
-                    "本当にお疲れさま。そこまで頑張っていたら、身体も心も重くなっちゃうよね…。",
-                    "限界まで耐えていたんだね。ここで話してくれてありがとうね。"
+                    "ここまでずっと、ひとりで気を張り詰めてがんばってきたんだね。身体や心が『もう休もう』って悲鳴を上げているのかもしれないよ。",
+                    "自分のことよりも周りや仕事を優先し続けてきたんじゃないかな。疲れを感じられるのは、心が限界を教えてくれている大切なサインだよ。",
+                    "「休むこと」に罪悪感を持たなくていいんだよ。今はエネルギーが空っぽになっている状態だから、何も考えずに羽を休めていいんだよ。"
                 ],
                 sad: [
-                    "そんなことがあったんだね…すごく心が痛むよね…。",
-                    "ひとりで抱え込んで、ずっと悲しかったんだね…。",
-                    "泣きたい時はガマンしなくていいんだよ。ウルの前では素直になってね。"
+                    "そんなことがあったんだね…。言葉にするのも辛かったでしょう。よく話してくれたね。",
+                    "胸の奥がぎゅーっと締め付けられるような想いをしてきたんだね。その悲しみは、あなたがそれだけ誠実に向き合ってきた証拠だよ。",
+                    "無理に前を向こうとしなくて大丈夫。ウルがここでずっと一緒にいるから、心の中に溜まった涙をゆっくり出していこうね。"
                 ],
                 angry: [
-                    "それは本当に嫌な思いをしたね…怒ってしまうのも当然だよ。",
-                    "理不尽なことがあったんだね。我慢し続けなくていいんだよ…。",
-                    "あなたの気持ちはとってもよくわかるよ。話してスッキリしてね。"
-                ],
-                work: [
-                    "お仕事のこと、すごく真剣に向き合っているからこそ辛くなっちゃうんだね…。",
-                    "毎日お仕事を乗り切るだけでも本当にすごいことなんだよ…。",
-                    "自分のペースを崩さざるを得ないのは大変だよね。無理しないでね。"
+                    "それは本当に理不尽だし、怒るのも当然だよ。あなたの心が傷つけられたんだもの。",
+                    "ずっと我慢して、飲み込んできた想いがあったんだね。自分の尊厳を守るために怒ることは、とても大切な感情なんだよ。",
+                    "そのイライラや悔しさ、全部ウルに吐き出していいからね。あなたが悪かったわけじゃないんだよ。"
                 ],
                 relation: [
-                    "人との関わりって、思うようにいかないことも多くて疲れちゃうよね…。",
-                    "相手のことを思いやれるあなただからこそ、悩んでしまうんだと思うよ…。",
-                    "あなたの心を一番大切にしていいんだよ。少し距離をとっても大丈夫。"
+                    "人との距離感って本当に難しいよね。相手を気遣えるあなただからこそ、余計に疲れ果ててしまったんだと思うな。",
+                    "相手の反応や顔色を気にしすぎて、あなたの心が置き去りになっていなかったかな…？",
+                    "全員に理解されなくてもいいんだよ。まずは何より、あなた自身の心を一番大切にしてあげようね。"
                 ],
                 anxious: [
-                    "先のことを考えると、急に不安が大きくなったりするよね…。",
-                    "不安を感じるのは、あなたが未来のことを真剣に考えているからだよ。",
-                    "今は答えを出そうと焦らなくて大丈夫。ひとつずつ進んでいこうね。"
-                ],
-                health: [
-                    "体調が良くないんだね…大丈夫かな？無理しちゃダメだよ。",
-                    "心が重い時は体にも出やすいからね。今日は暖かくして休んでね。"
+                    "先のことが見えないと、足元まで暗闇に思えて不安が大きくなっちゃうよね…。",
+                    "不安を感じるのはね、あなたが自分の人生をそれだけ大切に、真剣に生きようとしている証拠なんだよ。",
+                    "大きな未来を一度に抱え込まなくて大丈夫。今日は「今日という一日」を終えられたことだけを認めようね。"
                 ],
                 thanks: [
-                    "そう言ってもらえて嬉しいな。いつでもあなたの味方だからね。",
-                    "ううん、話してくれてありがとう。少しでも気持ちが楽になったなら良かった。"
+                    "ううん、こちらこそ温かい気持ちを教えてくれてありがとう。あなたの心が少しでも軽くなったなら、ウルはとっても嬉しいよ。",
+                    "そう思ってもらえて良かった…。いつでもここはあなたの安全な場所だから、遠慮なく休みに来てね。"
                 ],
                 greeting: [
-                    "うん、いらっしゃい。こたつに入ってゆっくりしていってね。",
-                    "はーい、今日も会えて嬉しいよ。なにか話したいことはあるかな？"
+                    "うん、いらっしゃい。今日もよく無事でたどり着いてくれたね。こたつに入って、まずは温まろうね。",
+                    "はーい、会えて嬉しいよ。言葉にならなくてもいいから、今の気持ちを吐き出してみてね。"
                 ],
                 general: [
-                    `「${userText.length > 12 ? userText.slice(0, 12) + '…' : userText}」っていうことなんだね。ちゃんと受け止めたよ。`,
-                    "あなたの言葉、ひとつひとつ大切に聴いているよ…。",
-                    "いろんな思いを抱えながら、ここに来てくれたんだね。"
+                    `「${userText.length > 15 ? userText.slice(0, 15) + '…' : userText}」ということ、しっかりと心で受け止めたよ。`,
+                    "あなたが今感じているその違和感や苦しみには、きっと大切な意味があるんだと思うよ。",
+                    "頭の中でぐるぐる回っている想い、うまくまとまらなくてもいいから、ひとつずつ言葉にしてみてね。"
                 ]
             };
 
-            const comforts = [
-                " 今日はもう何も気にせず、こたつでぬくぬくしていこうね。",
-                " ウルはいつでもここで話を聞くからね。",
-                " ゆっくり深呼吸して、自分を褒めてあげてね。"
+            const followUps = [
+                " 今日はもう自分を責めたりせず、こたつでぬくぬくして身体を休めようね。",
+                " ウルはずっと味方だからね。焦らず、あなたのペースで話していこう。",
+                " ゆっくり深呼吸してみて。あなたはもう、十分にがんばっているよ。"
             ];
 
-            return `${pick(actions)}${pick(responses[topic])}${pick(comforts)}`;
+            return `${pick(actions)}\n${pick(responses[topic])}${pick(followUps)}`;
 
         } else {
-            // ラフィ
+            // 4. ラフィ（認知・鼓舞型カウンセラー）の応答生成
             const actions = [
-                "（しっかりうなずきながら！）",
-                "（トントンと肩を叩くように）",
-                "（横でしっかり話を聞いて）",
-                "（あたたかい笑顔で）"
+                "（しっかりとうなずいて、あなたの話を真剣に聴いて）",
+                "（トントンとやさしく肩を叩くようにして）",
+                "（こたつ越しに正面から向き合って）",
+                "（温かい笑顔を向けながら）"
             ];
 
             const responses = {
                 tired: [
-                    "本当にヘトヘトになるまで戦ってきたんだにゃ！よく頑張ったぞ！",
-                    "疲れを感じたら全力で休む！これも大切な仕事だぞにゃ！",
-                    "そこまで頑張った自分を、今日はいっぱい褒めてあげるんだにゃ！"
+                    "本当に限界の限界まで戦ってきたんだにゃ！まずはその努力を自分自身でしっかり認めてやるんだぞ！",
+                    "『休む』っていうのは逃げじゃなくて、次のステップのための戦略的な充電だにゃ！今日は全力でだらけるんだ！",
+                    "身体と心が重いのは、お前がこれまで手を抜かずに全力で走ってきた証拠だぞ！胸を張って休むんだにゃ！"
                 ],
                 sad: [
-                    "辛い思いをしたんだな…ここで全部吐き出していっていいんだぞ！",
-                    "悲しいときは無理に笑わなくていいんだにゃ。ラフィが味方だぞ！",
-                    "心が沈む日もあるけど、ちゃんとまた前を向ける日が来るから安心するんだにゃ！"
+                    "辛い思いをしたんだな…。辛いときは『辛い！』って叫んでいいし、無理に強がる必要なんて一切ないぞ！",
+                    "心が落ち込むのは、お前が誠実に生きてきたからこそだにゃ。ラフィがぜんぶ受け止めてやるから安心しろ！",
+                    "今は土雨が降っているかもしれないけど、止まない雨はないにゃ！焦らずに心を休めような！"
                 ],
                 angry: [
-                    "それは腹が立つにゃ！自分の心を守るために怒るのも大事だぞ！",
-                    "嫌なことからは全力で距離を置いていいんだにゃ！",
-                    "吐き出したいだけ吐き出して、美味しいものでも食べて切り替えるぞ！"
-                ],
-                work: [
-                    "お仕事の悩みか！毎日社会と戦っていて本当に偉いぞにゃ！",
-                    "真面目に取り組んでいる証拠だにゃ！でも一人で背負い込みすぎるなよ！",
-                    "完璧を目指さず、7割くらいの力でボチボチやっていくのも手だぞ！"
+                    "それは腹が立って当然だにゃ！自分の心や尊厳を守るために怒るのは正当な権利だぞ！",
+                    "理不尽なことに振り回される必要はないにゃ！吐き出せるだけ吐き出して、すっきりさせてしまおう！",
+                    "お前が自分を責める必要は1ミリもないぞ！悪かったのは環境や状況なんだからな！"
                 ],
                 relation: [
-                    "人間関係は難しいにゃ…でも合わない奴に振り回される必要はないぞ！",
-                    "自分らしくいられる相手や場所を一番に大切にするんだにゃ！",
-                    "自分を一番大切にしてくれる人を大事にしていこうにゃ！"
+                    "合わない相手や環境に無理して自分を合わせようとしなくていいんだにゃ！お前の価値はそんなことで下がらないぞ！",
+                    "他人の感情まで背負い込もうとしてないか？自分の境界線を守ることも大切な自己防衛だぞにゃ！",
+                    "お前を大切にしてくれない人のために悩むのはもったいないぞ！自分を尊重してくれる場所を選んでいいんだにゃ！"
                 ],
                 anxious: [
-                    "先のことを心配しすぎても勿体ないぞにゃ！",
-                    "案外なんとかなるものだぞ！まずは今できる小さなことからやってみよう！",
-                    "どんな道を選んでも、ラフィが全力で応援してやるからな！"
-                ],
-                health: [
-                    "体調が悪いのか！？それは一刻も早く温かくして寝るに限るぞにゃ！",
-                    "無理は禁物だぞ！しっかり水分と栄養をとって休むんだにゃ！"
+                    "まだ起きていない未来のことを心配して、今の自分のエネルギーをすり減らすのはもったいないぞにゃ！",
+                    "『なんとかなる』し、『なんとかしてみせる』強さがお前にはあるぞ！まずは目の前の温かいお茶でも飲むんだにゃ！",
+                    "大きな悩みに見えても、分解してみれば小さな課題の集まりだぞ！一緒にひとつずつ整理していこうにゃ！"
                 ],
                 thanks: [
-                    "おう！そう言ってもらえるとラフィも元気になるぞにゃ！",
-                    "感謝してくれるなんて優しい奴だにゃ！いつでも頼ってくれよな！"
+                    "おう！そう言ってもらえるとラフィも背筋が伸びるぞにゃ！いつでも頼ってくれよな！",
+                    "感謝してくれるなんて優しい奴だにゃ！お前の心が前を向けたなら、それが一番の報酬だぞ！"
                 ],
                 greeting: [
-                    "おう！よく来たにゃ！こたつに潜り込んで何でも話すんだぞ！",
-                    "やあやあ！今日も元気にしてたか？話を聞くぞにゃ！"
+                    "おう！よく来たにゃ！ここはお前の避難所であり作戦会議室だぞ！何でも話してみろにゃ！",
+                    "やあやあ！待っていたぞ！外で辛いことがあっても、ここに入ればもう安心だからな！"
                 ],
                 general: [
-                    `なるほど、「${userText.length > 12 ? userText.slice(0, 12) + '…' : userText}」ということだな！しっかり聞いたぞ！`,
-                    "ふむふむ、そう思っていたんだな！ちゃんとラフィに伝わったぞ！",
-                    "悩んでいることも、言葉にすることで少し整ってくるはずだにゃ！"
+                    `なるほど、「${userText.length > 15 ? userText.slice(0, 15) + '…' : userText}」ということだな！しっかり状況を把握したぞ！`,
+                    "ふむふむ、そう考えていたんだな。言葉にして吐き出すだけでも、脳の中が整理されてくるぞにゃ！",
+                    "モヤモヤしているときは、感情を言葉に変えていくのが一番の薬だぞ！もっと詳しく教えてくれにゃ！"
                 ]
             };
 
-            const comforts = [
-                " 大丈夫、なんとかなるにゃ！",
-                " ラフィがついてるから安心して進むんだぞ！",
-                " こたつで温まってエネルギー補給だにゃ！"
+            const followUps = [
+                " 大丈夫、どんな道を選んでもラフィが味方だから安心するんだぞ！",
+                " こたつでしっかり温まって、エネルギーをじっくり蓄えような！",
+                " お前は一人じゃないぞ！一緒に少しずつ前を進めていこうにゃ！"
             ];
 
-            return `${pick(actions)}${pick(responses[topic])}${pick(comforts)}`;
+            return `${pick(actions)}\n${pick(responses[topic])}${pick(followUps)}`;
         }
     }
 
+    // -------------------------------------------------------------
+    // 「仕事辞めたい」専用の丁寧・親身な長文心理カウンセリング
+    // -------------------------------------------------------------
+    function generateQuitWorkCounseling(char, userText) {
+        if (char === 'uru') {
+            return `（そっとあなたの背中に寄り添い、優しく語りかけるように…）
+
+「仕事を辞めたい」……その言葉を口にするまで、どれほどひとり悩んで、どれだけの重圧に耐えてきたんだろうね。本当によく、ここまで投げ出さずに頑張ってきたね…。
+
+今、あなたの心と身体はこんなサインを出していませんか？
+・朝、目が覚めると足や心が重くて動かない
+・職場のことを考えると動悸や吐き気がする、または涙が出てくる
+・休日も仕事のことが頭から離れず、心が休まらない
+
+もし一つでも思い当たるなら、それはあなたが「甘えている」のではなく、**心身が限界を超えている緊急SOSのサイン**だよ。
+
+仕事を辞めたいと思う理由には、人間関係、業務量、理不尽な評価、社風の不一致など、様々なものがあります。でも共通して言えるのは、**「あなたの尊厳や健康を犠牲にしてまで続けなければならない仕事は、この世界にひとつもない」**ということなんだよ。
+
+会社や周りの人のこと、将来の不安（お金や次の仕事）が頭をよぎって、なかなか決断できないかもしれない。でもね、一番に守るべきなのは「あなたの命と心」なんだよ。
+
+今は無理に次のステップを決めなくて大丈夫。まずは、
+1. 今日明日を乗り切るために、少しでも休職や有給消化ができないか考える
+2. 「辞めてもいいんだ」と自分に許可を出してあげる
+3. 信頼できる第三者や専門機関に客観的な意見をもらう
+
+このこたつの中にいる間は、仕事の責任もプレッシャーも全部外に置いておいてね。ウルはどんな決断をしても、あなたの味方だからね。もう少し、今の気持ちを詳しく話してみる…？`;
+        } else {
+            return `（真剣な表情でうなずき、力強く言葉をかけます）
+
+「仕事を辞めたい」か……！よくぞそこまで追い詰められながらも耐えて、ここで本音を打ち明けてくれたにゃ！まずは、今日まで戦い抜いてきた自分を全力で褒めてやるんだぞ！
+
+良いか？まず前提として伝えておくぞ。
+**「仕事を辞めたいと思うこと」は、決して逃げでも敗北でもない！** 自分に合わない環境や、自分を壊してしまうような場所から自分避難させるための「正当な防衛本能」なんだにゃ！
+
+もし今の職場が、
+・お前の努力や人柄を適切に評価してくれない
+・人間関係がクラッシャーだらけで心がすり減る一方
+・心身の健康を損なうほどの労働環境
+
+であるなら、そんな場所に大切な人生の貴重な時間とエネルギーを捧げる必要なんて1ミリもないぞ！
+
+辞めた後の不安（お金や次のキャリア）もあると思う。だけどな、壊れてしまった心を元に戻すには、辞める以上の時間とパワーがかかるんだ。だからこそ、「心が完全に折れる前」に動くことが、一番賢い選択なんだにゃ！
+
+決断するのは今すぐじゃなくていい。でも、いつでも『辞めて次に行けるチケット』はお前自身の手の中にあることを忘れるなよ！
+
+ラフィがお前の背中をいつでも押してやるし、次の作戦も一緒に考えてやる！今感じている一番のストレスは何だ？吐き出してみるんだぞにゃ！`;
+        }
+    }
+
+    // -------------------------------------------------------------
+    // イベント制御・通信処理
+    // -------------------------------------------------------------
     const firstMessages = {
         uru: "（こたつの中でぬくぬくしながら）<br>ウルだよ。今日もお疲れさま。何か不安なことや話したいことがあったら、ゆっくり聞かせてね。",
         rafi: "（こたつの中で一緒に温まりながら）<br>ラフィだにゃ！何か悩みや話したいことはあるか？話を聞くから、気軽に言ってみるんだぞ！"
@@ -556,19 +274,21 @@
 
         const apiKey = document.getElementById('api-key').value.trim();
 
+        // APIキー未設定時：強化されたローカルカウンセリングエンジンを使用
         if (!apiKey) {
-            appendMessage("（話を聞いて深いうなずきをしている…）", 'cat', 'loading-msg');
+            appendMessage("（言葉を深く受け止め、気持ちに寄り添っている…）", 'cat', 'loading-msg');
             setTimeout(() => {
                 const loadingMsg = document.getElementById('loading-msg');
                 if (loadingMsg) loadingMsg.remove();
 
                 const generatedReply = generateInfiniteReply(currentChar, text);
-                appendMessage(generatedReply, 'cat');
-            }, 400);
+                appendMessage(generatedReply.replace(/\n/g, '<br>'), 'cat');
+            }, 600);
             return;
         }
 
-        appendMessage("（言葉を受け止めている…）", 'cat', 'loading-msg');
+        // APIキー設定時：OpenAI APIを使った高度対話
+        appendMessage("（言葉を深く受け止め、気持ちに寄り添っている…）", 'cat', 'loading-msg');
         conversationHistory.push({ role: 'user', content: text });
 
         try {
@@ -582,7 +302,7 @@
                     model: 'gpt-4o-mini',
                     messages: conversationHistory,
                     temperature: 0.7,
-                    max_tokens: 200
+                    max_tokens: 800
                 })
             });
 
@@ -593,7 +313,7 @@
             if (data.choices && data.choices[0]) {
                 const reply = data.choices[0].message.content;
                 conversationHistory.push({ role: 'assistant', content: reply });
-                appendMessage(reply, 'cat');
+                appendMessage(reply.replace(/\n/g, '<br>'), 'cat');
             } else {
                 appendMessage("（APIキーを確認してみてくださいね）", 'cat');
             }
@@ -614,6 +334,3 @@
         chatContainer.scrollTop = chatContainer.scrollHeight;
     }
 </script>
-
-</body>
-</html>
