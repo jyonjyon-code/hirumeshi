@@ -1,3 +1,187 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>こたつ猫カウンセラー</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f7f3ed;
+            color: #4a3e3d;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 16px;
+        }
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            height: 90vh;
+            max-height: 750px;
+            overflow: hidden;
+        }
+        .header {
+            padding: 16px;
+            background-color: #fcefe6;
+            border-bottom: 1px solid #ebdcd0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .char-selector {
+            display: flex;
+            gap: 10px;
+        }
+        .btn-char {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #d4a373;
+            background: #fff;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #d4a373;
+            transition: all 0.2s ease;
+        }
+        .btn-char.active {
+            background: #d4a373;
+            color: #fff;
+        }
+        .stage-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .stage-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #e9ecef;
+        }
+        .stage-status {
+            font-size: 14px;
+            font-weight: 500;
+            color: #6c584c;
+        }
+        .api-settings {
+            display: flex;
+            gap: 8px;
+            font-size: 12px;
+        }
+        .api-input {
+            flex: 1;
+            padding: 6px 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+        .btn-save {
+            padding: 6px 12px;
+            background: #a3b18a;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .chat-container {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: #faf7f2;
+        }
+        .msg {
+            max-width: 85%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            line-height: 1.5;
+            font-size: 14px;
+            word-wrap: break-word;
+        }
+        .msg-user {
+            align-self: flex-end;
+            background: #d4a373;
+            color: white;
+            border-bottom-right-radius: 2px;
+        }
+        .msg-cat {
+            align-self: flex-start;
+            background: #ffffff;
+            color: #333333;
+            border: 1px solid #e7dfd5;
+            border-bottom-left-radius: 2px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .input-area {
+            padding: 12px 16px;
+            background: #ffffff;
+            border-top: 1px solid #ebdcd0;
+            display: flex;
+            gap: 8px;
+        }
+        .user-input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            outline: none;
+            font-size: 14px;
+        }
+        .btn-send {
+            padding: 10px 18px;
+            background: #d4a373;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <div class="char-selector">
+            <button id="btn-uru" class="btn-char active" onclick="selectChar('uru')">ウル（共感型）</button>
+            <button id="btn-rafi" class="btn-char" onclick="selectChar('rafi')">ラフィ（鼓舞型）</button>
+        </div>
+        <div class="stage-info">
+            <img id="stage-icon" class="stage-icon" src="kotatsuuru.png" alt="ウル">
+            <div id="stage-status" class="stage-status">ウルが話を聞いてくれるよ…</div>
+        </div>
+        <div class="api-settings">
+            <input type="password" id="api-key" class="api-input" placeholder="OpenAI API Key (任意)">
+            <button class="btn-save" onclick="saveApiKey()">保存</button>
+        </div>
+    </div>
+
+    <div id="chat-container" class="chat-container">
+        <div class="msg msg-cat">（こたつの中でぬくぬくしながら）<br>ウルだよ。今日もお疲れさま。何か不安なことや話したいことがあったら、ゆっくり聞かせてね。</div>
+    </div>
+
+    <div class="input-area">
+        <input type="text" id="user-input" class="user-input" placeholder="メッセージを入力…" onkeypress="handleKeyPress(event)">
+        <button class="btn-send" onclick="sendMessage()">送信</button>
+    </div>
+</div>
+
 <script>
     let currentChar = 'uru';
     let conversationHistory = [];
@@ -194,7 +378,7 @@
 「仕事を辞めたい」か……！よくぞそこまで追い詰められながらも耐えて、ここで本音を打ち明けてくれたにゃ！まずは、今日まで戦い抜いてきた自分を全力で褒めてやるんだぞ！
 
 良いか？まず前提として伝えておくぞ。
-**「仕事を辞めたいと思うこと」は、決して逃げでも敗北でもない！** 自分に合わない環境や、自分を壊してしまうような場所から自分避難させるための「正当な防衛本能」なんだにゃ！
+**「仕事を辞めたいと思うこと」は、決して逃げでも敗北でもない！** 自分に合わない環境や、自分を壊してしまうような場所から自分を避難させるための「正当な防衛本能」なんだにゃ！
 
 もし今の職場が、
 ・お前の努力や人柄を適切に評価してくれない
@@ -220,14 +404,21 @@
     };
 
     window.onload = function() {
-        const savedKey = localStorage.getItem('nekota_openai_key');
-        if (savedKey) document.getElementById('api-key').value = savedKey;
+        const apiKeyEl = document.getElementById('api-key');
+        if (apiKeyEl) {
+            const savedKey = localStorage.getItem('nekota_openai_key');
+            if (savedKey) apiKeyEl.value = savedKey;
+        }
         resetHistory();
     };
 
     function saveApiKey() {
-        const key = document.getElementById('api-key').value.trim();
-        localStorage.setItem('nekota_openai_key', key);
+        const apiKeyEl = document.getElementById('api-key');
+        if (apiKeyEl) {
+            const key = apiKeyEl.value.trim();
+            localStorage.setItem('nekota_openai_key', key);
+            alert('APIキーを保存しました');
+        }
     }
 
     function resetHistory() {
@@ -238,26 +429,33 @@
 
     function selectChar(char) {
         currentChar = char;
-        document.getElementById('btn-uru').classList.toggle('active', char === 'uru');
-        document.getElementById('btn-rafi').classList.toggle('active', char === 'rafi');
+        
+        const btnUru = document.getElementById('btn-uru');
+        const btnRafi = document.getElementById('btn-rafi');
+        if (btnUru) btnUru.classList.toggle('active', char === 'uru');
+        if (btnRafi) btnRafi.classList.toggle('active', char === 'rafi');
 
         const stageIcon = document.getElementById('stage-icon');
         const stageStatus = document.getElementById('stage-status');
 
-        if (char === 'uru') {
-            stageIcon.src = 'kotatsuuru.png';
-            stageIcon.alt = 'ウル';
-            stageStatus.textContent = 'ウルが話を聞いてくれるよ…';
-        } else {
-            stageIcon.src = 'kotatsuraffy.png';
-            stageIcon.alt = 'ラフィ';
-            stageStatus.textContent = 'ラフィが元気づけてくれるよ！';
+        if (stageIcon && stageStatus) {
+            if (char === 'uru') {
+                stageIcon.src = 'kotatsuuru.png';
+                stageIcon.alt = 'ウル';
+                stageStatus.textContent = 'ウルが話を聞いてくれるよ…';
+            } else {
+                stageIcon.src = 'kotatsuraffy.png';
+                stageIcon.alt = 'ラフィ';
+                stageStatus.textContent = 'ラフィが元気づけてくれるよ！';
+            }
         }
 
         resetHistory();
 
         const chatContainer = document.getElementById('chat-container');
-        chatContainer.innerHTML = `<div class="msg msg-cat">${firstMessages[char]}</div>`;
+        if (chatContainer) {
+            chatContainer.innerHTML = `<div class="msg msg-cat">${firstMessages[char]}</div>`;
+        }
     }
 
     function handleKeyPress(e) {
@@ -266,15 +464,18 @@
 
     async function sendMessage() {
         const input = document.getElementById('user-input');
+        if (!input) return;
+
         const text = input.value.trim();
         if (!text) return;
 
         appendMessage(text, 'user');
         input.value = '';
 
-        const apiKey = document.getElementById('api-key').value.trim();
+        const apiKeyEl = document.getElementById('api-key');
+        const apiKey = apiKeyEl ? apiKeyEl.value.trim() : '';
 
-        // APIキー未設定時：強化されたローカルカウンセリングエンジンを使用
+        // APIキー未設定時：ローカルカウンセリングエンジンを使用
         if (!apiKey) {
             appendMessage("（言葉を深く受け止め、気持ちに寄り添っている…）", 'cat', 'loading-msg');
             setTimeout(() => {
@@ -287,7 +488,7 @@
             return;
         }
 
-        // APIキー設定時：OpenAI APIを使った高度対話
+        // APIキー設定時：OpenAI APIを使った対話
         appendMessage("（言葉を深く受け止め、気持ちに寄り添っている…）", 'cat', 'loading-msg');
         conversationHistory.push({ role: 'user', content: text });
 
@@ -315,9 +516,11 @@
                 conversationHistory.push({ role: 'assistant', content: reply });
                 appendMessage(reply.replace(/\n/g, '<br>'), 'cat');
             } else {
+                console.error('OpenAI API Error:', data);
                 appendMessage("（APIキーを確認してみてくださいね）", 'cat');
             }
         } catch (err) {
+            console.error('Network Error:', err);
             const loadingMsg = document.getElementById('loading-msg');
             if (loadingMsg) loadingMsg.remove();
             appendMessage("（うまく通信できなかったみたい…時間を置いてみてね）", 'cat');
@@ -326,6 +529,8 @@
 
     function appendMessage(text, sender, id = '') {
         const chatContainer = document.getElementById('chat-container');
+        if (!chatContainer) return;
+
         const div = document.createElement('div');
         div.className = `msg msg-${sender}`;
         if (id) div.id = id;
@@ -334,3 +539,6 @@
         chatContainer.scrollTop = chatContainer.scrollHeight;
     }
 </script>
+
+</body>
+</html>
