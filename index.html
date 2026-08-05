@@ -221,7 +221,7 @@
             <strong style="font-size: 13px; color: #c09853; display:block; margin-bottom:8px;">🛠️ 管理者投稿モード</strong>
             <input type="text" id="art-title" class="admin-input" placeholder="記事のタイトル（例: アプリアップデート情報）">
             <textarea id="art-body" class="admin-textarea" placeholder="本文を入力してください..."></textarea>
-            <button type="button" class="btn-admin-submit" onclick="addArticle()">記事を公開する</button>
+            <button type="button" class="btn-admin-submit" onclick="window.addArticle()">記事を公開する</button>
         </div>
 
         <!-- 記事リスト表示場所 -->
@@ -305,9 +305,10 @@
     }
     window.addEventListener('load', updateCounter);
 
-    // 記事取得関数（Firebase経由で全体共有）
+    // 記事取得関数（globalへ登録）
     window.renderArticles = async function() {
         const container = document.getElementById('article-list-container');
+        if (!container) return;
         try {
             const q = query(collection(db, "articles"), orderBy("createdAt", "desc"));
             const querySnapshot = await getDocs(q);
@@ -325,7 +326,7 @@
                         <div class="article-meta">${art.date}</div>
                         <h4 class="article-title">${escapeHTML(art.title)}</h4>
                         <p class="article-body">${escapeHTML(art.body)}</p>
-                        <button class="btn-article-delete" style="display: ${window.isAdmin ? 'block' : 'none'}" onclick="deleteArticle('${docSnap.id}')">削除</button>
+                        <button class="btn-article-delete" style="display: ${window.isAdmin ? 'block' : 'none'}" onclick="window.deleteArticle('${docSnap.id}')">削除</button>
                     </div>
                 `;
             });
@@ -336,7 +337,7 @@
         }
     };
 
-    // 記事追加関数（Firebaseへ保存）
+    // 記事追加関数（globalへ登録）
     window.addArticle = async function() {
         const titleInput = document.getElementById('art-title');
         const bodyInput = document.getElementById('art-body');
@@ -366,7 +367,7 @@
         }
     };
 
-    // 記事削除関数（Firebaseから削除）
+    // 記事削除関数（globalへ登録）
     window.deleteArticle = async function(id) {
         if (!confirm("この記事を削除してもよろしいですか？")) return;
         try {
@@ -377,6 +378,9 @@
             alert("削除に失敗しました。");
         }
     };
+
+    // Firebase読み込み完了後に一度初期レンダリングを実行
+    window.renderArticles();
 </script>
 
 <script>
@@ -395,7 +399,7 @@
             if (target === 'talk') {
                 appContainer.style.display = 'none';
                 xSection.style.display = 'block';
-                if (window.renderArticles) window.renderArticles();
+                if (typeof window.renderArticles === 'function') window.renderArticles();
             } else {
                 appContainer.style.display = 'grid';
                 xSection.style.display = 'none';
@@ -432,7 +436,7 @@
                 window.isAdmin = true;
                 alert("管理者認証に成功しました！投稿フォームが表示されます。");
                 document.getElementById('admin-controls').style.display = 'block';
-                if (window.renderArticles) window.renderArticles();
+                if (typeof window.renderArticles === 'function') window.renderArticles();
             } else if (password !== null) {
                 alert("パスワードが違います。");
             }
@@ -444,10 +448,6 @@
             '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
         }[tag] || tag));
     }
-
-    window.addEventListener('DOMContentLoaded', () => {
-        if (window.renderArticles) window.renderArticles();
-    });
 </script>
 </body>
 </html>
