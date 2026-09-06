@@ -18,8 +18,8 @@
     <title>JUICY RIDER | necotastudio</title>
     <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Noto+Sans+JP:wght@900&display=swap" rel="stylesheet">
     <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <!-- 【修正】callbackを削除し、内部ロジックで制御 -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCjHURgB5A-iLwJ8sG3_KXSrdTXZEAg7Ms&libraries=marker&v=beta" async defer></script>
+    <!-- 【変更箇所】Google Maps API読み込みスクリプト (librariesにmarker,placesを指定) -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCjHURgB5A-iLwJ8sG3_KXSrdTXZEAg7Ms&libraries=marker,places&v=beta" async defer></script>
     <style>
         :root { --comic-yellow: #ffde00; --comic-red: #e60012; --black: #000; --neon-green: #00ff00; }
         body { background: #ddd; background-image: radial-gradient(var(--black) 10%, transparent 11%); background-size: 15px 15px; font-family: 'Noto Sans JP', sans-serif; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
@@ -195,7 +195,6 @@
         bg.style.display = isShow ? 'none' : 'block';
     }
 
-    // 【修正】確実に初期化されるようasync/awaitとグローバル登録を整理
     window.initMap = async function() {
         if (!window.google || !google.maps) return;
         try {
@@ -344,7 +343,6 @@
     };
 
     window.onload = () => {
-        // フルーツセレクトボックスの初期化
         const select = document.getElementById('fruit-select-box');
         Object.keys(fruitDB).forEach(f => {
             const opt = document.createElement('option'); opt.value = f; opt.innerText = f; select.appendChild(opt);
@@ -352,7 +350,6 @@
         updateUnit();
         updateUI();
         
-        // 【重要修正】地図とGoogleログインボタンを初期化
         window.initMap();
         window.initGoogleBtn();
     };
