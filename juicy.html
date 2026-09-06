@@ -18,7 +18,7 @@
     <title>JUICY RIDER | necotastudio</title>
     <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Noto+Sans+JP:wght@900&display=swap" rel="stylesheet">
     <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <!-- 【変更箇所】Google Maps API読み込みスクリプト (librariesにmarker,placesを指定) -->
+    <!-- 【変更箇所①】librariesにmarker,placesを指定 -->
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCjHURgB5A-iLwJ8sG3_KXSrdTXZEAg7Ms&libraries=marker,places&v=beta" async defer></script>
     <style>
         :root { --comic-yellow: #ffde00; --comic-red: #e60012; --black: #000; --neon-green: #00ff00; }
@@ -186,6 +186,15 @@
 
     const goals = [ { d: 50, n: "浅草寺" }, { d: 300, n: "厳島神社" }, { d: 8000, n: "エッフェル塔" }, { d: 40075, n: "地球一周" } ];
     const machines = ["50cc MOPED", "250cc STREET", "1000cc SUPER BIKE", "SPACE RIDER"];
+
+    // 【変更箇所②】認証エラー検知関数
+    window.gm_authFailure = function() {
+        alert("Google Mapsの認証エラーが発生しました。Google Cloud ConsoleのAPIキー制限、請求有効化、またはPlaces API設定をご確認ください。");
+        const mapEl = document.getElementById("map");
+        if (mapEl) {
+            mapEl.innerHTML = '<div style="padding:15px; color:red; font-size:12px; font-weight:bold;">Google Maps認証エラー<br>APIキー制限またはCloud設定を確認してください。</div>';
+        }
+    };
 
     window.toggleHelp = () => {
         const popup = document.getElementById('help-popup');
