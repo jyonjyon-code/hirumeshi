@@ -8,6 +8,11 @@
         gtag('js', new Date());
         gtag('config', 'G-6LK2VK60B1');
     </script>
+
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8842628078038644"
+         crossorigin="anonymous"></script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="apple-touch-icon" href="nekota.png">
@@ -365,141 +370,141 @@
                     msgEl.innerText = `あなたは【 ${total} 】番目の訪問者です！`;
                     celebPanel.style.display = 'block';
                     const shareText = encodeURIComponent(`🎉ねこたスタジオで【${total}】番目のキリ番を踏みました！🎉\n@necotatu2\nhttps://necotastudio.com/`);
-                    document.getElementById('share-x').href = `https://twitter.com/intent/tweet?text=${shareText}`; 
-                } 
-            } 
-        } catch (e) { counterEl.innerText = "ERROR!!"; } 
-    } 
-    window.addEventListener('load', updateCounter); 
- 
-    window.renderArticles = async function() { 
-        const container = document.getElementById('article-list-container'); 
-        if (!container) return; 
-        try { 
-            const q = query(collection(db, "articles")); 
-            const querySnapshot = await getDocs(q); 
-             
-            if (querySnapshot.empty) { 
-                container.innerHTML = '<p style="font-size:13px; color:#999; text-align:center; padding:10px 0;">まだ投稿はありません。</p>'; 
-                return; 
-            } 
- 
-            const docsArray = []; 
-            querySnapshot.forEach((docSnap) => { 
-                docsArray.push({ id: docSnap.id, ...docSnap.data() }); 
-            }); 
- 
-            docsArray.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)); 
- 
-            let html = ''; 
-            docsArray.forEach((art) => { 
-                html += ` 
-                    <div class="article-item"> 
-                        <div class="article-meta">${safeEscapeHTML(art.date)}</div> 
-                        <h4 class="article-title">${safeEscapeHTML(art.title)}</h4> 
-                        <p class="article-body">${safeEscapeHTML(art.body)}</p> 
-                        <button class="btn-article-delete" style="display: ${window.isAdmin ? 'block' : 'none'}" onclick="window.deleteArticle('${art.id}')">削除</button> 
-                    </div> 
-                `; 
-            }); 
-            container.innerHTML = html; 
-        } catch (e) { 
-            console.error("記事取得エラー:", e); 
-            container.innerHTML = '<p style="font-size:13px; color:#999; text-align:center; padding:10px 0;">記事の読み込みに失敗しました。</p>'; 
-        } 
-    }; 
- 
-    window.addArticle = async function() { 
-        const titleInput = document.getElementById('art-title'); 
-        const bodyInput = document.getElementById('art-body'); 
-         
-        if (!titleInput.value.trim() || !bodyInput.value.trim()) { 
-            alert("タイトルと本文の両方を入力してください。"); 
-            return; 
-        } 
- 
-        const now = new Date(); 
-        const dateStr = `${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`; 
- 
-        try { 
-            await addDoc(collection(db, "articles"), { 
-                title: titleInput.value, 
-                body: bodyInput.value, 
-                date: dateStr, 
-                createdAt: now.getTime() 
-            }); 
-            titleInput.value = ''; 
-            bodyInput.value = ''; 
-            alert("記事を公開しました！"); 
-            window.renderArticles(); 
-        } catch (e) { 
-            console.error("投稿エラー:", e); 
-            alert("投稿に失敗しました。"); 
-        } 
-    }; 
- 
-    window.deleteArticle = async function(id) { 
-        if (!confirm("この記事を削除してもよろしいですか？")) return; 
-        try { 
-            await deleteDoc(doc(doc(db, "articles", id))); 
-            window.renderArticles(); 
-        } catch (e) { 
-            console.error("削除エラー:", e); 
-            alert("削除に失敗しました。"); 
-        } 
-    }; 
- 
-    window.renderArticles(); 
-</script> 
- 
-<script> 
-    window.isAdmin = false; 
- 
-    document.querySelectorAll('.tab-btn').forEach(button => { 
-        button.addEventListener('click', () => { 
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active')); 
-            button.classList.add('active'); 
- 
-            const target = button.getAttribute('data-target'); 
-            const appContainer = document.getElementById('app-container'); 
-            const xSection = document.getElementById('x-talk-section'); 
-            const cards = document.querySelectorAll('.app-card'); 
- 
-            if (target === 'talk') { 
-                appContainer.style.display = 'none'; 
-                xSection.style.display = 'block'; 
-                if (typeof window.renderArticles === 'function') window.renderArticles(); 
-            } else { 
-                appContainer.style.display = 'grid'; 
-                xSection.style.display = 'none'; 
- 
-                cards.forEach(card => { 
-                    const category = card.getAttribute('data-category'); 
-                    if (target === 'all' || category === target) { 
-                        card.style.display = 'flex'; 
-                    } else { 
-                        card.style.display = 'none'; 
-                    } 
-                }); 
-            } 
-        }); 
-    }); 
- 
-    // 変更点: ミニ入力エリアからの直接認証処理 
-    function checkAdminPassword() { 
-        const passInput = document.getElementById('admin-mini-pass'); 
-        const pass = passInput.value ? passInput.value.trim().toLowerCase() : ''; 
-         
-        if (pass === "nekota2026") { 
-            window.isAdmin = true; 
-            alert("管理者認証に成功しました！投稿フォームが表示されます。"); 
-            document.getElementById('admin-controls').style.display = 'block'; 
-            if (typeof window.renderArticles === 'function') window.renderArticles(); 
-            passInput.value = ''; 
-        } else { 
-            alert("パスワードが違います。"); 
-        } 
-    } 
-</script> 
+                    document.getElementById('share-x').href = `https://twitter.com/intent/tweet?text=${shareText}`;
+                }
+            }
+        } catch (e) { counterEl.innerText = "ERROR!!"; }
+    }
+    window.addEventListener('load', updateCounter);
+
+    window.renderArticles = async function() {
+        const container = document.getElementById('article-list-container');
+        if (!container) return;
+        try {
+            const q = query(collection(db, "articles"));
+            const querySnapshot = await getDocs(q);
+            
+            if (querySnapshot.empty) {
+                container.innerHTML = '<p style="font-size:13px; color:#999; text-align:center; padding:10px 0;">まだ投稿はありません。</p>';
+                return;
+            }
+
+            const docsArray = [];
+            querySnapshot.forEach((docSnap) => {
+                docsArray.push({ id: docSnap.id, ...docSnap.data() });
+            });
+
+            docsArray.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+            let html = '';
+            docsArray.forEach((art) => {
+                html += `
+                    <div class="article-item">
+                        <div class="article-meta">${safeEscapeHTML(art.date)}</div>
+                        <h4 class="article-title">${safeEscapeHTML(art.title)}</h4>
+                        <p class="article-body">${safeEscapeHTML(art.body)}</p>
+                        <button class="btn-article-delete" style="display: ${window.isAdmin ? 'block' : 'none'}" onclick="window.deleteArticle('${art.id}')">削除</button>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        } catch (e) {
+            console.error("記事取得エラー:", e);
+            container.innerHTML = '<p style="font-size:13px; color:#999; text-align:center; padding:10px 0;">記事の読み込みに失敗しました。</p>';
+        }
+    };
+
+    window.addArticle = async function() {
+        const titleInput = document.getElementById('art-title');
+        const bodyInput = document.getElementById('art-body');
+        
+        if (!titleInput.value.trim() || !bodyInput.value.trim()) {
+            alert("タイトルと本文の両方を入力してください。");
+            return;
+        }
+
+        const now = new Date();
+        const dateStr = `${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+        try {
+            await addDoc(collection(db, "articles"), {
+                title: titleInput.value,
+                body: bodyInput.value,
+                date: dateStr,
+                createdAt: now.getTime()
+            });
+            titleInput.value = '';
+            bodyInput.value = '';
+            alert("記事を公開しました！");
+            window.renderArticles();
+        } catch (e) {
+            console.error("投稿エラー:", e);
+            alert("投稿に失敗しました。");
+        }
+    };
+
+    window.deleteArticle = async function(id) {
+        if (!confirm("この記事を削除してもよろしいですか？")) return;
+        try {
+            await deleteDoc(doc(doc(db, "articles", id)));
+            window.renderArticles();
+        } catch (e) {
+            console.error("削除エラー:", e);
+            alert("削除に失敗しました。");
+        }
+    };
+
+    window.renderArticles();
+</script>
+
+<script>
+    window.isAdmin = false;
+
+    document.querySelectorAll('.tab-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+
+            const target = button.getAttribute('data-target');
+            const appContainer = document.getElementById('app-container');
+            const xSection = document.getElementById('x-talk-section');
+            const cards = document.querySelectorAll('.app-card');
+
+            if (target === 'talk') {
+                appContainer.style.display = 'none';
+                xSection.style.display = 'block';
+                if (typeof window.renderArticles === 'function') window.renderArticles();
+            } else {
+                appContainer.style.display = 'grid';
+                xSection.style.display = 'none';
+
+                cards.forEach(card => {
+                    const category = card.getAttribute('data-category');
+                    if (target === 'all' || category === target) {
+                        card.style.display = 'flex';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            }
+        });
+    });
+
+    // 変更点: ミニ入力エリアからの直接認証処理
+    function checkAdminPassword() {
+        const passInput = document.getElementById('admin-mini-pass');
+        const pass = passInput.value ? passInput.value.trim().toLowerCase() : '';
+        
+        if (pass === "nekota2026") {
+            window.isAdmin = true;
+            alert("管理者認証に成功しました！投稿フォームが表示されます。");
+            document.getElementById('admin-controls').style.display = 'block';
+            if (typeof window.renderArticles === 'function') window.renderArticles();
+            passInput.value = '';
+        } else {
+            alert("パスワードが違います。");
+        }
+    }
+</script>
 </body>
 </html>
