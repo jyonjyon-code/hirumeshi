@@ -1,50 +1,54 @@
 <!DOCTYPE html>
+
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ひるめしえらんで | ねこたスタジオ</title>
 
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6LK2VK60B1"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-6LK2VK60B1');
-    </script>
+```
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6LK2VK60B1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-6LK2VK60B1');
+</script>
 
-    <meta name="description" content="今日のお昼ご飯を「おみくじ」で楽しく決定！『ひるめしえらんで』は、今の気分に合わせてランチを提案する無料ツールです。コンビニ飯から外食まで、マップ連携で近くの店もすぐに見つかります。">
+<meta name="description" content="今日のお昼ご飯を「おみくじ」で楽しく決定！『ひるめしえらんで』は、今の気分に合わせてランチを提案する無料ツールです。コンビニ飯から外食まで、マップ連携で近くの店もすぐに見つかります。">
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        body { font-family: 'Hiragino Kaku Gothic ProN', sans-serif; text-align: center; background: #f9f1e6; padding: 20px; color: #333; margin: 0; }
-        .card { background: white; padding: 30px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); display: inline-block; width: 90%; max-width: 380px; border: 4px solid #d9534f; margin-top: 20px; box-sizing: border-box; }
-        h2 { color: #d9534f; margin-bottom: 20px; font-size: 26px; letter-spacing: 2px; }
-        #omikuji-box { font-size: 100px; cursor: pointer; margin: 20px 0; transition: transform 0.1s; user-select: none; }
-        .shake { animation: shake 0.5s infinite; }
-        @keyframes shake { 0% { transform: rotate(0deg); } 25% { transform: rotate(8deg); } 50% { transform: rotate(0deg); } 75% { transform: rotate(-8deg); } 100% { transform: rotate(0deg); } }
-        .mode-selector { margin-bottom: 25px; display: flex; justify-content: center; }
-        .mode-btn { border: 2px solid #d9534f; padding: 10px 15px; cursor: pointer; background: white; border-radius: 25px; font-size: 14px; margin: 0 5px; color: #d9534f; font-weight: bold; flex: 1; transition: 0.3s; }
-        .active-mode { background: #d9534f; color: white; }
-        #result-area { display: none; background: #fffcf0; border: 2px dashed #f0ad4e; padding: 20px; border-radius: 15px; margin-top: 20px; }
-        
-        .btn { color: white; border: none; padding: 15px 20px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; margin-top: 12px; font-size: 15px; width: 100%; box-sizing: border-box; }
-        .btn-map { background: #4285F4; }
-        .btn-demae { background: #ff3300; } /* 出前館カラー */
-        .btn-x { background: #000; }
-        .btn-copy { background: #E1306C; } 
-        .btn-retry { background: #f0ad4e; }
-        
-        .ad-banner-area { margin-top: 15px; min-height: 60px; display: flex; justify-content: center; align-items: center; flex-direction: column; }
-        .ad-label { font-size: 10px; color: #999; margin-bottom: 5px; }
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+    body { font-family: 'Hiragino Kaku Gothic ProN', sans-serif; text-align: center; background: #f9f1e6; padding: 20px; color: #333; margin: 0; }
+    .card { background: white; padding: 30px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); display: inline-block; width: 90%; max-width: 380px; border: 4px solid #d9534f; margin-top: 20px; box-sizing: border-box; }
+    h2 { color: #d9534f; margin-bottom: 20px; font-size: 26px; letter-spacing: 2px; }
+    #omikuji-box { font-size: 100px; cursor: pointer; margin: 20px 0; transition: transform 0.1s; user-select: none; }
+    .shake { animation: shake 0.5s infinite; }
+    @keyframes shake { 0% { transform: rotate(0deg); } 25% { transform: rotate(8deg); } 50% { transform: rotate(0deg); } 75% { transform: rotate(-8deg); } 100% { transform: rotate(0deg); } }
+    .mode-selector { margin-bottom: 25px; display: flex; justify-content: center; }
+    .mode-btn { border: 2px solid #d9534f; padding: 10px 15px; cursor: pointer; background: white; border-radius: 25px; font-size: 14px; margin: 0 5px; color: #d9534f; font-weight: bold; flex: 1; transition: 0.3s; }
+    .active-mode { background: #d9534f; color: white; }
+    #result-area { display: none; background: #fffcf0; border: 2px dashed #f0ad4e; padding: 20px; border-radius: 15px; margin-top: 20px; }
+    
+    .btn { color: white; border: none; padding: 15px 20px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; margin-top: 12px; font-size: 15px; width: 100%; box-sizing: border-box; }
+    .btn-map { background: #4285F4; }
+    .btn-demae { background: #ff3300; } /* 出前館カラー */
+    .btn-x { background: #000; }
+    .btn-copy { background: #E1306C; } 
+    .btn-retry { background: #f0ad4e; }
+    
+    .ad-banner-area { margin-top: 15px; min-height: 60px; display: flex; justify-content: center; align-items: center; flex-direction: column; }
+    .ad-label { font-size: 10px; color: #999; margin-bottom: 5px; }
 
-        .lucky-item { color: #e67e22; font-weight: bold; font-size: 0.95em; margin-top: 15px; background: #fff; border-radius: 10px; padding: 5px; }
-        .studio-nav { margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; width: 100%; }
-        .btn-back { background: #888; color: white; text-decoration: none; padding: 10px 20px; border-radius: 50px; display: inline-block; font-size: 14px; width: 100%; box-sizing: border-box; }
-    </style>
+    .lucky-item { color: #e67e22; font-weight: bold; font-size: 0.95em; margin-top: 15px; background: #fff; border-radius: 10px; padding: 5px; }
+    .studio-nav { margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; width: 100%; }
+    .btn-back { background: #888; color: white; text-decoration: none; padding: 10px 20px; border-radius: 50px; display: inline-block; font-size: 14px; width: 100%; box-sizing: border-box; }
+</style>
+```
+
 </head>
 <body>
-    
+
 <div class="card">
     <h2>ひるめしえらんで</h2>
     <div class="mode-selector">
@@ -52,49 +56,52 @@
         <button id="conveni-btn" class="mode-btn" onclick="setMode('conveni')">コンビニ</button>
     </div>
 
-    <div id="main-view">
-        <div id="omikuji-box" onclick="draw()">🍱</div>
-        <p style="color:#888; font-size:14px;">タップでおみくじを振る！</p>
+```
+<div id="main-view">
+    <div id="omikuji-box" onclick="draw()">🍱</div>
+    <p style="color:#888; font-size:14px;">タップでおみくじを振る！</p>
+</div>
+
+<div id="result-area">
+    <div id="luck" style="font-size: 22px; font-weight: bold; color: #d9534f;"></div>
+    <h2 id="food" style="margin: 15px 0; font-size: 24px;"></h2>
+    <p id="desc" style="font-size: 15px; color: #555;"></p>
+    <div class="lucky-item">✨ラッキー買い足し: <span id="add-on"></span></div>
+    
+    <a id="map-link" class="btn btn-map" target="_blank">
+        <i class="fas fa-map-marker-alt"></i> 地図で近くを探す
+    </a>
+
+    <a id="uber-link" href="https://px.a8.net/svt/ejp?a8mat=4B3K2L+2BCPGY+5W08+5ZEMP" class="btn btn-demae" target="_blank" rel="nofollow">
+        <i class="fas fa-motorcycle"></i> 出前館で探す
+        <img border="0" width="1" height="1" src="https://www17.a8.net/0.gif?a8mat=4B3K2L+2BCPGY+5W08+5ZEMP" alt="">
+    </a>
+
+    <div id="tabelog-ad-box" class="ad-banner-area">
+        <div class="ad-label">PR 詳しい情報をチェック</div>
+        <script language="javascript" src="//ad.jp.ap.valuecommerce.com/servlet/jsbanner?sid=3767676&pid=892607567"></script>
+        <noscript><a href="//ck.jp.ap.valuecommerce.com/servlet/referral?sid=3767676&pid=892607567" rel="nofollow"><img src="//ad.jp.ap.valuecommerce.com/servlet/gifbanner?sid=3767676&pid=892607567" border="0"></a></noscript>
     </div>
 
-    <div id="result-area">
-        <div id="luck" style="font-size: 22px; font-weight: bold; color: #d9534f;"></div>
-        <h2 id="food" style="margin: 15px 0; font-size: 24px;"></h2>
-        <p id="desc" style="font-size: 15px; color: #555;"></p>
-        <div class="lucky-item">✨ラッキー買い足し: <span id="add-on"></span></div>
-        
-        <a id="map-link" class="btn btn-map" target="_blank">
-            <i class="fas fa-map-marker-alt"></i> 地図で近くを探す
-        </a>
-
-        <a id="uber-link" href="https://px.a8.net/svt/ejp?a8mat=4B3K2L+2BCPGY+5W08+5ZEMP" class="btn btn-demae" target="_blank" rel="nofollow">
-            <i class="fas fa-motorcycle"></i> 出前館で探す
-            <img border="0" width="1" height="1" src="https://www17.a8.net/0.gif?a8mat=4B3K2L+2BCPGY+5W08+5ZEMP" alt="">
-        </a>
-
-        <div id="tabelog-ad-box" class="ad-banner-area">
-            <div class="ad-label">PR 詳しい情報をチェック</div>
-            <script language="javascript" src="//ad.jp.ap.valuecommerce.com/servlet/jsbanner?sid=3767676&pid=892607567"></script>
-            <noscript><a href="//ck.jp.ap.valuecommerce.com/servlet/referral?sid=3767676&pid=892607567" rel="nofollow"><img src="//ad.jp.ap.valuecommerce.com/servlet/gifbanner?sid=3767676&pid=892607567" border="0"></a></noscript>
-        </div>
-
-        <div style="display: flex; gap: 8px;">
-            <button class="btn btn-x" onclick="shareX()" style="flex: 1;">
-                <i class="fab fa-x-twitter"></i> 𝕏シェア
-            </button>
-            <button id="copy-btn" class="btn btn-copy" onclick="copyResult()" style="flex: 1;">
-                <i class="fas fa-copy"></i> 結果をコピー
-            </button>
-        </div>
-
-        <button class="btn btn-retry" onclick="reset()">
-            <i class="fas fa-redo"></i> もういちど引く
+    <div style="display: flex; gap: 8px;">
+        <button class="btn btn-x" onclick="shareX()" style="flex: 1;">
+            <i class="fab fa-x-twitter"></i> 𝕏シェア
+        </button>
+        <button id="copy-btn" class="btn btn-copy" onclick="copyResult()" style="flex: 1;">
+            <i class="fas fa-copy"></i> 結果をコピー
         </button>
     </div>
 
-    <div class="studio-nav">
-        <a href="https://necotastudio.com/" class="btn-back">ねこたスタジオへ戻る</a>
-    </div>
+    <button class="btn btn-retry" onclick="reset()">
+        <i class="fas fa-redo"></i> もういちど引く
+    </button>
+</div>
+
+<div class="studio-nav">
+    <a href="https://necotastudio.com/" class="btn-back">ねこたスタジオへ戻る</a>
+</div>
+```
+
 </div>
 
 <script>
@@ -155,6 +162,7 @@
             { luck: "末吉", food: "お茶漬け", keyword: "お茶漬け", desc: "サラッと食べて胃を休めよう。", add: "梅干し" },
             { luck: "末吉", food: "にゅうめん", keyword: "そうめん", desc: "あたたかいお出汁でほっとひと息。", add: "七味" }
         ],
+
         conveni: [
             { luck: "大吉", food: "カツカレー", keyword: "カツカレー", desc: "ガッツリ食べてパワー補給！", add: "お茶" },
             { luck: "吉", food: "おにぎりセット", keyword: "おにぎり", desc: "手軽に美味しく！", add: "お味噌汁" },
@@ -218,7 +226,8 @@
             document.getElementById('desc').innerText = res.desc;
             document.getElementById('add-on').innerText = res.add;
             
-            document.getElementById('map-link').href = `https://www.google.com/maps/search/{encodeURIComponent(res.keyword)}`;
+            // ★修正：Google Maps検索URLの生成
+            document.getElementById('map-link').href = `https://www.google.com/maps/search/${encodeURIComponent(res.keyword)}`;
 
             const adBox = document.getElementById('tabelog-ad-box');
             const dBtn = document.getElementById('uber-link');
@@ -267,5 +276,6 @@
         document.getElementById('omikuji-box').innerText = currentMode === 'normal' ? "🍱" : "🏪";
     }
 </script>
+
 </body>
 </html>
